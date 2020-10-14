@@ -7,11 +7,11 @@ using LyricPlayer.Models;
 
 namespace LyricPlayer.MusicPlayer
 {
-    public interface IMusicPlayer
+    public interface ISoundPlayer
     {
-        MusicPlayerStatus PlayerStatus { get; }
+        PlayerStatus PlayerStatus { get; }
         TimeSpan CurrentTime { get; }
-        TrackInfo CurrentTrack { get; }
+        FileInfo CurrentFileInfo { get; }
 
         float Volume { get; set; }
         bool Muted { set; get; }

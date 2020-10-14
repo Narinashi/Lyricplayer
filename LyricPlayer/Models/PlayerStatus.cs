@@ -1,6 +1,6 @@
-﻿namespace LyricPlayer.MusicPlayer
+﻿namespace LyricPlayer.Models
 {
-    public enum MusicPlayerStatus
+    public enum PlayerStatus
     {
         Stopped = 0,
         Playing = 1,

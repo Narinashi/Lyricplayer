@@ -5,20 +5,20 @@ using System.IO;
 
 namespace LyricPlayer.MusicPlayer
 {
-    public class NAudioPlayer : IMusicPlayer, IDisposable
+    public class NAudioPlayer : ISoundPlayer, IDisposable
     {
-        public MusicPlayerStatus PlayerStatus
+        public PlayerStatus PlayerStatus
         {
             get
             {
                 if (waveOutEvent == null)
-                    return MusicPlayerStatus.Stopped;
-                return (MusicPlayerStatus)((int)waveOutEvent.PlaybackState);
+                    return PlayerStatus.Stopped;
+                return (PlayerStatus)((int)waveOutEvent.PlaybackState);
             }
         }
 
         public TimeSpan CurrentTime => fileReader?.CurrentTime ?? TimeSpan.Zero;
-        public TrackInfo CurrentTrack => _CurrentTrack;
+        public Models.FileInfo CurrentFileInfo => _CurrentFileInfo;
 
         public float Volume
         {
@@ -43,7 +43,6 @@ namespace LyricPlayer.MusicPlayer
         private WaveOutEvent waveOutEvent { set; get; }
         private Mp3FileReader fileReader { set; get; }
         private Models.FileInfo _CurrentFileInfo { set; get; }
-        private TrackInfo _CurrentTrack { set; get; }
         private float volumeBeforeMute { set; get; } = 1.0f;
 
         public void Load(Models.FileInfo fileInfo)
@@ -61,20 +60,6 @@ namespace LyricPlayer.MusicPlayer
             waveOutEvent.PlaybackStopped += WaveOutEventPlaybackStopped;
             Volume = volumeBeforeMute;
             _CurrentFileInfo = fileInfo;
-            ReadTrackInfo(fileInfo.FileAddress);
-        }
-
-        private void ReadTrackInfo(string filePath)
-        {
-            using (var file = TagLib.File.Create(filePath))
-                _CurrentTrack = new TrackInfo
-                {
-                    Album = file.Tag.Album,
-                    Artists = file.Tag.AlbumArtists,
-                    FileAddress = filePath,
-                    Title = file.Tag.Title,
-                    TrackName = Path.GetFileNameWithoutExtension(filePath)
-                };
         }
 
         public void Pause()

@@ -63,9 +63,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Fixed.cs" />
-    <Compile Include="MusicPlayer\MusicPlayerStatus.cs" />
+    <Compile Include="LyricController\NarinoLyricController.cs" />
+    <Compile Include="LyricFetcher\ILyricFetcher.cs" />
+    <Compile Include="LyricController\ILyricController.cs" />
+    <Compile Include="Models\PlayerStatus.cs" />
     <Compile Include="Models\FileInfo.cs" />
-    <Compile Include="MusicPlayer\IMusicPlayer.cs" />
+    <Compile Include="Models\Lyric.cs" />
+    <Compile Include="Models\TrackLyric.cs" />
+    <Compile Include="MusicPlayer\ISoundPlayer.cs" />
     <Compile Include="Utilities\PauseableTimer.cs">
       <SubType>Component</SubType>
     </Compile>
