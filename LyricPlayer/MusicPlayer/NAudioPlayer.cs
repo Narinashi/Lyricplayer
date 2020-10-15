@@ -17,8 +17,18 @@ namespace LyricPlayer.MusicPlayer
             }
         }
 
-        public TimeSpan CurrentTime => fileReader?.CurrentTime ?? TimeSpan.Zero;
+        public TimeSpan CurrentTime
+        {
+            get => fileReader?.CurrentTime ?? TimeSpan.Zero;
+            set
+            {
+                if (fileReader != null)
+                    fileReader.CurrentTime = value;
+            }
+        }
         public Models.FileInfo CurrentFileInfo => _CurrentFileInfo;
+
+        public int TrackLength => (int)(fileReader?.TotalTime.TotalMilliseconds ?? 0);
 
         public float Volume
         {

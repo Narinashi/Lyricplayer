@@ -9,6 +9,6 @@ namespace LyricPlayer.LyricFetcher
 {
     public interface ILyricFetcher
     {
-        TrackLyric GetLyric(string trackName, string Title, string Album, string Artist);
+        TrackLyric GetLyric(string trackName, string Title, string Album, string Artist,double trackLength);
     }
 }

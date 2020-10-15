@@ -133,9 +133,10 @@ namespace LyricPlayer.LyricController
 
                 if (lyric.StartAt <= time && lyric.Duration + lyric.StartAt >= time)
                 {
-                    CurrentIndex = index;
+                    _CurrentIndex = index;
                     Timer.Interval = lyric.EndAt - time;
-                    WatcherOffset = time - (Watcher.ElapsedMilliseconds + WatcherOffset);
+                    WatcherOffset = time - Watcher.ElapsedMilliseconds;
+                    OnLyricChanged(CurrentLyric);
                     break;
                 }
             }
@@ -157,7 +158,11 @@ namespace LyricPlayer.LyricController
 
             var currentTime = Watcher.ElapsedMilliseconds + WatcherOffset;
             var timerError = currentTime - incomingLyric.StartAt;
-            Timer.Interval = incomingLyric.Duration - timerError;
+            var interval = incomingLyric.Duration - timerError;
+            
+            Console.WriteLine($"currnetTime:{currentTime}, timerError:{timerError}, deltaToNext:{interval}");
+
+            Timer.Interval = interval;
             CurrentIndex++;
         }
 

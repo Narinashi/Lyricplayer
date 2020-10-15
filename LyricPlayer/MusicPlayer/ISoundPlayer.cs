@@ -10,7 +10,7 @@ namespace LyricPlayer.MusicPlayer
     public interface ISoundPlayer
     {
         PlayerStatus PlayerStatus { get; }
-        TimeSpan CurrentTime { get; }
+        TimeSpan CurrentTime { get; set; }
         FileInfo CurrentFileInfo { get; }
 
         float Volume { get; set; }
