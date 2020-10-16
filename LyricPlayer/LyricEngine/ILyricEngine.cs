@@ -7,8 +7,10 @@ namespace LyricPlayer.LyricEngine
     {
         PlayerStatus Status { get; }
         TimeSpan CurrentTime { get; set; }
+        TrackLyric TrackLyric { get; }
         int Offset { set; get; }
-
+        event EventHandler<Lyric> LyricChanged;
+       
         void Start();
         void Pause();
         void Resume();

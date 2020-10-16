@@ -26,7 +26,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             if (string.IsNullOrEmpty(body))
                 return new TrackLyric
                 {
-                    Synchronized = false,
+                    Synchronized = true,
                     Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Text = "Lyric not found" } }
                 };
 
@@ -98,6 +98,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     }
                 }
                 catch { }
+
                 res = response["message"]?["body"]?["macro_calls"]?["track.lyrics.get"];
                 if (res != null && res["message"]?["header"]?["status_code"] == 200)
                 {
@@ -128,8 +129,10 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         };
                     }
                 }
+
+                res = response["message"]?["body"]?["macro_calls"]?["track.lyrics.get"];
                 //instrumental
-                if (bkRes != null && bkRes["message"]?["header"]?["instrumental"] == 1)
+                if (res != null && res["message"]?["header"]?["instrumental"] == 1)
                     return new TrackLyric
                     {
                         Synchronized = true,
@@ -145,13 +148,14 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             }
             return new TrackLyric
             {
-                Synchronized = false,
+                Synchronized = true,
                 Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Text = "Lyric not found" } }
             };
         }
 
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)
         {
+            Handler = new HttpClientHandler();
             Handler.UseProxy = UseProxy;
             if (Handler.UseProxy)
                 Handler.Proxy = new WebProxy { Address = ProxyUrl };

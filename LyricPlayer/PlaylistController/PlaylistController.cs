@@ -1,6 +1,7 @@
 ﻿using LyricPlayer.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace LyricPlayer.PlaylistController
@@ -18,14 +19,16 @@ namespace LyricPlayer.PlaylistController
 
         public virtual void Add(T track)
         {
-            Tracks.Add(track);
+            if (File.Exists(track.FileAddress) || track.FileContent != null)
+                Tracks.Add(track);
 
             if (Tracks.Count == 1)
                 OnTrackChanged(CurrentTrack);
         }
         public virtual void Insert(int index, T track)
         {
-            Tracks.Insert(index, track);
+            if (File.Exists(track.FileAddress) || track.FileContent != null)
+                Tracks.Insert(index, track);
 
             if (Tracks.Count == 1)
                 OnTrackChanged(CurrentTrack);

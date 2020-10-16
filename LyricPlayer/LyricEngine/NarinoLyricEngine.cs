@@ -32,19 +32,20 @@ namespace LyricPlayer.LyricEngine
             get => _CurrentIndex;
             protected set
             {
-                if (value < Lyric?.Lyric.Count)
+                if (value < _Lyric?.Lyric.Count)
                 {
                     _CurrentIndex = value;
                     OnLyricChanged(CurrentLyric);
                 }
             }
         }
-        public Lyric CurrentLyric => Lyric?.Lyric[CurrentIndex];
+        public Lyric CurrentLyric => _Lyric?.Lyric[CurrentIndex];
+        public TrackLyric TrackLyric => _Lyric;
         public event EventHandler<Lyric> LyricChanged;
 
         public bool IsDisposed { protected set; get; }
 
-        TrackLyric Lyric;
+        TrackLyric _Lyric;
         PausableTimer Timer;
         Stopwatch Watcher;
         long WatcherOffset;
@@ -54,12 +55,12 @@ namespace LyricPlayer.LyricEngine
         public void Load(TrackLyric lyric)
         {
             if (IsDisposed)
-                throw new ObjectDisposedException("Controller");
+                throw new ObjectDisposedException("Engine");
             if (lyric?.Lyric == null)
                 throw new ArgumentNullException();
 
             Initialize();
-            Lyric = lyric;
+            _Lyric = lyric;
         }
 
         public void Pause()
@@ -90,7 +91,7 @@ namespace LyricPlayer.LyricEngine
                 return;
 
             CurrentIndex = 0;
-            Timer.Interval = Lyric.Lyric[0].Duration;
+            Timer.Interval = _Lyric.Lyric[0].Duration;
             Watcher.Restart();
             Timer.Start();
             Status = PlayerStatus.Playing;
@@ -113,7 +114,7 @@ namespace LyricPlayer.LyricEngine
             Watcher?.Stop();
             Timer = null;
             Watcher = null;
-            Lyric = null;
+            _Lyric = null;
             IsDisposed = true;
         }
 
@@ -132,9 +133,9 @@ namespace LyricPlayer.LyricEngine
 
         private void JumpAtTime(int time)
         {
-            if (!(Lyric?.Lyric.Any() ?? false))
+            if (!(_Lyric?.Lyric.Any() ?? false))
                 return;
-            Lyric lyric = Lyric.Lyric[0];
+            Lyric lyric = _Lyric.Lyric[0];
 
             if (lyric.StartAt >= time)
             {
@@ -142,9 +143,9 @@ namespace LyricPlayer.LyricEngine
                 return;
             } 
 
-            for (int index = 0; index < Lyric.Lyric.Count; index++)
+            for (int index = 0; index < _Lyric.Lyric.Count; index++)
             {
-                lyric = Lyric.Lyric[index];
+                lyric = _Lyric.Lyric[index];
 
                 if (lyric.StartAt <= time && lyric.Duration + lyric.StartAt >= time)
                 {
@@ -156,7 +157,7 @@ namespace LyricPlayer.LyricEngine
 
         private void JumpToLyric(Lyric lyric, int time)
         {
-            _CurrentIndex = Lyric.Lyric.IndexOf(lyric);
+            _CurrentIndex = _Lyric.Lyric.IndexOf(lyric);
             Timer.Interval = lyric.EndAt - time;
             WatcherOffset = time - Watcher.ElapsedMilliseconds;
             OnLyricChanged(CurrentLyric);
@@ -164,7 +165,7 @@ namespace LyricPlayer.LyricEngine
 
         private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (CurrentIndex >= Lyric.Lyric.Count - 1)
+            if (CurrentIndex >= _Lyric.Lyric.Count - 1)
             {
                 Timer.Stop();
                 Watcher.Reset();
@@ -175,7 +176,7 @@ namespace LyricPlayer.LyricEngine
             }
 
             var finishedLyric = CurrentLyric;
-            var incomingLyric = Lyric.Lyric[CurrentIndex + 1];
+            var incomingLyric = _Lyric.Lyric[CurrentIndex + 1];
             var currentTime = Watcher.ElapsedMilliseconds + WatcherOffset;
             var timerError = currentTime - incomingLyric.StartAt;
 

@@ -11,7 +11,7 @@ namespace LyricPlayer.MusicPlayer
     public abstract class MusicPlayer<T> where T : TrackInfo
     {
         public PlayerStatus PlayerStatus => SoundEngine == null ? PlayerStatus.Stopped : SoundEngine.Status;
-        public RepeatType RepoeatType { set; get; }
+        public RepeatType Repeat { set; get; }
         public TimeSpan CurrentTime
         {
             get => SoundEngine == null ? TimeSpan.Zero : SoundEngine.CurrentTime;
@@ -25,7 +25,7 @@ namespace LyricPlayer.MusicPlayer
             }
         }
         public T CurrnetTrack => Playlist?.CurrentTrack;
-
+        public TrackLyric Lyric => LyricEngine?.TrackLyric;
         public PlaylistController<T> Playlist
         {
             protected set

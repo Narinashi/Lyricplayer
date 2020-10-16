@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D21F994B-166A-41DF-A551-EBC35A194EA7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>LyricPlayer</RootNamespace>
     <AssemblyName>LyricPlayer</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
-    <Compile Include="LyricEngine\NarinoLyricController.cs" />
+    <Compile Include="LyricEngine\NarinoLyricEngine.cs" />
     <Compile Include="LyricFetcher\ILyricFetcher.cs" />
     <Compile Include="LyricEngine\ILyricEngine.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicmatchLyricFetcher.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="Models\Lyric.cs" />
     <Compile Include="Models\TrackLyric.cs" />
     <Compile Include="MusicPlayer\MusicPlayer.cs" />
+    <Compile Include="MusicPlayer\NarinoMusicPlayer.cs" />
     <Compile Include="MusicPlayer\RepeatType.cs" />
     <Compile Include="PlaylistController\PlaylistController.cs" />
     <Compile Include="SoundEngine\ISoundEngine.cs" />
