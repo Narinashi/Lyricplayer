@@ -3,11 +3,11 @@ using NAudio.Wave;
 using System;
 using System.IO;
 
-namespace LyricPlayer.MusicPlayer
+namespace LyricPlayer.SoundEngine
 {
-    public class NAudioPlayer : ISoundPlayer, IDisposable
+    public class NAudioPlayer : ISoundEngine, IDisposable
     {
-        public PlayerStatus PlayerStatus
+        public PlayerStatus Status
         {
             get
             {
@@ -77,7 +77,11 @@ namespace LyricPlayer.MusicPlayer
             if (waveOutEvent == null) return;
             waveOutEvent.Pause();
         }
-
+        public void Resume()
+        {
+            if (waveOutEvent == null) return;
+            waveOutEvent.Play();
+        }
         public void Play()
         {
             if (waveOutEvent == null) return;
@@ -95,7 +99,7 @@ namespace LyricPlayer.MusicPlayer
             if (waveOutEvent != null)
             {
                 waveOutEvent.PlaybackStopped -= WaveOutEventPlaybackStopped;
-                waveOutEvent?.Dispose();
+                waveOutEvent.Dispose();
             }
             fileReader?.Dispose();
             waveOutEvent = null;

@@ -10,8 +10,7 @@ namespace LyricPlayer.Models
     {
         public string Title { set; get; }
         public string Album { set; get; }
-        public string[] Artists { set; get; }
-        public string JoinedArtistNames => Artists?.Any() ?? false ? string.Join(";", Artists) : string.Empty;
+        public string Artists { set; get; }
         public string TrackName { set; get; }
     }
 }

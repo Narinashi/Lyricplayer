@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D21F994B-166A-41DF-A551-EBC35A194EA7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>LyricPlayer</RootNamespace>
-    <AssemblyName>LyricPlayer</AssemblyName>
+    <ProjectGuid>{CE665B99-94D1-4B19-AA27-80E108E973EB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>LyricPlayer.UI</RootNamespace>
+    <AssemblyName>LyricPlayer.UI</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,15 +34,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="GameOverlay, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GameOverlay.Net.4.3.0\lib\net47\GameOverlay.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -52,33 +55,15 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fixed.cs" />
-    <Compile Include="LyricEngine\NarinoLyricController.cs" />
-    <Compile Include="LyricFetcher\ILyricFetcher.cs" />
-    <Compile Include="LyricEngine\ILyricEngine.cs" />
-    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicmatchLyricFetcher.cs" />
-    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicMatchModels.cs" />
-    <Compile Include="Models\PlayerStatus.cs" />
-    <Compile Include="Models\FileInfo.cs" />
-    <Compile Include="Models\Lyric.cs" />
-    <Compile Include="Models\TrackLyric.cs" />
-    <Compile Include="MusicPlayer\MusicPlayer.cs" />
-    <Compile Include="MusicPlayer\RepeatType.cs" />
-    <Compile Include="PlaylistController\PlaylistController.cs" />
-    <Compile Include="SoundEngine\ISoundEngine.cs" />
     <Compile Include="Program.cs" />
-    <None Include="Token.Token">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Compile Include="Utilities\PauseableTimer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SoundEngine\NAudioEngine.cs" />
-    <Compile Include="Models\TrackInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -105,6 +90,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,11 +1,11 @@
 ﻿using LyricPlayer.Models;
 using System;
 
-namespace LyricPlayer.LyricController
+namespace LyricPlayer.LyricEngine
 {
-    public interface ILyricController
+    public interface ILyricEngine
     {
-        PlayerStatus ControllerStatus { get; }
+        PlayerStatus Status { get; }
         TimeSpan CurrentTime { get; set; }
         int Offset { set; get; }
 

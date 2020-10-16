@@ -60,10 +60,10 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
                                     for (int index = 0; index < lyric.Count; index++)
                                     {
-                                        if (index == lyric.Count-1)
+                                        if (index == lyric.Count - 1)
                                             lyric[index].Duration = int.MaxValue;
                                         else
-                                            lyric[index].Duration = lyric[index + 1].StartAt - lyric[index ].StartAt;
+                                            lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                     }
                                     return new TrackLyric
                                     {
@@ -153,7 +153,9 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)
         {
             Handler.UseProxy = UseProxy;
-            Handler.Proxy = new WebProxy { Address = ProxyUrl };
+            if (Handler.UseProxy)
+                Handler.Proxy = new WebProxy { Address = ProxyUrl };
+
             trackName = new string(trackName
                .Replace("[Copyright Free]", "")
                .Replace("[Official Video]", "")
@@ -162,6 +164,9 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                .Replace("[Monstercat Release]", "")
                .Replace("[NCS Release]", "")
                .Replace("[Ncs Release]", "")
+               .Replace("[Dubstep]", "")
+               .Replace("[Techno]", "")
+               .Replace("[Trap]", "")
                .Where(x => char.IsLetterOrDigit(x) || x == ' ' || x == '-' || x == '(' || x == ')').ToArray()).Replace("  ", "");
 
             if (!string.IsNullOrEmpty(album))

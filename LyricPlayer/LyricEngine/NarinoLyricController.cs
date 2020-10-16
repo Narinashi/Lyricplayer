@@ -2,12 +2,13 @@
 using LyricPlayer.Utilities;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
-namespace LyricPlayer.LyricController
+namespace LyricPlayer.LyricEngine
 {
-    public class NarinoLyricController : ILyricController, IDisposable
+    public class NarinoLyricEngine : ILyricEngine, IDisposable
     {
-        public PlayerStatus ControllerStatus => Status;
+        public PlayerStatus Status { get; private set; }
         public TimeSpan CurrentTime
         {
             get => Watcher?.Elapsed.Add(TimeSpan.FromMilliseconds(WatcherOffset)) ?? TimeSpan.Zero;
@@ -20,7 +21,11 @@ namespace LyricPlayer.LyricController
         public int Offset
         {
             get => _Offset;
-            set => _Offset = value;
+            set
+            {
+                WatcherOffset += (value - _Offset);
+                _Offset = value;
+            }
         }
         public int CurrentIndex
         {
@@ -37,7 +42,7 @@ namespace LyricPlayer.LyricController
         public Lyric CurrentLyric => Lyric?.Lyric[CurrentIndex];
         public event EventHandler<Lyric> LyricChanged;
 
-        public bool IsDisposed { set; get; }
+        public bool IsDisposed { protected set; get; }
 
         TrackLyric Lyric;
         PausableTimer Timer;
@@ -45,7 +50,7 @@ namespace LyricPlayer.LyricController
         long WatcherOffset;
         int _Offset;
         int _CurrentIndex;
-        PlayerStatus Status { set; get; }
+
         public void Load(TrackLyric lyric)
         {
             if (IsDisposed)
@@ -120,26 +125,41 @@ namespace LyricPlayer.LyricController
                 Watcher = new Stopwatch();
                 Timer.Elapsed += TimerElapsed;
             }
-            Timer.Interval = 1000;
+            Timer.Interval = int.MaxValue;
             Timer.Stop();
             Watcher.Reset();
         }
 
         private void JumpAtTime(int time)
         {
+            if (!(Lyric?.Lyric.Any() ?? false))
+                return;
+            Lyric lyric = Lyric.Lyric[0];
+
+            if (lyric.StartAt >= time)
+            {
+                JumpToLyric(lyric, time);
+                return;
+            } 
+
             for (int index = 0; index < Lyric.Lyric.Count; index++)
             {
-                var lyric = Lyric.Lyric[index];
+                lyric = Lyric.Lyric[index];
 
                 if (lyric.StartAt <= time && lyric.Duration + lyric.StartAt >= time)
                 {
-                    _CurrentIndex = index;
-                    Timer.Interval = lyric.EndAt - time;
-                    WatcherOffset = time - Watcher.ElapsedMilliseconds;
-                    OnLyricChanged(CurrentLyric);
+                    JumpToLyric(lyric, time);
                     break;
                 }
             }
+        }
+
+        private void JumpToLyric(Lyric lyric, int time)
+        {
+            _CurrentIndex = Lyric.Lyric.IndexOf(lyric);
+            Timer.Interval = lyric.EndAt - time;
+            WatcherOffset = time - Watcher.ElapsedMilliseconds;
+            OnLyricChanged(CurrentLyric);
         }
 
         private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -149,20 +169,17 @@ namespace LyricPlayer.LyricController
                 Timer.Stop();
                 Watcher.Reset();
                 CurrentIndex = 0;
-                WatcherOffset = 0;
+                WatcherOffset = Offset;
+                Status = PlayerStatus.Stopped;
                 return;
             }
 
             var finishedLyric = CurrentLyric;
             var incomingLyric = Lyric.Lyric[CurrentIndex + 1];
-
             var currentTime = Watcher.ElapsedMilliseconds + WatcherOffset;
             var timerError = currentTime - incomingLyric.StartAt;
-            var interval = incomingLyric.Duration - timerError;
-            
-            Console.WriteLine($"currnetTime:{currentTime}, timerError:{timerError}, deltaToNext:{interval}");
 
-            Timer.Interval = interval;
+            Timer.Interval = incomingLyric.Duration - timerError;
             CurrentIndex++;
         }
 
