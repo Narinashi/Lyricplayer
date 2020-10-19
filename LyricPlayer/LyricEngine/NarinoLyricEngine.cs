@@ -91,6 +91,9 @@ namespace LyricPlayer.LyricEngine
                 return;
 
             CurrentIndex = 0;
+            if (!(_Lyric?.Lyric?.Any() ?? false))
+                return;
+
             Timer.Interval = _Lyric.Lyric[0].Duration;
             Watcher.Restart();
             Timer.Start();

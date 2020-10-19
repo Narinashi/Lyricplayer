@@ -5,6 +5,7 @@ using LyricPlayer.PlaylistController;
 using LyricPlayer.SoundEngine;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace LyricPlayer.MusicPlayer
 {
@@ -66,8 +67,8 @@ namespace LyricPlayer.MusicPlayer
         }
         public virtual void Stop()
         {
-            SoundEngine.Stop();
             LyricEngine.Stop();
+            SoundEngine.Stop();
         }
 
         public virtual void Next()
@@ -84,11 +85,16 @@ namespace LyricPlayer.MusicPlayer
         protected virtual void TrackChanged(T track)
         {
             Stop();
-            var lyric = LyricFetcher.GetLyric(Path.GetFileNameWithoutExtension(track.FileAddress ?? ""), track.Title, track.Album, track.Artists, SoundEngine.TrackLength / 1000);
-
-            LyricEngine.Load(lyric);
             SoundEngine.Load(track);
-            Play();
+            SoundEngine.Play();
+
+            Task.Run(() =>
+            {
+                var lyric = LyricFetcher.GetLyric(Path.GetFileNameWithoutExtension(track.FileAddress ?? ""), track.Title, track.Album, track.Artists, SoundEngine.TrackLength / 1000);
+                LyricEngine.Load(lyric);
+                LyricEngine.Start();
+                LyricEngine.CurrentTime = SoundEngine.CurrentTime;
+            });
         }
 
         public abstract void Initialize();

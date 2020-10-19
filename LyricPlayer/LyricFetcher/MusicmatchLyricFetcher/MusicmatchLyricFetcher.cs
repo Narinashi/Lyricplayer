@@ -14,15 +14,20 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
         static HttpClient Client = new HttpClient(Handler);
 
         string UserToken { set; get; }
-        public bool UseProxy { set; get; }
-        public Uri ProxyUrl { set; get; }
 
-        public MusicmatchLyricFetcher(string token)
-        { UserToken = token; }
+        public MusicmatchLyricFetcher(string token, string proxy)
+        {
+            UserToken = token;
+            Handler.UseProxy = !string.IsNullOrEmpty(proxy);
+            if (Handler.UseProxy)
+                Handler.Proxy = new WebProxy { Address = new Uri(proxy) };
+        }
 
         public TrackLyric GetLyric(string trackName, string title, string album, string artist, double trackLength)
         {
             string body = CallMusicMatchService(trackName, title, album, artist, trackLength);
+            if (string.IsNullOrEmpty(body))
+                body = CallMusicMatchService(trackName, title, album, artist, trackLength);
             if (string.IsNullOrEmpty(body))
                 return new TrackLyric
                 {
@@ -60,11 +65,19 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
                                     for (int index = 0; index < lyric.Count; index++)
                                     {
+                                        if (string.IsNullOrEmpty(lyric[index].Text?.Trim()))
+                                            lyric[index].Text = "...";
+
                                         if (index == lyric.Count - 1)
                                             lyric[index].Duration = int.MaxValue;
                                         else
                                             lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                     }
+
+                                    if (lyric[0].StartAt > 1)
+                                        lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
+
+                                    lyric.Add(new Lyric { Duration = int.MaxValue, Text = "..." });
                                     return new TrackLyric
                                     {
                                         Synchronized = true,
@@ -83,11 +96,19 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
                                 for (int index = 0; index < lyric.Count; index++)
                                 {
+                                    if (string.IsNullOrEmpty(lyric[index].Text?.Trim()))
+                                        lyric[index].Text = "...";
+
                                     if (index == lyric.Count - 1)
                                         lyric[index].Duration = int.MaxValue;
                                     else
                                         lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                 }
+                                if (lyric[0].StartAt > 1)
+                                    lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
+
+                                lyric.Add(new Lyric { Duration = int.MaxValue, Text = "..." });
+
                                 return new TrackLyric
                                 {
                                     Synchronized = true,
@@ -155,11 +176,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)
         {
-            Handler = new HttpClientHandler();
-            Handler.UseProxy = UseProxy;
-            if (Handler.UseProxy)
-                Handler.Proxy = new WebProxy { Address = ProxyUrl };
-
             trackName = new string(trackName
                .Replace("[Copyright Free]", "")
                .Replace("[Official Video]", "")
@@ -196,12 +212,16 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
               .Where(x => char.IsLetterOrDigit(x) || x == ' ' || x == '-' || x == '(' || x == ')').ToArray()).Replace("  ", "");
 
 
-            return Client.GetStringAsync($"https://apic.musixmatch.com/ws/1.1/macro.subtitles.get?" +
-                $"tags=playing&f_subtitle_length={trackLength.ToString()}&q_duration={trackLength.ToString()}" +
-                  "&f_subtitle_length_max_deviation=1&subtitle_format=mxm&page_size=1&optional_calls=track.richsync" +
-                 $"&q_album={album}&q_artist={artist}&q_track={trackName}&q_album_artist=" +
-                 $"&usertoken={UserToken}" +
-                 $"&app_id=android-player-v1.0&country=&part=track_artist%2Cartist_image%2Clyrics_crowd%2Cuser%2Clyrics_vote%2Clyrics_poll%2Ctrack_lyrics_translation_status%2Clyrics_verified_by%2C&language_iso_code=1&format=json").Result;
+            try
+            {
+                return Client.GetStringAsync($"https://apic.musixmatch.com/ws/1.1/macro.subtitles.get?" +
+                    $"tags=playing&f_subtitle_length={trackLength.ToString()}&q_duration={trackLength.ToString()}" +
+                      "&f_subtitle_length_max_deviation=1&subtitle_format=mxm&page_size=1&optional_calls=track.richsync" +
+                     $"&q_album={album}&q_artist={artist}&q_track={trackName}&q_album_artist=" +
+                     $"&usertoken={UserToken}" +
+                     $"&app_id=android-player-v1.0&country=&part=track_artist%2Cartist_image%2Clyrics_crowd%2Cuser%2Clyrics_vote%2Clyrics_poll%2Ctrack_lyrics_translation_status%2Clyrics_verified_by%2C&language_iso_code=1&format=json").Result;
+            }
+            catch { return string.Empty; }
         }
     }
 }

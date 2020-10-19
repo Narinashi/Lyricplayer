@@ -12,10 +12,11 @@ namespace LyricPlayer.SoundEngine
         PlayerStatus Status { get; }
         TimeSpan CurrentTime { get; set; }
         FileInfo CurrentFileInfo { get; }
+        event EventHandler TrackStopped;
+
         int TrackLength { get; }
         float Volume { get; set; }
         bool Muted { set; get; }
-
         void Play();
         void Pause();
         void Resume();

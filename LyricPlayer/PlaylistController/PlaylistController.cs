@@ -59,7 +59,7 @@ namespace LyricPlayer.PlaylistController
         }
         public virtual void Next()
         {
-            if (CurrentTrackIndex < 0 || CurrentTrackIndex >= (Tracks?.Count ?? 0))
+            if (CurrentTrackIndex < 0 || CurrentTrackIndex >= ((Tracks?.Count-1) ?? 0))
                 CurrentTrackIndex = 0;
             else
                 CurrentTrackIndex++;
@@ -68,7 +68,7 @@ namespace LyricPlayer.PlaylistController
         }
         public virtual void Previous()
         {
-            if (CurrentTrackIndex < 0 || CurrentTrackIndex >= (Tracks?.Count ?? 0))
+            if (CurrentTrackIndex < 0 || CurrentTrackIndex > ((Tracks?.Count-1) ?? 0))
                 CurrentTrackIndex = 0;
             else if (CurrentTrackIndex == 0)
                 CurrentTrackIndex = Tracks.Count - 1;

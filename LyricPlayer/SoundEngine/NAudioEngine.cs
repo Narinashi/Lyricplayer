@@ -27,7 +27,7 @@ namespace LyricPlayer.SoundEngine
             }
         }
         public Models.FileInfo CurrentFileInfo => _CurrentFileInfo;
-
+        public event EventHandler TrackStopped;
         public int TrackLength => (int)(fileReader?.TotalTime.TotalMilliseconds ?? 0);
 
         public float Volume
@@ -54,6 +54,7 @@ namespace LyricPlayer.SoundEngine
         private Mp3FileReader fileReader { set; get; }
         private Models.FileInfo _CurrentFileInfo { set; get; }
         private float volumeBeforeMute { set; get; } = 1.0f;
+        private bool stoppedByUser { set; get; } = false;
 
         public void Load(Models.FileInfo fileInfo)
         {
@@ -63,11 +64,16 @@ namespace LyricPlayer.SoundEngine
                 throw new ArgumentException("no file content specified");
 
             volumeBeforeMute = waveOutEvent?.Volume ?? 1f;
-            Dispose();
             fileReader = fileInfo.FileContent == null ? new Mp3FileReader(fileInfo.FileAddress) : new Mp3FileReader(new MemoryStream(fileInfo.FileContent));
-            waveOutEvent = new WaveOutEvent();
+
+            if (waveOutEvent == null)
+            {
+                waveOutEvent = new WaveOutEvent();
+                waveOutEvent.PlaybackStopped += WaveOutEventPlaybackStopped;
+            }
+
             waveOutEvent.Init(fileReader);
-            waveOutEvent.PlaybackStopped += WaveOutEventPlaybackStopped;
+            
             Volume = volumeBeforeMute;
             _CurrentFileInfo = fileInfo;
         }
@@ -92,6 +98,7 @@ namespace LyricPlayer.SoundEngine
         {
             if (waveOutEvent == null) return;
             waveOutEvent.Stop();
+            stoppedByUser = true;   
         }
 
         public void Dispose()
@@ -109,7 +116,12 @@ namespace LyricPlayer.SoundEngine
 
         private void WaveOutEventPlaybackStopped(object sender, StoppedEventArgs e)
         {
-
+            if(stoppedByUser)
+            {
+                stoppedByUser = false;
+                return;
+            }
+            TrackStopped?.Invoke(this, EventArgs.Empty);
         }
     }
 }
