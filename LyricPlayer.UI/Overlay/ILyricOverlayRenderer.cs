@@ -18,7 +18,7 @@ namespace LyricPlayer.UI.Overlay
         float MainLineFontSize { set; get; }
         int DisplayingLyricLinesCount { set; get; }
         int InterLineSpace { set; get; }
-
+        GraphicsWindow OverlayParent { set; get; }
         Color FontColor { set; get; }
         Color BackgroundColor { set; get; }
 

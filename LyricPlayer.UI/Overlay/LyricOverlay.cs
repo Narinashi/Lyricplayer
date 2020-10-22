@@ -31,12 +31,12 @@ namespace LyricPlayer.UI.Overlay
             var token = File.ReadAllText("Token.Token");
             Player = new NarinoMusicPlayer(token);
             Player.LyricChanged += PlayerLyricChanged;
-            LyricRenderer = new SimpleLyricRenderer();
-            OverlaySize = new Size(480, 300);
+            LyricRenderer = new FloatingLyricRenderer();
+            OverlaySize = new Size(600, 110);
         }
 
         public void ShowOverlay(string processName)
-            => ShowOverlay(Process.GetProcessesByName(processName).FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero);
+            => ShowOverlay(Process.GetProcessesByName(processName??"").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero);
 
         public void ShowOverlay(IntPtr processWindowHandle)
         {
@@ -54,7 +54,9 @@ namespace LyricPlayer.UI.Overlay
             Overlay.Create();
             Overlay.Show();
             Overlay.Graphics.TextAntiAliasing = true;
-            Overlay.FPS = 60;
+            Overlay.FPS = 75;
+            LyricRenderer.OverlayParent = Overlay;
+            
         }
 
         private void OverlayDrawGraphics(object sender, DrawGraphicsEventArgs e)

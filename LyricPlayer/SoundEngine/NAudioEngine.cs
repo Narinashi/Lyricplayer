@@ -97,8 +97,8 @@ namespace LyricPlayer.SoundEngine
         public void Stop()
         {
             if (waveOutEvent == null) return;
-            waveOutEvent.Stop();
-            stoppedByUser = true;   
+            stoppedByUser = true;
+            waveOutEvent.Stop(); 
         }
 
         public void Dispose()

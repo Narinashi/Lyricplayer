@@ -19,10 +19,11 @@ namespace LyricPlayer.MusicPlayer
         {
             SoundEngine = new NAudioPlayer();
             LyricEngine = new NarinoLyricEngine();
-            SoundEngine.TrackStopped += (s, e) => { Next(); };
+            SoundEngine.TrackStopped += (s, e) => {
+                Next(); };
             LyricEngine.LyricChanged += (s, e) =>
             { LyricChanged?.Invoke(this, e); };
-            LyricFetcher = new MusicmatchLyricFetcher(AccessToken,"" /*"http://192.168.1.110:8888"*/);
+            LyricFetcher = new MusicmatchLyricFetcher(AccessToken,"http://192.168.1.110:8888");
         }
 
 

@@ -12,10 +12,9 @@ namespace LyricPlayer.UI.Overlay
         public string FontName { set; get; }
         public float FontSize { set; get; }
         public float MainLineFontSize { set; get; }
-
         public Color FontColor { set; get; }
         public Color BackgroundColor { set; get; }
-
+        public GraphicsWindow OverlayParent { set; get; }
         public int DisplayingLyricLinesCount
         {
             get => DisplayingLyric?.Count ?? 0;
@@ -47,7 +46,7 @@ namespace LyricPlayer.UI.Overlay
         {
             InterLineSpace = 8;
             DisplayingLyricLinesCount = 5;
-            FontName = "Times New Roman";
+            FontName = "Antonio";
             FontSize = 15;
             MainLineFontSize = 21;
             FontColor = new Color(220, 220, 220, 255);
@@ -98,6 +97,7 @@ namespace LyricPlayer.UI.Overlay
             if (TrackLyric == null)
                 return;
 
+            OverlayParent.IsTopmost = true;
             var gfx = e.Graphics;
             var infoText = $"FPS:{gfx.FPS} Delta:{e.DeltaTime}ms";
             var textSize = gfx.MeasureString(InfoLineFont, infoText);
@@ -137,5 +137,6 @@ namespace LyricPlayer.UI.Overlay
         public Point DestinationLocation { set; get; }
         public Point RenderSize { set; get; }
         public bool LocationSet { set; get; }
+        public bool IsCurrent { set; get; }
     }
 }

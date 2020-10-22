@@ -16,12 +16,12 @@ namespace LyricPlayer.UI.Overlay
         }
 
         TextHandler TextHandler = new TextHandler();
-
+        public bool UpToDown { set; get; }
         public VerticalLyricRenderer()
         {
             InterLineSpace = 8;
             DisplayingLyricLinesCount = 5;
-            FontName = "Times New Roman";
+            FontName = "Antonio";
             FontSize = 15;
             MainLineFontSize = 21;
             FontColor = new Color(220, 220, 220, 255);
@@ -31,6 +31,9 @@ namespace LyricPlayer.UI.Overlay
 
         public override void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
         {
+            if (trackLyric != TrackLyric)
+                DisplayingLyricLinesCount = DisplayingLyricLinesCount;
+
             TrackLyric = trackLyric;
             var currnetLyricIndex = trackLyric.Lyric.IndexOf(currentLyric);
             if (currnetLyricIndex == -1)
@@ -48,44 +51,41 @@ namespace LyricPlayer.UI.Overlay
             }
 
             var displayingLyric = fakeLyric.Concat(TrackLyric.Lyric).Skip(skipCount)
-                 .Take(DisplayingLyricLinesCount + 1).ToList();
+                 .Take(DisplayingLyricLinesCount).ToList();
 
-            var lowOnLines = DisplayingLyricLinesCount - displayingLyric.Count - 1;
+            var lowOnLines = DisplayingLyricLinesCount - displayingLyric.Count +1;
 
             if (lowOnLines > 0)
                 displayingLyric.AddRange(Enumerable.Range(0, lowOnLines).Select(x => new Lyric { Text = "..." }));
 
-         
-
-            TextHandler.MoveUp();
+          
             if (displayingLyric.Count < DisplayingLyricLinesCount)
                 return;
 
+            TextHandler.MoveUp();
             for (int index = 0; index < DisplayingLyricLinesCount; index++)
+            {
                 DisplayingLyric[index].TextToDraw = displayingLyric[index].Text;
+                DisplayingLyric[index].IsCurrent = displayingLyric[index] == currentLyric;
+            }
         }
 
         public override void Render(DrawGraphicsEventArgs e)
         {
             if (TrackLyric == null)
                 return;
-
+            OverlayParent.IsTopmost = true;
             var gfx = e.Graphics;
             var infoText = $"FPS:{gfx.FPS} Delta:{e.DeltaTime}ms";
-            var textSize = gfx.MeasureString(InfoLineFont, infoText);
-            InfoSize = textSize;
+            InfoSize = gfx.MeasureString(InfoLineFont, infoText);
 
             gfx.ClearScene(BackgroundColor);
             gfx.BeginScene();
 
-            Point currentLocation = new Point(0,1);
+            Point currentLocation = InfoSize;
 
             for (int index = 0; index < DisplayingLyricLinesCount; index++)
             {
-                DisplayingLyric[index].RenderSize =
-                    gfx.MeasureString(index == (DisplayingLyricLinesCount-2) / 2 ? MainLineFont : TextFont,
-                    DisplayingLyric[index].TextToDraw);
-
                 if (!DisplayingLyric[index].LocationSet)
                 {
                     DisplayingLyric[index].CurrentLocation = new Point(0, currentLocation.Y);
@@ -93,25 +93,37 @@ namespace LyricPlayer.UI.Overlay
                     DisplayingLyric[index].LocationSet = true;
                 }
 
-                if (DisplayingLyric[index].CurrentLocation.Y < Fixed.AlmostZero)
+                if (index > 0)
                 {
-                    DisplayingLyric.RemoveAt(index);
+                    DisplayingLyric[index].CurrentLocation = new Point(0, DisplayingLyric[index - 1].RenderSize.Y + DisplayingLyric[index - 1].CurrentLocation.Y + InterLineSpace);
+
+                    if (DisplayingLyric[index].DestinationLocation.Y < InfoLocation.Y)
+                        DisplayingLyric[index].DestinationLocation = new Point(0, InfoLocation.Y + 1);
+                    if (DisplayingLyric[index].CurrentLocation.Y < InfoLocation.Y)
+                        DisplayingLyric[index].CurrentLocation = new Point(0, InfoLocation.Y + 1);
+                }
+
+                if (DisplayingLyric[0].CurrentLocation.Y < InfoSize.Y)
+                {
+                    DisplayingLyric.RemoveAt(0);
                     index--;
                     continue;
                 }
 
                 if (DisplayingLyric[index].CurrentLocation.Y > DisplayingLyric[index].DestinationLocation.Y)
-                    DisplayingLyric[index].CurrentLocation = new Point(0, DisplayingLyric[index].CurrentLocation.Y - 5);
+                    DisplayingLyric[index].CurrentLocation = new Point(DisplayingLyric[index].CurrentLocation.X, DisplayingLyric[index].CurrentLocation.Y - 2f * gfx.FPS / 60);
 
-                gfx.DrawText(index == (DisplayingLyricLinesCount-2) / 2
-                    ? MainLineFont : TextFont, TextBrush,
-                    DisplayingLyric[index].CurrentLocation,
+                DisplayingLyric[index].RenderSize =
+                  gfx.MeasureString(DisplayingLyric[index].IsCurrent ? MainLineFont : TextFont,
+                  DisplayingLyric[index].TextToDraw);
+
+                gfx.DrawText(DisplayingLyric[index].IsCurrent ? MainLineFont : TextFont,
+                    TextBrush,
+                   DisplayingLyric[index].CurrentLocation,
                     DisplayingLyric[index].TextToDraw);
 
                 currentLocation.Y += InterLineSpace + DisplayingLyric[index].RenderSize.Y;
             }
-
-
 
             gfx.DrawText(InfoLineFont, InfoBrush, InfoLocation, infoText);
             gfx.EndScene();
@@ -132,12 +144,23 @@ namespace LyricPlayer.UI.Overlay
             Texts.Add(new Text
             {
                 TextToDraw = "",
-                CurrentLocation = Texts?.LastOrDefault()?.CurrentLocation ?? new Point(0, 0),
+                CurrentLocation = Texts?.LastOrDefault()?.CurrentLocation ?? new Point(0, int.MaxValue),
                 LocationSet = Texts?.LastOrDefault()?.LocationSet ?? false
             });
 
             for (int index = 1; index < (Texts?.Count ?? 0); index++)
-                Texts[index].DestinationLocation = Texts[index - 1].CurrentLocation;
+            { Texts[index].DestinationLocation = Texts[index - 1].CurrentLocation.Y > 1 ? Texts[index - 1].CurrentLocation : new Point(0, 1);}
+        }
+
+        public int CurrentLineIndex
+        {
+            get
+            {
+                for (var i = 0; i < Texts.Count; i++)
+                    if (Texts[i].IsCurrent)
+                        return i;
+                return -1;
+            }
         }
     }
 }

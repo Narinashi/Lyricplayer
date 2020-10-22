@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
+    <Compile Include="Overlay\FloatingLyricRenderer.cs" />
     <Compile Include="Overlay\ILyricOverlayRenderer.cs" />
     <Compile Include="Overlay\LyricOverlay.cs" />
     <Compile Include="Overlay\SimpleLyricRenderer.cs" />
