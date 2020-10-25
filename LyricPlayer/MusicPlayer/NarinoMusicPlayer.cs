@@ -1,4 +1,5 @@
 ﻿using LyricPlayer.LyricEngine;
+using LyricPlayer.LyricFetcher;
 using LyricPlayer.LyricFetcher.MusicmatchLyricFetcher;
 using LyricPlayer.Models;
 using LyricPlayer.PlaylistController;
@@ -23,7 +24,8 @@ namespace LyricPlayer.MusicPlayer
                 Next(); };
             LyricEngine.LyricChanged += (s, e) =>
             { LyricChanged?.Invoke(this, e); };
-            LyricFetcher = new MusicmatchLyricFetcher(AccessToken,"http://192.168.1.110:8888");
+            //LyricFetcher = new LocalLyricFetcher();
+           LyricFetcher = new MusicmatchLyricFetcher(AccessToken,/*""*/"http://192.168.1.110:8888");
         }
 
 

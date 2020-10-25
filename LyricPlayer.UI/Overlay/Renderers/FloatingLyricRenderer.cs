@@ -3,7 +3,7 @@ using GameOverlay.Windows;
 using LyricPlayer.Models;
 using System;
 
-namespace LyricPlayer.UI.Overlay
+namespace LyricPlayer.UI.Overlay.Renderers
 {
     class FloatingLyricRenderer : ILyricOverlayRenderer
     {
@@ -21,7 +21,7 @@ namespace LyricPlayer.UI.Overlay
         public float TraumaMag { set; get; }
         public float TraumaDecay { set; get; }
 
-        float timeCounter;
+        protected float timeCounter;
         Font MainLineFont { set; get; }
         SolidBrush MainLineBrush { set; get; }
         Point MainLineSize { set; get; }
@@ -35,11 +35,11 @@ namespace LyricPlayer.UI.Overlay
 
             FontName = "Antonio";
             FontSize = 15;
-            MainLineFontSize = 28;
+            MainLineFontSize = 21;
             FontColor = new Color(220, 220, 220, 255);
             BackgroundColor = new Color(0, 0, 0, 120);
             Noise = new FastNoise();
-            Noise.SetFrequency(0.0075f);
+            Noise.SetFrequency(0.001f);
         }
 
 
@@ -49,7 +49,7 @@ namespace LyricPlayer.UI.Overlay
             MainLineBrush.Dispose();
         }
 
-        public void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
+        public virtual void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
         {
             if (currentLyric == trackLyric.Lyric[0])
                 Reset();
@@ -57,10 +57,9 @@ namespace LyricPlayer.UI.Overlay
             CurrentLyricText = currentLyric.Text;
         }
 
-        public void Render(DrawGraphicsEventArgs e)
+        public virtual void Render(DrawGraphicsEventArgs e)
         {
             var gfx = e.Graphics;
-            OverlayParent.IsTopmost = true;
 
             gfx.BeginScene();
             gfx.ClearScene(BackgroundColor);
@@ -99,21 +98,21 @@ namespace LyricPlayer.UI.Overlay
             MainLineBrush = gfx.CreateSolidBrush(FontColor);
         }
 
-        private void Reset()
+        protected void Reset()
         {
-            var maxSize = (float)Math.Sqrt((OverlayParent.Width + OverlayParent.Height)) * 12;
+            var maxSize = (float)Math.Sqrt((Math.Min(OverlayParent.Width, OverlayParent.Height))) * 12;
 
             Trauma = 1;
-            TraumaMult = maxSize / 14f; //the power of movement
-            TraumaMag = maxSize / 14f; //the range of movment
+            TraumaMult = maxSize / 24f; //the power of movement
+            TraumaMag = maxSize / 20f; //the range of movment
             TraumaDecay = 0.000000000001f;
             timeCounter = 0;
         }
 
-        private Point GetPoint(float time, float seed)
+        protected Point GetPoint(float time, float seed)
         {
-            var f1 = Noise.GetCubic(time, seed);
-            var f2 = Noise.GetCubic(seed, time);
+            var f1 = Noise.GetPerlin(seed, time);
+            var f2 = Noise.GetPerlin(seed + 3, time);
             return new Point
             {
                 X = f1,

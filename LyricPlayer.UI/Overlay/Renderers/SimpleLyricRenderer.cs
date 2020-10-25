@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LyricPlayer.UI.Overlay
+namespace LyricPlayer.UI.Overlay.Renderers
 {
     class SimpleLyricRenderer : ILyricOverlayRenderer
     {
@@ -20,7 +20,7 @@ namespace LyricPlayer.UI.Overlay
             get => DisplayingLyric?.Count ?? 0;
             set => DisplayingLyric = Enumerable.Range(0, value % 2 == 0 ? value + 1 : value)
                 .Select(x =>
-                new Text
+                new LyricHolder
                 {
                     TextToDraw = "...",
                     CurrentLocation = new Point(0, 0)
@@ -28,7 +28,7 @@ namespace LyricPlayer.UI.Overlay
         }
         public int InterLineSpace { set; get; }
 
-        protected virtual List<Text> DisplayingLyric { set; get; }
+        protected virtual List<LyricHolder> DisplayingLyric { set; get; }
 
         protected static readonly Point Zero = new Point(0, 0);
 
@@ -97,7 +97,6 @@ namespace LyricPlayer.UI.Overlay
             if (TrackLyric == null)
                 return;
 
-            OverlayParent.IsTopmost = true;
             var gfx = e.Graphics;
             var infoText = $"FPS:{gfx.FPS} Delta:{e.DeltaTime}ms";
             var textSize = gfx.MeasureString(InfoLineFont, infoText);
@@ -130,13 +129,4 @@ namespace LyricPlayer.UI.Overlay
         }
     }
 
-    class Text
-    {
-        public string TextToDraw { set; get; }
-        public Point CurrentLocation { set; get; }
-        public Point DestinationLocation { set; get; }
-        public Point RenderSize { set; get; }
-        public bool LocationSet { set; get; }
-        public bool IsCurrent { set; get; }
-    }
 }

@@ -1,7 +1,9 @@
-﻿using LyricPlayer.Models;
+﻿using LyricPlayer.LyricEffects;
+using LyricPlayer.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -29,11 +31,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             if (string.IsNullOrEmpty(body))
                 body = CallMusicMatchService(trackName, title, album, artist, trackLength);
             if (string.IsNullOrEmpty(body))
-                return new TrackLyric
+                return AddDefaultLyricEffects(new TrackLyric
                 {
                     Synchronized = true,
                     Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Text = "Lyric not found" } }
-                };
+                });
 
             var response = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(body);
             List<Lyric> lyric = null;
@@ -78,11 +80,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                         lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
 
                                     lyric.Add(new Lyric { Duration = int.MaxValue, Text = "..." });
-                                    return new TrackLyric
+                                    return AddDefaultLyricEffects(new TrackLyric
                                     {
                                         Synchronized = true,
                                         Lyric = lyric
-                                    };
+                                    });
                                 }
                                 catch { }
                                 resBody = resBody.Replace(@"\", string.Empty);
@@ -109,11 +111,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
                                 lyric.Add(new Lyric { Duration = int.MaxValue, Text = "..." });
 
-                                return new TrackLyric
+                                return AddDefaultLyricEffects(new TrackLyric
                                 {
                                     Synchronized = true,
                                     Lyric = lyric
-                                };
+                                });
                             }
                         }
                     }
@@ -167,11 +169,46 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             }
                     };
             }
-            return new TrackLyric
+            return AddDefaultLyricEffects(new TrackLyric
             {
                 Synchronized = true,
                 Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Text = "Lyric not found" } }
-            };
+            });
+        }
+
+        public TrackLyric AddDefaultLyricEffects(TrackLyric trackLyric)
+        {
+            var lyric = trackLyric.Lyric;
+
+            for (int index = 0; index < lyric.Count; index++)
+            {
+                if (index % 2 == 0)
+                    lyric[index].Effects = new List<LyricEffect>
+                    {
+                        new ColorChangeEffect
+                        {
+                            BackgroundColorChangeFrom = Color.FromArgb(70, 0, 0, 0),
+                            BackgroundColorChangeTo = Color.FromArgb(70, 255, 80, 255),
+                            ForeColorChangeTo = Color.FromArgb(210, 255, 255, 80),
+                            ForeColorChangeFrom = Color.FromArgb(210, 255, 255, 255),
+                            Duration = lyric[index].Duration
+                        }
+                    };
+                else
+                    lyric[index].Effects = new List<LyricEffect>
+                    {
+                        new ColorChangeEffect
+                        {
+                            BackgroundColorChangeTo = Color.FromArgb(70, 0, 0, 0),
+                            BackgroundColorChangeFrom = Color.FromArgb(70, 255, 80, 255),
+                            ForeColorChangeFrom = Color.FromArgb(210, 255, 255, 80),
+                            ForeColorChangeTo = Color.FromArgb(210, 255, 255, 255),
+                            Duration = lyric[index].Duration
+                        }
+                    };
+            }
+
+            return trackLyric;
         }
 
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)

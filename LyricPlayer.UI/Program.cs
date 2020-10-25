@@ -13,20 +13,22 @@ namespace LyricPlayer.UI
             //Test();
             var overlay = new Overlay.LyricOverlay();
             overlay.ShowOverlay(string.Empty);
+            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Heavy drops\Downlaoder\Ohmie - Liberate The World (feat BVLVNCE).mp3" });
+
+            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Fear [Copyright Free].mp3" });
+            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Deep Thoughts [Copyright Free].mp3" });
+
+            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Blow Up 💣 [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Coming For You 🔥 [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - GOT THIS 🔥.mp3" });
-
             //overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Mystify [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Best of Me 🤘 [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Comeback 🔥[Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Crown 👑 [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Damn Gurl [Copyright Free].mp3" });
-            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Deep Thoughts [Copyright Free].mp3" });
-            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Fear [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Fight Back [Official Video].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Gibberish [Official Video].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Careless 💔 [Copyright Free].mp3" });
-            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Blow Up 💣 [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Blessed 🙏 [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Broken Dreams [Copyright Free].mp3" });
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Never Give Up ☝️ [Copyright Free].mp3" });
@@ -37,11 +39,28 @@ namespace LyricPlayer.UI
 
             overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = @"I:\Neffex\NEFFEX - Numb [Copyright Free].mp3" });
 
+            var time = 0;
             while (true)
             {
-                Console.ReadLine();
+                var data = Console.ReadLine();
 
-                overlay.Player.Next();
+
+                if (data == "")
+                    if (overlay.Player.PlayerStatus != Models.PlayerStatus.Playing)
+                        overlay.Player.Play();
+                    else
+                        overlay.Player.Pause();
+
+                if (data=="n")
+                   overlay.Player.Next();
+                if (data == "p")
+                    overlay.Player.Previous();
+                
+
+
+                if (int.TryParse(data,out time))
+                    overlay.Player.CurrentTime = TimeSpan.FromSeconds(time);
+                
             }
 
             overlay.Overlay.Join();
@@ -53,7 +72,7 @@ namespace LyricPlayer.UI
             float trauma = 1;
             float traumaMult = 60f; //the power of the shake
             float traumaMag = 18f; //the range of movment
-           
+
             float traumaDecay = 0.01f; //how quickly the shake falls off
             float timeCounter = 0;
 
@@ -96,7 +115,7 @@ namespace LyricPlayer.UI
                 //Bind the movement to the desired range
                 var point = GetPoint(1, timeCounter);
 
-                point.X *= traumaMag * trauma; 
+                point.X *= traumaMag * trauma;
                 point.Y *= traumaMag * trauma;
 
                 location.X += point.X;

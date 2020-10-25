@@ -2,6 +2,8 @@
 using NAudio.Wave;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LyricPlayer.SoundEngine
 {
@@ -49,7 +51,6 @@ namespace LyricPlayer.SoundEngine
                 waveOutEvent.Volume = value ? 0 : volumeBeforeMute;
             }
         }
-
         private WaveOutEvent waveOutEvent { set; get; }
         private Mp3FileReader fileReader { set; get; }
         private Models.FileInfo _CurrentFileInfo { set; get; }
@@ -96,7 +97,7 @@ namespace LyricPlayer.SoundEngine
 
         public void Stop()
         {
-            if (waveOutEvent == null) return;
+            if (waveOutEvent == null || waveOutEvent.PlaybackState==PlaybackState.Stopped) return;
             stoppedByUser = true;
             waveOutEvent.Stop(); 
         }
@@ -115,13 +116,13 @@ namespace LyricPlayer.SoundEngine
         }
 
         private void WaveOutEventPlaybackStopped(object sender, StoppedEventArgs e)
-        {
-            if(stoppedByUser)
+       {
+            if (stoppedByUser)
             {
                 stoppedByUser = false;
                 return;
             }
-            TrackStopped?.Invoke(this, EventArgs.Empty);
+             TrackStopped?.Invoke(this, EventArgs.Empty);
         }
     }
 }

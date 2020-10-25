@@ -52,6 +52,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -65,11 +66,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
-    <Compile Include="Overlay\FloatingLyricRenderer.cs" />
-    <Compile Include="Overlay\ILyricOverlayRenderer.cs" />
+    <Compile Include="Overlay\EffectPlayers\ColorChangeEffectPlayer.cs" />
+    <Compile Include="Overlay\EffectPlayers\DriftEffectPlayer.cs" />
+    <Compile Include="Overlay\EffectPlayers\SizeChangeEffectPlayer.cs" />
+    <Compile Include="Overlay\EffectPlayers\LyricEffectPlayerBase.cs" />
+    <Compile Include="Overlay\LyricHolder.cs" />
+    <Compile Include="Overlay\Renderers\FloatingLyricRenderer.cs" />
+    <Compile Include="Overlay\Renderers\FloatingLyricRendererV2.cs" />
+    <Compile Include="Overlay\Renderers\ILyricOverlayRenderer.cs" />
     <Compile Include="Overlay\LyricOverlay.cs" />
-    <Compile Include="Overlay\SimpleLyricRenderer.cs" />
-    <Compile Include="Overlay\VerticalLyricRenderer.cs" />
+    <Compile Include="Overlay\Renderers\SimpleLyricRenderer.cs" />
+    <Compile Include="Overlay\Renderers\VerticalLyricRenderer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -84,6 +91,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Utilities\Extentions.cs" />
     <Compile Include="Utilities\FastNoise.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -107,5 +115,6 @@
       <Name>LyricPlayer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

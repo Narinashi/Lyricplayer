@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LyricPlayer.UI.Overlay
+namespace LyricPlayer.UI.Overlay.Renderers
 {
     class VerticalLyricRenderer : SimpleLyricRenderer
     {
-        protected override List<Text> DisplayingLyric
+        protected override List<LyricHolder> DisplayingLyric
         {
             set => TextHandler.Texts = value;
             get => TextHandler?.Texts;
@@ -74,7 +74,7 @@ namespace LyricPlayer.UI.Overlay
         {
             if (TrackLyric == null)
                 return;
-            OverlayParent.IsTopmost = true;
+
             var gfx = e.Graphics;
             var infoText = $"FPS:{gfx.FPS} Delta:{e.DeltaTime}ms";
             InfoSize = gfx.MeasureString(InfoLineFont, infoText);
@@ -132,7 +132,7 @@ namespace LyricPlayer.UI.Overlay
 
     class TextHandler
     {
-        public List<Text> Texts { set; get; }
+        public List<LyricHolder> Texts { set; get; }
 
         public void MoveUp()
         {
@@ -141,7 +141,7 @@ namespace LyricPlayer.UI.Overlay
 
             Texts[0].DestinationLocation = new Point(0, 0);
 
-            Texts.Add(new Text
+            Texts.Add(new LyricHolder
             {
                 TextToDraw = "",
                 CurrentLocation = Texts?.LastOrDefault()?.CurrentLocation ?? new Point(0, int.MaxValue),

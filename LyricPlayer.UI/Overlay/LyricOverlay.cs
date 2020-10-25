@@ -1,5 +1,6 @@
 ﻿using GameOverlay.Windows;
 using LyricPlayer.MusicPlayer;
+using LyricPlayer.UI.Overlay.Renderers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -32,7 +33,7 @@ namespace LyricPlayer.UI.Overlay
             Player = new NarinoMusicPlayer(token);
             Player.LyricChanged += PlayerLyricChanged;
             LyricRenderer = new FloatingLyricRenderer();
-            OverlaySize = new Size(600, 110);
+            OverlaySize = new Size(1366, 75);
         }
 
         public void ShowOverlay(string processName)
@@ -53,10 +54,10 @@ namespace LyricPlayer.UI.Overlay
 
             Overlay.Create();
             Overlay.Show();
+            Overlay.FPS = 90;
+
             Overlay.Graphics.TextAntiAliasing = true;
-            Overlay.FPS = 75;
             LyricRenderer.OverlayParent = Overlay;
-            
         }
 
         private void OverlayDrawGraphics(object sender, DrawGraphicsEventArgs e)

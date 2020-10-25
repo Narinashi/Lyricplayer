@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LyricPlayer.LyricEffects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace LyricPlayer.Models
     public class Lyric
     {
         /// <summary>
-        /// a paragraph or sentece
+        /// a paragraph or sentence
         /// </summary>
         public string Text { set; get; }
 
@@ -32,5 +33,10 @@ namespace LyricPlayer.Models
         /// in millisecond
         /// </summary>
         public int EndAt => StartAt + Duration;
+
+        /// <summary>
+        /// Effects .. what else ?
+        /// </summary>
+        public List<LyricEffect> Effects { set; get; }
     }
 }

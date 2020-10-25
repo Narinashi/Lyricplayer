@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,9 +56,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
+    <Compile Include="LyricEffects\ColorChangeEffect.cs" />
+    <Compile Include="LyricEffects\DriftEffect.cs" />
+    <Compile Include="LyricEffects\LyricEffect.cs" />
+    <Compile Include="LyricEffects\ShakeEffect.cs" />
+    <Compile Include="LyricEffects\SizeChangeEffect.cs" />
     <Compile Include="LyricEngine\NarinoLyricEngine.cs" />
     <Compile Include="LyricFetcher\ILyricFetcher.cs" />
     <Compile Include="LyricEngine\ILyricEngine.cs" />
+    <Compile Include="LyricFetcher\LocalLyricFetcher.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicmatchLyricFetcher.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicMatchModels.cs" />
     <Compile Include="Models\PlayerStatus.cs" />
@@ -69,7 +76,6 @@
     <Compile Include="MusicPlayer\RepeatType.cs" />
     <Compile Include="PlaylistController\PlaylistController.cs" />
     <Compile Include="SoundEngine\ISoundEngine.cs" />
-    <Compile Include="Program.cs" />
     <None Include="Token.Token">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

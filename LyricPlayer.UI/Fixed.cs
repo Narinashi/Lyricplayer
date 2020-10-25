@@ -8,6 +8,6 @@ namespace LyricPlayer.UI
 {
     class Fixed
     {
-        public static readonly float AlmostZero = 0.0001f;
+        public static readonly float AlmostZero = 0.001f;
     }
 }

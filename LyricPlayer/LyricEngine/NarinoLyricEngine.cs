@@ -103,11 +103,12 @@ namespace LyricPlayer.LyricEngine
 
         public void Stop()
         {
-            if (Status != PlayerStatus.Playing && Status != PlayerStatus.Paused)
+            if (Status != PlayerStatus.Playing)
                 return;
 
             Watcher.Reset();
             Timer.Stop();
+            Timer.Interval = int.MaxValue;
             CurrentIndex = 0;
             Status = PlayerStatus.Stopped;
         }
