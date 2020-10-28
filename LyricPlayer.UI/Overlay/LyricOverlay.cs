@@ -33,7 +33,7 @@ namespace LyricPlayer.UI.Overlay
             Player = new NarinoMusicPlayer(token);
             Player.LyricChanged += PlayerLyricChanged;
             LyricRenderer = new FloatingLyricRenderer();
-            OverlaySize = new Size(1366, 75);
+            OverlaySize = new Size(400, 100);
         }
 
         public void ShowOverlay(string processName)

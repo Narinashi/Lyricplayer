@@ -12,8 +12,15 @@ namespace LyricPlayer.LyricFetcher
     {
         public TrackLyric GetLyric(string trackName, string Title, string Album, string Artist, double trackLength)
         {
-            var trackLyric = JsonConvert.DeserializeObject<TrackLyric>(File.ReadAllText(Path.Combine("Lyrics", trackName + ".lyr")));
+            var filePath = Path.Combine("Lyrics", trackName + ".lyr");
+            if (!File.Exists(filePath))
+                return null;
+
+            var trackLyric = JsonConvert.DeserializeObject<TrackLyric>(File.ReadAllText(filePath));
             var lyric = trackLyric.Lyric;
+
+            if (lyric.Count < 2 && lyric.FirstOrDefault()?.Duration > 1000000)
+                return null;
 
             if (lyric[0].StartAt > 0)
                 lyric.Insert(0, new Lyric

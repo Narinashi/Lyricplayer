@@ -4,17 +4,20 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 {
     class MusicmatchLyricFetcher : ILyricFetcher
     {
-        static HttpClientHandler Handler = new HttpClientHandler();
-        static HttpClient Client = new HttpClient(Handler);
-
+        protected static HttpClientHandler Handler = new HttpClientHandler();
+        protected static HttpClient Client = new HttpClient(Handler);
+        protected string TrackName { set; get; }
         string UserToken { set; get; }
 
         public MusicmatchLyricFetcher(string token, string proxy)
@@ -39,8 +42,9 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
             var response = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(body);
             List<Lyric> lyric = null;
+            string copyrightHolder = GetCopyright(response).Trim();
+
             var res = response["message"];
-            var bkRes = response["message"];
             if (res["header"]?["status_code"] == 200)
             {
                 res = res["body"]?["macro_calls"]?["track.subtitles.get"];
@@ -83,7 +87,8 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     return AddDefaultLyricEffects(new TrackLyric
                                     {
                                         Synchronized = true,
-                                        Lyric = lyric
+                                        Lyric = lyric,
+                                        Copyright = copyrightHolder
                                     });
                                 }
                                 catch { }
@@ -114,7 +119,8 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 return AddDefaultLyricEffects(new TrackLyric
                                 {
                                     Synchronized = true,
-                                    Lyric = lyric
+                                    Lyric = lyric,
+                                    Copyright = copyrightHolder
                                 });
                             }
                         }
@@ -135,7 +141,8 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             return new TrackLyric
                             {
                                 Synchronized = false,
-                                Lyric = resBody.Split('\n').Select(x => new Lyric { Text = x }).ToList()
+                                Lyric = resBody.Split('\n').Select(x => new Lyric { Text = x }).ToList(),
+                                Copyright = copyrightHolder
                             };
                         }
                     }
@@ -148,7 +155,8 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         return new TrackLyric
                         {
                             Synchronized = false,
-                            Lyric = resBody.Split('\n').Select(x => new Lyric { Text = x }).ToList()
+                            Lyric = resBody.Split('\n').Select(x => new Lyric { Text = x }).ToList(),
+                            Copyright = copyrightHolder
                         };
                     }
                 }
@@ -159,6 +167,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     return new TrackLyric
                     {
                         Synchronized = true,
+                        Copyright = copyrightHolder,
                         Lyric = new List<Lyric>
                             {
                                 new Lyric
@@ -179,6 +188,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
         public TrackLyric AddDefaultLyricEffects(TrackLyric trackLyric)
         {
             var lyric = trackLyric.Lyric;
+
+            if (Directory.Exists("Lyrics"))
+                Directory.CreateDirectory("Lyrics");
+
+            File.WriteAllText(Path.Combine("Lyrics", TrackName + ".lyr"), JsonConvert.SerializeObject(trackLyric));
 
             for (int index = 0; index < lyric.Count; index++)
             {
@@ -207,24 +221,23 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         }
                     };
             }
-
-            return trackLyric;
+             return trackLyric;
         }
 
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)
         {
-            trackName = new string(trackName
-               .Replace("[Copyright Free]", "")
-               .Replace("[Official Video]", "")
-               .Replace("[Official Audio]", "")
-               .Replace("[Official Release]", "")
-               .Replace("[Monstercat Release]", "")
-               .Replace("[NCS Release]", "")
-               .Replace("[Ncs Release]", "")
-               .Replace("[Dubstep]", "")
-               .Replace("[Techno]", "")
-               .Replace("[Trap]", "")
-               .Where(x => char.IsLetterOrDigit(x) || x == ' ' || x == '-' || x == '(' || x == ')').ToArray()).Replace("  ", "");
+            TrackName = trackName = new string(trackName
+                .Replace("[Copyright Free]", "")
+                .Replace("[Official Video]", "")
+                .Replace("[Official Audio]", "")
+                .Replace("[Official Release]", "")
+                .Replace("[Monstercat Release]", "")
+                .Replace("[NCS Release]", "")
+                .Replace("[Ncs Release]", "")
+                .Replace("[Dubstep]", "")
+                .Replace("[Techno]", "")
+                .Replace("[Trap]", "")
+                .Where(x => char.IsLetterOrDigit(x) || x == ' ' || x == '-' || x == '(' || x == ')').ToArray()).Replace("  ", "");
 
             if (!string.IsNullOrEmpty(album))
                 album = new string(album
@@ -248,15 +261,38 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
               .Replace("[Ncs Release]", "")
               .Where(x => char.IsLetterOrDigit(x) || x == ' ' || x == '-' || x == '(' || x == ')').ToArray()).Replace("  ", "");
 
-
-            try
-            {
-                return Client.GetStringAsync($"https://apic.musixmatch.com/ws/1.1/macro.subtitles.get?" +
+            var url = $"https://apic.musixmatch.com/ws/1.1/macro.subtitles.get?" +
                     $"tags=playing&f_subtitle_length={trackLength.ToString()}&q_duration={trackLength.ToString()}" +
                       "&f_subtitle_length_max_deviation=1&subtitle_format=mxm&page_size=1&optional_calls=track.richsync" +
-                     $"&q_album={album}&q_artist={artist}&q_track={trackName}&q_album_artist=" +
+                     $"&q_album={HttpUtility.UrlEncode(album)}&q_artist={HttpUtility.UrlEncode(artist)}&q_track={HttpUtility.UrlEncode(trackName)}&q_album_artist=" +
                      $"&usertoken={UserToken}" +
-                     $"&app_id=android-player-v1.0&country=&part=track_artist%2Cartist_image%2Clyrics_crowd%2Cuser%2Clyrics_vote%2Clyrics_poll%2Ctrack_lyrics_translation_status%2Clyrics_verified_by%2C&language_iso_code=1&format=json").Result;
+                     $"&app_id=android-player-v1.0&country=&part=track_artist%2Cartist_image%2Clyrics_crowd%2Cuser%2Clyrics_vote%2Clyrics_poll%2Ctrack_lyrics_translation_status%2Clyrics_verified_by%2C&language_iso_code=1&format=json";
+
+            return SendRequest(url).GetAwaiter().GetResult();
+        }
+        protected virtual async Task<string> SendRequest(string address)
+        {
+            try
+            {
+                return await Client.GetStringAsync(address);
+            }
+            catch { return string.Empty; }
+        }
+
+        private string GetCopyright(Dictionary<string, dynamic> response)
+        {
+            try
+            {
+                var res = response["message"];
+                if (res["header"]?["status_code"] != 200)
+                    return string.Empty;
+
+                res = response["message"]?["body"]?["macro_calls"]?["track.lyrics.get"];
+
+                if (res != null)
+                    return res["message"]?["body"]?["lyrics"]?["lyrics_copyright"] ?? string.Empty; ;
+
+                return string.Empty;
             }
             catch { return string.Empty; }
         }

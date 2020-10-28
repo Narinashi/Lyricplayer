@@ -28,6 +28,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
         Point MainLineLocation { set; get; }
         FastNoise Noise { set; get; }
         string CurrentLyricText { set; get; }
+        protected TrackLyric TrackLyric { set; get; }
 
         public FloatingLyricRenderer()
         {
@@ -35,7 +36,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
             FontName = "Antonio";
             FontSize = 15;
-            MainLineFontSize = 21;
+            MainLineFontSize = 24;
             FontColor = new Color(220, 220, 220, 255);
             BackgroundColor = new Color(0, 0, 0, 120);
             Noise = new FastNoise();
@@ -51,6 +52,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         public virtual void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
         {
+            TrackLyric = trackLyric;
             if (currentLyric == trackLyric.Lyric[0])
                 Reset();
 
@@ -89,6 +91,17 @@ namespace LyricPlayer.UI.Overlay.Renderers
             gfx.DrawText(MainLineFont, MainLineBrush, MainLineLocation, CurrentLyricText);
             var info = $"FPS:{gfx.FPS} delta:{e.DeltaTime}ms";
             gfx.DrawText(MainLineFont, 9.5f, MainLineBrush, 0, 0, info);
+
+
+            var copyrightTextSize = gfx.MeasureString(MainLineFont,10, TrackLyric?.Copyright??"");
+            var copyrightLocation = new Point
+            {
+                X = OverlayParent.Width > copyrightTextSize.X ? OverlayParent.Width - copyrightTextSize.X : 0,
+                Y = OverlayParent.Height > copyrightTextSize.Y ? OverlayParent.Height - copyrightTextSize.Y : 0
+            };
+            gfx.DrawText(MainLineFont, 10, MainLineBrush, copyrightLocation, TrackLyric?.Copyright??"");
+
+
             gfx.EndScene();
         }
 
@@ -100,11 +113,11 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         protected void Reset()
         {
-            var maxSize = (float)Math.Sqrt((Math.Min(OverlayParent.Width, OverlayParent.Height))) * 12;
+            var maxSize = (float)Math.Sqrt((OverlayParent.Width * OverlayParent.Height));
 
             Trauma = 1;
-            TraumaMult = maxSize / 24f; //the power of movement
-            TraumaMag = maxSize / 20f; //the range of movment
+            TraumaMult = maxSize / 20f; //the power of movement
+            TraumaMag = maxSize / 21f; //the range of movment
             TraumaDecay = 0.000000000001f;
             timeCounter = 0;
         }
@@ -112,7 +125,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
         protected Point GetPoint(float time, float seed)
         {
             var f1 = Noise.GetPerlin(seed, time);
-            var f2 = Noise.GetPerlin(seed + 3, time);
+            var f2 = Noise.GetPerlin(seed + 3, time)/10;
             return new Point
             {
                 X = f1,

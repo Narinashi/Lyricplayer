@@ -126,6 +126,15 @@ namespace LyricPlayer.UI.Overlay.Renderers
             }
 
             gfx.DrawText(InfoLineFont, InfoBrush, InfoLocation, infoText);
+
+            var copyrightTextSize = gfx.MeasureString(InfoLineFont, 10, TrackLyric?.Copyright??"");
+            var copyrightLocation = new Point
+            {
+                X = OverlayParent.Width > copyrightTextSize.X ? OverlayParent.Width - copyrightTextSize.X : 0,
+                Y = OverlayParent.Height > copyrightTextSize.Y ? OverlayParent.Height - copyrightTextSize.Y : 0
+            };
+            gfx.DrawText(MainLineFont, InfoLineFont.FontSize, TextBrush, copyrightLocation, TrackLyric?.Copyright??"");
+
             gfx.EndScene();
         }
     }

@@ -59,8 +59,19 @@ namespace LyricPlayer.LyricEngine
             if (lyric?.Lyric == null)
                 throw new ArgumentNullException();
 
+            if (!lyric.Synchronized)
+                _Lyric = new TrackLyric
+                {
+                    Copyright = lyric.Copyright ?? "",
+                    Synchronized = true,
+                    Lyric = new System.Collections.Generic.List<Lyric> {
+                        new Lyric {Duration=int.MaxValue,
+                    Text = string.Join("\r\n",lyric.Lyric.Select(x=>x.Text).ToArray()), } }
+                };
+            else
+                _Lyric = lyric;
+
             Initialize();
-            _Lyric = lyric;
         }
 
         public void Pause()
@@ -146,7 +157,7 @@ namespace LyricPlayer.LyricEngine
             {
                 JumpToLyric(lyric, time);
                 return;
-            } 
+            }
 
             for (int index = 0; index < _Lyric.Lyric.Count; index++)
             {

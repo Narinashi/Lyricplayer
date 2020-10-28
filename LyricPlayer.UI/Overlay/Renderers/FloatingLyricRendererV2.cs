@@ -92,6 +92,15 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
             var info = $"FPS:{gfx.FPS} delta:{e.DeltaTime}ms";
             gfx.DrawText(Fonts[Holder.FontName], 9.5f, Brushes[Holder.ForeColor], 0, 0, info);
+
+            var copyrightTextSize = gfx.MeasureString(Fonts[Holder.FontName],10, TrackLyric?.Copyright??"");
+            var copyrightLocation = new Point
+            {
+                X = OverlayParent.Width > copyrightTextSize.X ? OverlayParent.Width - copyrightTextSize.X : 0,
+                Y = OverlayParent.Height > copyrightTextSize.Y ? OverlayParent.Height - copyrightTextSize.Y : 0
+            };
+            gfx.DrawText(Fonts[Holder.FontName], 10, Brushes[Holder.ForeColor], copyrightLocation, TrackLyric?.Copyright??"");
+
             gfx.EndScene();
         }
     }

@@ -10,5 +10,6 @@ namespace LyricPlayer.Models
     {
         public bool Synchronized { set; get; }
         public List<Lyric> Lyric { set; get; }
+        public string Copyright { set; get; }
     }
 }

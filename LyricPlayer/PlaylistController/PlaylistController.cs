@@ -22,6 +22,9 @@ namespace LyricPlayer.PlaylistController
             if (File.Exists(track.FileAddress) || track.FileContent != null)
                 Tracks.Add(track);
 
+            if (string.IsNullOrEmpty(track.TrackName))
+                track.TrackName = Path.GetFileNameWithoutExtension(track.FileAddress);
+
             if (Tracks.Count == 1)
                 OnTrackChanged(CurrentTrack);
         }
@@ -29,6 +32,9 @@ namespace LyricPlayer.PlaylistController
         {
             if (File.Exists(track.FileAddress) || track.FileContent != null)
                 Tracks.Insert(index, track);
+
+            if (string.IsNullOrEmpty(track.TrackName))
+                track.TrackName = Path.GetFileNameWithoutExtension(track.FileAddress);
 
             if (Tracks.Count == 1)
                 OnTrackChanged(CurrentTrack);

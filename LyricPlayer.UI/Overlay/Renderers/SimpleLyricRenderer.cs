@@ -114,6 +114,13 @@ namespace LyricPlayer.UI.Overlay.Renderers
                 currentLocation.Y += InterLineSpace + gfx.MeasureString(index == DisplayingLyricLinesCount / 2 ? MainLineFont : TextFont, DisplayingLyric[index].TextToDraw).Y;
             }
 
+            var copyrightTextSize = gfx.MeasureString(InfoLineFont, 10, TrackLyric?.Copyright??"");
+            var copyrightLocation = new Point
+            {
+                X = OverlayParent.Width > copyrightTextSize.X ? OverlayParent.Width - copyrightTextSize.X : 0,
+                Y = OverlayParent.Height > copyrightTextSize.Y ? OverlayParent.Height - copyrightTextSize.Y : 0
+            };
+            gfx.DrawText(MainLineFont, InfoLineFont.FontSize, TextBrush, copyrightLocation, TrackLyric?.Copyright??"");
             gfx.EndScene();
         }
 

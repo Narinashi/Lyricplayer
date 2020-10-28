@@ -47,6 +47,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -65,8 +66,10 @@
     <Compile Include="LyricFetcher\ILyricFetcher.cs" />
     <Compile Include="LyricEngine\ILyricEngine.cs" />
     <Compile Include="LyricFetcher\LocalLyricFetcher.cs" />
+    <Compile Include="LyricFetcher\LocaWithMusicmatchLyricFetcher.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicmatchLyricFetcher.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicMatchModels.cs" />
+    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\ProxiedMusicmatchLyricFetcher.cs" />
     <Compile Include="Models\PlayerStatus.cs" />
     <Compile Include="Models\FileInfo.cs" />
     <Compile Include="Models\Lyric.cs" />
