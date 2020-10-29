@@ -22,6 +22,7 @@ namespace LyricPlayer.LyricFetcher
             if (lyric.Count < 2 && lyric.FirstOrDefault()?.Duration > 1000000)
                 return null;
 
+            trackLyric.Copyright = trackLyric.Copyright?.Trim()?.Replace("\n", " ") ?? string.Empty;
             if (lyric[0].StartAt > 0)
                 lyric.Insert(0, new Lyric
                 {

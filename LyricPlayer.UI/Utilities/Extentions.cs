@@ -7,8 +7,8 @@ namespace LyricPlayer.UI
 {
     internal static class Extentions
     {
-        public static GameOverlay.Drawing.Color ToOverlayColor(this Color color) =>
-             new GameOverlay.Drawing.Color { A = color.A/255f, B = color.B / 255f, G = color.G / 255f, R = color.R / 255f };
+        public static GameOverlay.Drawing.Color ToOverlayColor(this Color color, float alpha = -1) =>
+             new GameOverlay.Drawing.Color { A = alpha==-1 ? color.A/255f : alpha, B = color.B / 255f, G = color.G / 255f, R = color.R / 255f };
 
         public static GameOverlay.Drawing.Point ToOverlayPoint(this Point point) =>
             new GameOverlay.Drawing.Point { X = point.X, Y = point.Y };

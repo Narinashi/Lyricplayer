@@ -34,12 +34,16 @@ namespace LyricPlayer.UI.Overlay
             Player = new NarinoMusicPlayer(token);
             Player.LyricChanged += PlayerLyricChanged;
             LyricRenderer = new FloatingLyricRenderer();
-            OverlaySize = new Size(800, 60);
-            OverlayLocation = new GameOverlay.Drawing.Point
-            {
-                X = (float)(DisplayTools.GetPhysicalDisplaySize().Width - OverlaySize.Width) / 2,
-                Y = 0
-            };
+
+            var size = DisplayTools.GetPhysicalDisplaySize();
+            OverlaySize = new Size(size.Width, 75);
+
+            //OverlaySize = new Size(1000, 75);
+            //OverlayLocation = new GameOverlay.Drawing.Point
+            //{
+            //    X = (float)(DisplayTools.GetPhysicalDisplaySize().Width - OverlaySize.Width) / 2,
+            //    Y = 0
+            //};
         }
 
         public void ShowOverlay(string processName)

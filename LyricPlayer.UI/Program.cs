@@ -5,6 +5,7 @@ namespace LyricPlayer.UI
 {
     internal class Program
     {
+        public static float Mulitplier { set; get; } = 1f;
         public static void Main()
         {
             var overlay = new Overlay.LyricOverlay();
@@ -59,7 +60,22 @@ namespace LyricPlayer.UI
                 }
                 else if (data.Key == ConsoleKey.Enter && string.IsNullOrEmpty(str))
                     overlay.Player.Next();
+                else if (data.Key == ConsoleKey.UpArrow)
+                    Mulitplier *= 2f;
+                else if (data.Key == ConsoleKey.DownArrow)
+                    Mulitplier /= 2f;
+                else if (data.Key == ConsoleKey.RightArrow)
+                    overlay.Player.CurrentTime = overlay.Player.CurrentTime.Add(TimeSpan.FromSeconds(5));
+                else if(data.Key == ConsoleKey.LeftArrow)
+                {
+                    if (overlay.Player.CurrentTime.TotalSeconds <= 5)
+                        overlay.Player.CurrentTime = TimeSpan.Zero;
+                    else
+                        overlay.Player.CurrentTime = overlay.Player.CurrentTime.Subtract(TimeSpan.FromSeconds(5));
+                }
 
+                if (String.IsNullOrEmpty(str))
+                    Console.Clear();
             }
 
             overlay.Overlay.Join();
