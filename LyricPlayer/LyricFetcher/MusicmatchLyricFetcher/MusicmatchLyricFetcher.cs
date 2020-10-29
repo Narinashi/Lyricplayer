@@ -30,6 +30,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
         public TrackLyric GetLyric(string trackName, string title, string album, string artist, double trackLength)
         {
+            
             string body = CallMusicMatchService(trackName, title, album, artist, trackLength);
             if (string.IsNullOrEmpty(body))
                 body = CallMusicMatchService(trackName, title, album, artist, trackLength);
@@ -42,7 +43,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
             var response = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(body);
             List<Lyric> lyric = null;
-            string copyrightHolder = GetCopyright(response).Trim();
+            string copyrightHolder = GetCopyright(response).Trim().Replace("\n"," ");
 
             var res = response["message"];
             if (res["header"]?["status_code"] == 200)
@@ -189,7 +190,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
         {
             var lyric = trackLyric.Lyric;
 
-            if (Directory.Exists("Lyrics"))
+            if (!Directory.Exists("Lyrics"))
                 Directory.CreateDirectory("Lyrics");
 
             File.WriteAllText(Path.Combine("Lyrics", TrackName + ".lyr"), JsonConvert.SerializeObject(trackLyric));

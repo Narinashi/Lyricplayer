@@ -1,23 +1,34 @@
-﻿using GameOverlay.Drawing;
-using GameOverlay.Windows;
-using System;
+﻿using System;
 using System.IO;
-using System.Net.Http;
 
 namespace LyricPlayer.UI
 {
-    class Program
+    internal class Program
     {
         public static void Main()
         {
             var overlay = new Overlay.LyricOverlay();
             overlay.ShowOverlay(string.Empty);
-           
+
             if (File.Exists("Tracks.txt"))
             {
                 var files = File.ReadAllLines("Tracks.txt");
                 foreach (var file in files)
-                    overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = file });
+                {
+                    if (string.IsNullOrEmpty(file.Trim()) ||
+                        file.StartsWith("#") ||
+                        file.StartsWith("//"))
+                        continue;
+
+                    if (Directory.Exists(file))
+                    {
+                        var directoryFiles = Directory.GetFiles(file);
+                        foreach (var directoryFile in directoryFiles)
+                            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = directoryFile });
+                    }
+                    else if (File.Exists(file))
+                        overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = file });
+                }
             }
 
             var time = 0;
@@ -25,7 +36,7 @@ namespace LyricPlayer.UI
             while (true)
             {
                 var data = Console.ReadKey();
-                
+
                 if (data.Key == ConsoleKey.Spacebar || data.Key == ConsoleKey.S)
                 {
                     if (overlay.Player.PlayerStatus == Models.PlayerStatus.Playing)
@@ -48,7 +59,7 @@ namespace LyricPlayer.UI
                 }
                 else if (data.Key == ConsoleKey.Enter && string.IsNullOrEmpty(str))
                     overlay.Player.Next();
-               
+
             }
 
             overlay.Overlay.Join();

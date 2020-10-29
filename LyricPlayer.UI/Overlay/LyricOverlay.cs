@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
+
 namespace LyricPlayer.UI.Overlay
 {
     public class LyricOverlay
@@ -33,11 +34,16 @@ namespace LyricPlayer.UI.Overlay
             Player = new NarinoMusicPlayer(token);
             Player.LyricChanged += PlayerLyricChanged;
             LyricRenderer = new FloatingLyricRenderer();
-            OverlaySize = new Size(400, 100);
+            OverlaySize = new Size(800, 60);
+            OverlayLocation = new GameOverlay.Drawing.Point
+            {
+                X = (float)(DisplayTools.GetPhysicalDisplaySize().Width - OverlaySize.Width) / 2,
+                Y = 0
+            };
         }
 
         public void ShowOverlay(string processName)
-            => ShowOverlay(Process.GetProcessesByName(processName??"").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero);
+            => ShowOverlay(Process.GetProcessesByName(processName ?? "").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero);
 
         public void ShowOverlay(IntPtr processWindowHandle)
         {
@@ -68,7 +74,7 @@ namespace LyricPlayer.UI.Overlay
 
         private void OverlayDestroyGraphics(object sender, DestroyGraphicsEventArgs e)
             => LyricRenderer.Destroy(e.Graphics);
-        
+
 
         private void OverlaySetupGraphics(object sender, SetupGraphicsEventArgs e)
         {

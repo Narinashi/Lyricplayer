@@ -36,9 +36,9 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
             FontName = "Antonio";
             FontSize = 15;
-            MainLineFontSize = 24;
+            MainLineFontSize = 30;
             FontColor = new Color(220, 220, 220, 255);
-            BackgroundColor = new Color(0, 0, 0, 120);
+            BackgroundColor = new Color(0, 0, 0, 150);
             Noise = new FastNoise();
             Noise.SetFrequency(0.001f);
         }
