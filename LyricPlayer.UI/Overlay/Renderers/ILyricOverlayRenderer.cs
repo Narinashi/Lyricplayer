@@ -13,6 +13,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 {
     public interface ILyricOverlayRenderer
     {
+        string RendererKey { get; }
         string FontName { set; get; }
         float FontSize { set; get; }
         float MainLineFontSize { set; get; }

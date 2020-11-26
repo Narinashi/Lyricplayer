@@ -12,6 +12,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 {
     class FloatingLyricRendererV2 : FloatingLyricRenderer
     {
+        public override string RendererKey => "FloatingLyricRendererV2";
         Dictionary<Type, LyricEffectPlayerBase> EffectPlayers { set; get; }
         LyricHolder Holder = new LyricHolder { TextToDraw = "...", Duration = int.MaxValue };
         Dictionary<string, Font> Fonts { set; get; }

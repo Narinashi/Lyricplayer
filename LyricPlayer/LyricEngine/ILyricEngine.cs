@@ -1,4 +1,5 @@
 ﻿using LyricPlayer.Models;
+using LyricPlayer.SoundEngine;
 using System;
 
 namespace LyricPlayer.LyricEngine
@@ -10,11 +11,11 @@ namespace LyricPlayer.LyricEngine
         TrackLyric TrackLyric { get; }
         int Offset { set; get; }
         event EventHandler<Lyric> LyricChanged;
-       
+
         void Start();
         void Pause();
         void Resume();
         void Stop();
-        void Load(TrackLyric lyric);
+        void Load(TrackLyric lyric, ISoundEngine soundEngine);
     }
 }

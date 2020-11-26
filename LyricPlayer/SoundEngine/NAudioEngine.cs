@@ -2,7 +2,7 @@
 using NAudio.Wave;
 using System;
 using System.IO;
-using System.Threading;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace LyricPlayer.SoundEngine
@@ -51,12 +51,11 @@ namespace LyricPlayer.SoundEngine
                 waveOutEvent.Volume = value ? 0 : volumeBeforeMute;
             }
         }
-        private WaveOutEvent waveOutEvent { set; get; }
-        private Mp3FileReader fileReader { set; get; }
+        public WaveOutEvent waveOutEvent { set; get; }
+        public Mp3FileReader fileReader { set; get; }
         private Models.FileInfo _CurrentFileInfo { set; get; }
-        private float volumeBeforeMute { set; get; } = 1.0f;
+        private float volumeBeforeMute { set; get; } = 0.3f;
         private bool stoppedByUser { set; get; } = false;
-
         public void Load(Models.FileInfo fileInfo)
         {
             if (fileInfo == null)
@@ -64,7 +63,7 @@ namespace LyricPlayer.SoundEngine
             if (string.IsNullOrEmpty(fileInfo.FileAddress = fileInfo.FileAddress?.Trim()) && fileInfo.FileContent == null)
                 throw new ArgumentException("no file content specified");
 
-            volumeBeforeMute = waveOutEvent?.Volume ?? 1f;
+            volumeBeforeMute = waveOutEvent?.Volume ?? 0.3f;
             fileReader = fileInfo.FileContent == null ? new Mp3FileReader(fileInfo.FileAddress) : new Mp3FileReader(new MemoryStream(fileInfo.FileContent));
 
             if (waveOutEvent == null)
@@ -74,7 +73,7 @@ namespace LyricPlayer.SoundEngine
             }
 
             waveOutEvent.Init(fileReader);
-            
+
             Volume = volumeBeforeMute;
             _CurrentFileInfo = fileInfo;
         }
@@ -97,9 +96,9 @@ namespace LyricPlayer.SoundEngine
 
         public void Stop()
         {
-            if (waveOutEvent == null || waveOutEvent.PlaybackState==PlaybackState.Stopped) return;
+            if (waveOutEvent == null || waveOutEvent.PlaybackState == PlaybackState.Stopped) return;
             stoppedByUser = true;
-            waveOutEvent.Stop(); 
+            waveOutEvent.Stop();
         }
 
         public void Dispose()
@@ -116,13 +115,13 @@ namespace LyricPlayer.SoundEngine
         }
 
         private void WaveOutEventPlaybackStopped(object sender, StoppedEventArgs e)
-       {
+        {
             if (stoppedByUser)
             {
                 stoppedByUser = false;
                 return;
             }
-             TrackStopped?.Invoke(this, EventArgs.Empty);
+            TrackStopped?.Invoke(this, EventArgs.Empty);
         }
     }
 }

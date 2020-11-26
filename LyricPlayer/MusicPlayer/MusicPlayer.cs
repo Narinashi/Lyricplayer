@@ -44,7 +44,7 @@ namespace LyricPlayer.MusicPlayer
             }
             get => _Playlist;
         }
-        protected ISoundEngine SoundEngine { set; get; }
+        public ISoundEngine SoundEngine { set; get; }
         protected ILyricEngine LyricEngine { set; get; }
         protected ILyricFetcher LyricFetcher { set; get; }
         private PlaylistController<T> _Playlist;
@@ -105,10 +105,10 @@ namespace LyricPlayer.MusicPlayer
                             Text ="Lyric not found"
                             }
                         }
-                    });
-                
+                    }, SoundEngine);
+
                 else
-                    LyricEngine.Load(lyric);
+                    LyricEngine.Load(lyric, SoundEngine);
 
                 LyricEngine.Start();
                 LyricEngine.CurrentTime = SoundEngine.CurrentTime;

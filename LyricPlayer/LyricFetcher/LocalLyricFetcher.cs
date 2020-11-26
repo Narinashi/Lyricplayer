@@ -16,7 +16,7 @@ namespace LyricPlayer.LyricFetcher
             if (!File.Exists(filePath))
                 return null;
 
-            var trackLyric = JsonConvert.DeserializeObject<TrackLyric>(File.ReadAllText(filePath));
+            var trackLyric = JsonConvert.DeserializeObject<TrackLyric>(File.ReadAllText(filePath), Fixed.JsonSerializationSetting);
             var lyric = trackLyric.Lyric;
 
             if (lyric.Count < 2 && lyric.FirstOrDefault()?.Duration > 1000000)

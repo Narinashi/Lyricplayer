@@ -9,6 +9,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 {
     class SimpleLyricRenderer : ILyricOverlayRenderer
     {
+        public virtual string RendererKey => "SimpleLyricRenderer";
         public string FontName { set; get; }
         public float FontSize { set; get; }
         public float MainLineFontSize { set; get; }

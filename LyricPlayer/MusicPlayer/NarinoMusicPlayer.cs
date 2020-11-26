@@ -9,7 +9,7 @@ namespace LyricPlayer.MusicPlayer
 {
     public class NarinoMusicPlayer : MusicPlayer<TrackInfo>
     {
-        string AccessToken { set; get; }
+        protected string AccessToken { set; get; }
         public NarinoMusicPlayer(string token)
         {
             Playlist = new PlaylistController<TrackInfo>();
@@ -23,13 +23,15 @@ namespace LyricPlayer.MusicPlayer
             {
                 Next();
             };
-            LyricEngine.LyricChanged += (s, e) =>
-            { LyricChanged?.Invoke(this, e); };
+            LyricEngine.LyricChanged += (s, e) => OnLyricChanged(e);
             //LyricFetcher = new LocalLyricFetcher();
             LyricFetcher = new LocalWithMusicmatchLyricFetcher(AccessToken);
         }
 
-
         public event EventHandler<Lyric> LyricChanged;
+        protected virtual void OnLyricChanged(Lyric l)
+        {
+            LyricChanged?.Invoke(this, l);
+        }
     }
 }

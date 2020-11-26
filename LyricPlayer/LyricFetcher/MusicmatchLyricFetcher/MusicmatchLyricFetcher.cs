@@ -193,8 +193,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             if (!Directory.Exists("Lyrics"))
                 Directory.CreateDirectory("Lyrics");
 
-            File.WriteAllText(Path.Combine("Lyrics", TrackName + ".lyr"), JsonConvert.SerializeObject(trackLyric));
-
             for (int index = 0; index < lyric.Count; index++)
             {
                 if (index % 2 == 0)
@@ -222,7 +220,10 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         }
                     };
             }
-             return trackLyric;
+
+            File.WriteAllText(Path.Combine("Lyrics", TrackName + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
+
+            return trackLyric;
         }
 
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)

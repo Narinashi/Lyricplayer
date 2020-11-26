@@ -9,6 +9,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 {
     class VerticalLyricRenderer : SimpleLyricRenderer
     {
+        public override String RendererKey => "VerticalLyricRenderer";
         protected override List<LyricHolder> DisplayingLyric
         {
             set => TextHandler.Texts = value;

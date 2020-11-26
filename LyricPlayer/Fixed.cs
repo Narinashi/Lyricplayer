@@ -1,18 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace LyricPlayer
 {
     static class Fixed
     {
         public const float AlmostZero = 0.0001f;
-        public static int RNG(int from,int to)
+        public const int SongTrackingInterval = 400;
+        public static long UnixTime => (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+
+        public static int RNG(int from, int to)
         {
             var random = new Random();
             return random.Next(from, to);
         }
+        public static JsonSerializerSettings JsonSerializationSetting => new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            Formatting = Formatting.Indented
+        };
     }
 }

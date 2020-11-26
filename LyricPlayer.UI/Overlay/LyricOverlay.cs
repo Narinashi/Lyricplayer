@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 
 
@@ -25,19 +26,22 @@ namespace LyricPlayer.UI.Overlay
             }
             get => Overlay?.FPS ?? 0;
         }
+        protected Process TargetProcess { set; get; }
+        protected string TargetProcessName { set; get; }
+        protected System.Timers.Timer Timer { set; get; }
 
         protected ILyricOverlayRenderer LyricRenderer { set; get; }
 
         public LyricOverlay()
         {
             var token = File.ReadAllText("Token.Token");
-            Player = new NarinoMusicPlayer(token);
+            Player = new SpotifyMusicPlayer(token);
             Player.LyricChanged += PlayerLyricChanged;
             LyricRenderer = new FloatingLyricRenderer();
 
             var size = DisplayTools.GetPhysicalDisplaySize();
             OverlaySize = new Size(size.Width, 75);
-
+            
             //OverlaySize = new Size(1000, 75);
             //OverlayLocation = new GameOverlay.Drawing.Point
             //{
@@ -47,24 +51,41 @@ namespace LyricPlayer.UI.Overlay
         }
 
         public void ShowOverlay(string processName)
-            => ShowOverlay(Process.GetProcessesByName(processName ?? "").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero);
+        {
+            TargetProcessName = processName;
+            TargetProcess = Process.GetProcessesByName(processName ?? "").FirstOrDefault();
+            ShowOverlay(TargetProcess?.MainWindowHandle ?? IntPtr.Zero);
+        }
 
         public void ShowOverlay(IntPtr processWindowHandle)
         {
             Player.Initialize();
             Overlay = new GraphicsWindow((int)OverlayLocation.X, (int)OverlayLocation.Y, (int)OverlaySize.Width, (int)OverlaySize.Height);
-            if (processWindowHandle != IntPtr.Zero)
-            {
-                Overlay.FitTo(processWindowHandle);
-                Overlay.PlaceAbove(processWindowHandle);
-            }
             Overlay.SetupGraphics += OverlaySetupGraphics;
             Overlay.DestroyGraphics += OverlayDestroyGraphics;
             Overlay.DrawGraphics += OverlayDrawGraphics;
 
             Overlay.Create();
             Overlay.Show();
-            Overlay.FPS = 90;
+            Overlay.FPS = 70;
+
+            if (!string.IsNullOrEmpty(TargetProcessName))
+            {
+                //Overlay.FitTo(processWindowHandle);
+                Timer = new System.Timers.Timer();
+                Timer.Elapsed += (s, e) => 
+                {
+                    if (!(TargetProcess?.HasExited ?? true))
+                        Overlay.PlaceAbove(TargetProcess.MainWindowHandle);
+                    else
+                    {
+                        TargetProcess = Process.GetProcessesByName(TargetProcessName ?? "").FirstOrDefault();
+                        Overlay.IsTopmost = true;
+                    }
+                };
+                Timer.Interval = 2500;
+                Timer.Start();
+            }
 
             Overlay.Graphics.TextAntiAliasing = true;
             LyricRenderer.OverlayParent = Overlay;

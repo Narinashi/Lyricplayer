@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LyricPlayer.LyricEffects
 {
-    public abstract class LyricEffect
+    public class LyricEffect
     {
         /// <summary>
         /// in Milliseconds

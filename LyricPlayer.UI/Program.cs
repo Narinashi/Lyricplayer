@@ -5,11 +5,12 @@ namespace LyricPlayer.UI
 {
     internal class Program
     {
-        public static float Mulitplier { set; get; } = 1f;
+        public static float Mulitplier { set; get; } = 2f;
         public static void Main()
         {
             var overlay = new Overlay.LyricOverlay();
-            overlay.ShowOverlay(string.Empty);
+            var processName = File.Exists("ProcessName.txt") ? File.ReadAllText("ProcessName.txt") : "";
+            overlay.ShowOverlay(processName);
 
             if (File.Exists("Tracks.txt"))
             {
@@ -38,7 +39,7 @@ namespace LyricPlayer.UI
             {
                 var data = Console.ReadKey();
 
-                if (data.Key == ConsoleKey.Spacebar || data.Key == ConsoleKey.S)
+                if (data.Key == ConsoleKey.Spacebar)
                 {
                     if (overlay.Player.PlayerStatus == Models.PlayerStatus.Playing)
                         overlay.Player.Pause();
@@ -60,19 +61,31 @@ namespace LyricPlayer.UI
                 }
                 else if (data.Key == ConsoleKey.Enter && string.IsNullOrEmpty(str))
                     overlay.Player.Next();
+
                 else if (data.Key == ConsoleKey.UpArrow)
-                    Mulitplier *= 2f;
+                    Mulitplier *= 1.4f;
+
                 else if (data.Key == ConsoleKey.DownArrow)
-                    Mulitplier /= 2f;
+                    Mulitplier /= 1.4f;
+
                 else if (data.Key == ConsoleKey.RightArrow)
                     overlay.Player.CurrentTime = overlay.Player.CurrentTime.Add(TimeSpan.FromSeconds(5));
-                else if(data.Key == ConsoleKey.LeftArrow)
+
+                else if (data.Key == ConsoleKey.LeftArrow)
                 {
                     if (overlay.Player.CurrentTime.TotalSeconds <= 5)
                         overlay.Player.CurrentTime = TimeSpan.Zero;
                     else
                         overlay.Player.CurrentTime = overlay.Player.CurrentTime.Subtract(TimeSpan.FromSeconds(5));
                 }
+                else if (data.Key == ConsoleKey.W)
+                    overlay.Overlay.Height += 10;
+                else if (data.Key == ConsoleKey.S)
+                    overlay.Overlay.Height -= 10;
+                else if (data.Key == ConsoleKey.D)
+                    overlay.Overlay.Width += 20;
+                else if (data.Key == ConsoleKey.A)
+                    overlay.Overlay.Width -= 20;
 
                 if (String.IsNullOrEmpty(str))
                     Console.Clear();
