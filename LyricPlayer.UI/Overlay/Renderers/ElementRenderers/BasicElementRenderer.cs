@@ -1,32 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GameOverlay.Drawing;
+﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using LyricPlayer.UI.Overlay.Elements;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
-    class BasicElementRenderer : IElementRenderer<RenderElement>
+    internal class BasicElementRenderer : ElementRenderer<RenderElement>
     {
-        public void Destroy(Graphics gfx)
-        { }
+        private IBrush Brush { set; get; }
+        public override void Destroy(Graphics gfx)
+        { Brush?.Brush.Dispose(); }
 
-        public void Render(RenderElement element, DrawGraphicsEventArgs renderArgs)
+        protected override void InternalRender(RenderElement element, DrawGraphicsEventArgs renderArgs)
         {
             var gfx = renderArgs.Graphics;
-            gfx.ClipRegionStart(element.RenderArea);
-            gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation));
-
-            gfx.ClearScene();//just an empty space
-
-            gfx.TransformEnd();
-            gfx.ClipRegionEnd();
+            gfx.DrawRectangleEdges(Brush, element.RenderArea, 3);
         }
 
-        public void Setup(Graphics gfx)
-        { }
+        public override void Setup(Graphics gfx)
+        { Brush = gfx.CreateSolidBrush(0, 0, 0); }
     }
 }

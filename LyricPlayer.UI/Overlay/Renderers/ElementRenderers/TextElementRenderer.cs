@@ -5,28 +5,40 @@ using System.Collections.Generic;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
-    internal class TextElementRenderer : IElementRenderer<TextElement>
+    internal class TextElementRenderer : ElementRenderer<TextElement>
     {
         private static Dictionary<string, Font> Fonts { set; get; } = new Dictionary<string, Font>();
         private static Dictionary<Color, IBrush> Brushes { set; get; } = new Dictionary<Color, IBrush>();
-        public void Render(TextElement element, DrawGraphicsEventArgs renderArgs)
+
+        protected override void InternalRender(TextElement element, DrawGraphicsEventArgs renderArgs)
         {
             var gfx = renderArgs.Graphics;
-            gfx.ClipRegionStart(element.RenderArea);
-            gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation));
 
             if (!Fonts.ContainsKey(element.FontName))
                 Fonts.Add(element.FontName, gfx.CreateFont(element.FontName, element.FontSize, element.Bold, element.Italic, element.WordWrap));
+            if (!Brushes.ContainsKey(element.TextColor))
+                Brushes.Add(element.TextColor, gfx.CreateSolidBrush(element.TextColor));
+            if (!Brushes.ContainsKey(element.BackGroundColor))
+                Brushes.Add(element.BackGroundColor, gfx.CreateSolidBrush(element.BackGroundColor));
 
             var font = Fonts[element.FontName];
 
-                
-
-            gfx.TransformEnd();
-            gfx.ClipRegionEnd();
+            if (element.BackGroundColor == Color.Transparent)
+                gfx.DrawText(font, font.FontSize,
+                    Brushes[element.TextColor],
+                    element.AbsolutePosition.X + element.Padding.Left,
+                    element.AbsolutePosition.Y + element.Padding.Top,
+                    element.Text);
+            else
+                gfx.DrawTextWithBackground(font, font.FontSize,
+                    Brushes[element.TextColor],
+                    Brushes[element.BackGroundColor],
+                    element.AbsolutePosition.X + element.Padding.Left,
+                    element.AbsolutePosition.Y + element.Padding.Top,
+                    element.Text);
         }
 
-        public void Destroy(Graphics gfx)
+        public override void Destroy(Graphics gfx)
         {
             foreach (var font in Fonts)
                 font.Value.Dispose();
@@ -37,9 +49,9 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             Fonts.Clear();
         }
 
-        public void Setup(Graphics gfx)
+        public override void Setup(Graphics gfx)
         {
-            throw new System.NotImplementedException();
+
         }
     }
 }

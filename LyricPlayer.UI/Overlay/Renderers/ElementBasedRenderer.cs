@@ -9,8 +9,6 @@ namespace LyricPlayer.UI.Overlay.Renderers
     {
         public RenderElement RootElement { get; set; }
 
-       
-
         public void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
         {
         }

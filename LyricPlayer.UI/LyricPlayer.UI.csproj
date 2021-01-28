@@ -72,16 +72,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
-    <Compile Include="Overlay\EffectPlayers\ColorChangeEffectPlayer.cs" />
-    <Compile Include="Overlay\EffectPlayers\DriftEffectPlayer.cs" />
-    <Compile Include="Overlay\EffectPlayers\SizeChangeEffectPlayer.cs" />
-    <Compile Include="Overlay\EffectPlayers\LyricEffectPlayerBase.cs" />
+    <Compile Include="Overlay\EffectPlayers\EffectPlayer.cs" />
+    <Compile Include="Overlay\EffectPlayers\FloatingEffectPlayer.cs" />
+    <Compile Include="Overlay\Elements\ElementTypes.cs" />
     <Compile Include="Overlay\Elements\ImageElement.cs" />
     <Compile Include="Overlay\Elements\TextElement.cs" />
     <Compile Include="Overlay\LyricHolder.cs" />
     <Compile Include="Overlay\Elements\RenderElement.cs" />
     <Compile Include="Overlay\Renderers\ElementBasedRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\BasicElementRenderer.cs" />
+    <Compile Include="Overlay\Renderers\ElementRenderers\ElementRenderer.cs" />
+    <Compile Include="Overlay\Renderers\ElementRenderers\TextElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\FloatingLyricRenderer.cs" />
     <Compile Include="Overlay\Renderers\FloatingLyricRendererV2.cs" />
     <Compile Include="Overlay\Renderers\IElementBasedRender.cs" />

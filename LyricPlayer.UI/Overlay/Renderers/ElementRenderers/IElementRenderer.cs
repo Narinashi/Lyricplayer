@@ -9,9 +9,4 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 
         void Setup(Graphics gfx);
     }
-
-    internal interface IElementRenderer<T> : IElementRenderer where T : Elements.RenderElement
-    {
-        void Render(T element, DrawGraphicsEventArgs renderArgs);
-    }
 }
