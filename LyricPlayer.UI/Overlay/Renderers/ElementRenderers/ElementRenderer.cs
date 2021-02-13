@@ -1,19 +1,15 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
+using LyricPlayer.Model.Elements;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
-    internal abstract class ElementRenderer<T> : IElementRenderer where T : Elements.RenderElement
+    internal abstract class ElementRenderer<T> : IElementRenderer where T :RenderElement
     {
         public void Render(T element, DrawGraphicsEventArgs renderArgs)
         {
             var gfx = renderArgs.Graphics;
-            gfx.ClipRegionStart(
-                element.RenderArea.Left,
-                element.RenderArea.Top,
-                element.RenderArea.Right - element.Padding.Right,
-                element.RenderArea.Bottom - element.Padding.Bottom
-                );
+            gfx.ClipRegionStart(element.AbsoluteRenderArea);
             gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation));
 
             InternalRender(element, renderArgs);

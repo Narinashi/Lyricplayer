@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyricPlayer", "LyricPlayer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyricPlayer.UI", "LyricPlayer.UI\LyricPlayer.UI.csproj", "{CE665B99-94D1-4B19-AA27-80E108E973EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyricPlayer.Model", "LyricPlayer.Model\LyricPlayer.Model.csproj", "{34A5B7A4-880C-47B8-A37E-C049A494BC36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CE665B99-94D1-4B19-AA27-80E108E973EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE665B99-94D1-4B19-AA27-80E108E973EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE665B99-94D1-4B19-AA27-80E108E973EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34A5B7A4-880C-47B8-A37E-C049A494BC36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34A5B7A4-880C-47B8-A37E-C049A494BC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34A5B7A4-880C-47B8-A37E-C049A494BC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34A5B7A4-880C-47B8-A37E-C049A494BC36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

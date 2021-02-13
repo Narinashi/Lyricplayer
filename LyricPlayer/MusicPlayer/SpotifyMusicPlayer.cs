@@ -1,6 +1,6 @@
 ﻿using LyricPlayer.LyricEngine;
 using LyricPlayer.LyricFetcher;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using LyricPlayer.SoundEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +19,9 @@ namespace LyricPlayer.MusicPlayer
 
         public override void Initialize()
         {
-            SoundEngine = new SpotifyEngine();
             LyricEngine = new NarinoLyricEngine();
+            SoundEngine = new SpotifyEngine(LyricEngine);
+
             SoundEngine.TrackStopped += (s, e) =>
             {
                 LyricEngine.Stop();

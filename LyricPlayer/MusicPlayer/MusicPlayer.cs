@@ -1,5 +1,6 @@
 ﻿using LyricPlayer.LyricEngine;
 using LyricPlayer.LyricFetcher;
+using LyricPlayer.Model;
 using LyricPlayer.Models;
 using LyricPlayer.PlaylistController;
 using LyricPlayer.SoundEngine;

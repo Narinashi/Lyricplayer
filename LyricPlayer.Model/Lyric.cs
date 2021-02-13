@@ -1,11 +1,8 @@
-﻿using LyricPlayer.LyricEffects;
-using System;
+﻿using LyricPlayer.Model.Effects;
+using LyricPlayer.Model.Elements;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LyricPlayer.Models
+namespace LyricPlayer.Model
 {
     public class Lyric
     {
@@ -15,10 +12,9 @@ namespace LyricPlayer.Models
         public string Text { set; get; }
 
         /// <summary>
-        /// usefull when trying to make word by word synchronized lyrics, childeren of this Field are ignored
+        /// can be used to display other type of texts (or even elements)
         /// </summary>
         public List<Lyric> SubTexts { set; get; }
-       
         /// <summary>
         /// in millisecond
         /// </summary>
@@ -34,9 +30,8 @@ namespace LyricPlayer.Models
         /// </summary>
         public int EndAt => StartAt + Duration;
 
-        /// <summary>
-        /// Effects .. what else ?
-        /// </summary>
-        public List<LyricEffect> Effects { set; get; }
+        public RenderElement Element { set; get; }
+
+        public List<Effect> Effects { set; get; }
     }
 }

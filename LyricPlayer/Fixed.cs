@@ -6,7 +6,7 @@ namespace LyricPlayer
     static class Fixed
     {
         public const float AlmostZero = 0.0001f;
-        public const int SongTrackingInterval = 400;
+        public const int SongTrackingInterval = 700;
         public static long UnixTime => (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
 
         public static int RNG(int from, int to)

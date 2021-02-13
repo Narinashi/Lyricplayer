@@ -30,7 +30,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
         public TrackLyric GetLyric(string trackName, string title, string album, string artist, double trackLength)
         {
-            
+
             string body = CallMusicMatchService(trackName, title, album, artist, trackLength);
             if (string.IsNullOrEmpty(body))
                 body = CallMusicMatchService(trackName, title, album, artist, trackLength);
@@ -43,7 +43,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
             var response = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(body);
             List<Lyric> lyric = null;
-            string copyrightHolder = GetCopyright(response).Trim().Replace("\n"," ");
+            string copyrightHolder = GetCopyright(response).Trim().Replace("\n", " ");
 
             var res = response["message"];
             if (res["header"]?["status_code"] == 200)
@@ -84,7 +84,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     if (lyric[0].StartAt > 1)
                                         lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
 
-                                    lyric.Add(new Lyric { Duration = int.MaxValue, Text = "..." });
+                                    //lyric.Add(new Lyric { Duration = int.MaxValue/2 , Text = "..." });
                                     return AddDefaultLyricEffects(new TrackLyric
                                     {
                                         Synchronized = true,
@@ -115,7 +115,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 if (lyric[0].StartAt > 1)
                                     lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
 
-                                lyric.Add(new Lyric { Duration = int.MaxValue, Text = "..." });
+                                //lyric.Add(new Lyric { Duration = int.MaxValue/2, Text = "..." });
 
                                 return AddDefaultLyricEffects(new TrackLyric
                                 {
@@ -221,7 +221,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     };
             }
 
-            File.WriteAllText(Path.Combine("Lyrics", TrackName + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
+            File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
 
             return trackLyric;
         }

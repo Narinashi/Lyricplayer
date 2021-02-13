@@ -1,11 +1,10 @@
 ﻿using GameOverlay.Windows;
 using LyricPlayer.MusicPlayer;
-using LyricPlayer.UI.Overlay.Renderers;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Timers;
 using System.Windows;
 
 
@@ -15,7 +14,7 @@ namespace LyricPlayer.UI.Overlay
     {
         public NarinoMusicPlayer Player { protected set; get; }
         public GraphicsWindow Overlay { protected set; get; }
-        public GameOverlay.Drawing.Point OverlayLocation { set; get; }
+        public Point OverlayLocation { set; get; }
         public Size OverlaySize { set; get; }
         public int FPS
         {
@@ -28,26 +27,15 @@ namespace LyricPlayer.UI.Overlay
         }
         protected Process TargetProcess { set; get; }
         protected string TargetProcessName { set; get; }
-        protected System.Timers.Timer Timer { set; get; }
-
-        protected ILyricOverlayRenderer LyricRenderer { set; get; }
+        protected Timer Timer { set; get; }
 
         public LyricOverlay()
         {
             var token = File.ReadAllText("Token.Token");
             Player = new SpotifyMusicPlayer(token);
-            Player.LyricChanged += PlayerLyricChanged;
-            LyricRenderer = new FloatingLyricRenderer();
 
             var size = DisplayTools.GetPhysicalDisplaySize();
-            OverlaySize = new Size(size.Width, 75);
-            
-            //OverlaySize = new Size(1000, 75);
-            //OverlayLocation = new GameOverlay.Drawing.Point
-            //{
-            //    X = (float)(DisplayTools.GetPhysicalDisplaySize().Width - OverlaySize.Width) / 2,
-            //    Y = 0
-            //};
+            OverlaySize = new Size(size.Width, 115);
         }
 
         public void ShowOverlay(string processName)
@@ -67,13 +55,12 @@ namespace LyricPlayer.UI.Overlay
 
             Overlay.Create();
             Overlay.Show();
-            Overlay.FPS = 70;
+            Overlay.FPS = 90;
 
             if (!string.IsNullOrEmpty(TargetProcessName))
             {
-                //Overlay.FitTo(processWindowHandle);
-                Timer = new System.Timers.Timer();
-                Timer.Elapsed += (s, e) => 
+                Timer = new Timer();
+                Timer.Elapsed += (s, e) =>
                 {
                     if (!(TargetProcess?.HasExited ?? true))
                         Overlay.PlaceAbove(TargetProcess.MainWindowHandle);
@@ -87,28 +74,21 @@ namespace LyricPlayer.UI.Overlay
                 Timer.Start();
             }
 
-            Overlay.Graphics.TextAntiAliasing = true;
-            LyricRenderer.OverlayParent = Overlay;
         }
 
         private void OverlayDrawGraphics(object sender, DrawGraphicsEventArgs e)
         {
             Overlay.IsTopmost = true;
-            LyricRenderer.Render(e);
         }
 
         private void OverlayDestroyGraphics(object sender, DestroyGraphicsEventArgs e)
-            => LyricRenderer.Destroy(e.Graphics);
+        { }
 
 
         private void OverlaySetupGraphics(object sender, SetupGraphicsEventArgs e)
         {
-            LyricRenderer.Setup(e.Graphics);
             e.Graphics.MeasureFPS = true;
+            e.Graphics.TextAntiAliasing = true;
         }
-
-        private void PlayerLyricChanged(object sender, Models.Lyric e)
-           => LyricRenderer.LyricChanged(Player.Lyric, e);
-
     }
 }

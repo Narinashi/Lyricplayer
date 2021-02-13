@@ -64,11 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
-    <Compile Include="LyricEffects\ColorChangeEffect.cs" />
-    <Compile Include="LyricEffects\DriftEffect.cs" />
-    <Compile Include="LyricEffects\LyricEffect.cs" />
-    <Compile Include="LyricEffects\ShakeEffect.cs" />
-    <Compile Include="LyricEffects\SizeChangeEffect.cs" />
     <Compile Include="LyricEngine\NarinoLyricEngine.cs" />
     <Compile Include="LyricFetcher\ILyricFetcher.cs" />
     <Compile Include="LyricEngine\ILyricEngine.cs" />
@@ -78,9 +73,6 @@
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicMatchModels.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\ProxiedMusicmatchLyricFetcher.cs" />
     <Compile Include="Models\PlayerStatus.cs" />
-    <Compile Include="Models\FileInfo.cs" />
-    <Compile Include="Models\Lyric.cs" />
-    <Compile Include="Models\TrackLyric.cs" />
     <Compile Include="MusicPlayer\MusicPlayer.cs" />
     <Compile Include="MusicPlayer\NarinoMusicPlayer.cs" />
     <Compile Include="MusicPlayer\RepeatType.cs" />
@@ -91,13 +83,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="SoundEngine\SpotifyEngine.cs" />
+    <Compile Include="Utilities\Extentions.cs" />
     <Compile Include="Utilities\PauseableTimer.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SoundEngine\NAudioEngine.cs" />
-    <Compile Include="Models\TrackInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -124,6 +116,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\LyricPlayer.Model\LyricPlayer.Model.csproj">
+      <Project>{34a5b7a4-880c-47b8-a37e-c049a494bc36}</Project>
+      <Name>LyricPlayer.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

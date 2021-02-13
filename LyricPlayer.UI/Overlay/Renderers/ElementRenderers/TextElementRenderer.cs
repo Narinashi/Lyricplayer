@@ -1,6 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.UI.Overlay.Elements;
+using LyricPlayer.Model.Elements;
 using System.Collections.Generic;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
@@ -26,15 +26,15 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             if (element.BackGroundColor == Color.Transparent)
                 gfx.DrawText(font, font.FontSize,
                     Brushes[element.TextColor],
-                    element.AbsolutePosition.X + element.Padding.Left,
-                    element.AbsolutePosition.Y + element.Padding.Top,
+                    element.AbsoluteLocation.X + element.Padding.Left,
+                    element.AbsoluteLocation.Y + element.Padding.Top,
                     element.Text);
             else
                 gfx.DrawTextWithBackground(font, font.FontSize,
                     Brushes[element.TextColor],
                     Brushes[element.BackGroundColor],
-                    element.AbsolutePosition.X + element.Padding.Left,
-                    element.AbsolutePosition.Y + element.Padding.Top,
+                    element.AbsoluteLocation.X + element.Padding.Left,
+                    element.AbsoluteLocation.Y + element.Padding.Top,
                     element.Text);
         }
 

@@ -1,21 +1,17 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
+using LyricPlayer.Model.Elements;
 using LyricPlayer.UI.Overlay.Elements;
 using System;
 
 namespace LyricPlayer.UI.Overlay.EffectPlayers
 {
-    internal class FloatingEffectPlayer : Effect<RenderElement>
+    internal class FloatingEffectPlayer : EffectPlayer<RenderElement>
     {
         private FastNoise Noise { set; get; }
-        public float Trauma { set; get; }
-        public float TraumaMult { set; get; }
-        public float TraumaMag { set; get; }
-        public float TraumaDecay { set; get; }
-
+      
         protected float timeCounter;
 
-        public override int ElementType => ElementTypes.TextElement;
         protected override void InternalApplyEffect(RenderElement element, DrawGraphicsEventArgs renderArgs)
         {
             var deltaTime = renderArgs.DeltaTime / 1000f;
@@ -27,10 +23,10 @@ namespace LyricPlayer.UI.Overlay.EffectPlayers
             point.Y *= TraumaMag * Trauma;
 
             element.Rotation += Noise.GetCubic(timeCounter, 1) / 10;
-            element.Position = new Point
+            element.Location = new Point
             {
-                X = element.Position.X + point.X,
-                Y = element.Position.Y + point.Y
+                X = element.Location.X + point.X,
+                Y = element.Location.Y + point.Y
             };
 
             Trauma -= deltaTime * TraumaDecay * (Trauma + 0.3f);

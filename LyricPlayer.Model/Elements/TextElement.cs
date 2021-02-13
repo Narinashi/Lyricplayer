@@ -1,9 +1,17 @@
 ﻿using GameOverlay.Drawing;
+using Newtonsoft.Json;
 
-namespace LyricPlayer.UI.Overlay.Elements
+namespace LyricPlayer.Model.Elements
 {
-    internal class TextElement : RenderElement
+    public class TextElement : RenderElement
     {
+        public TextElement(Lyric lyric) : base(lyric)
+        {
+            Text = lyric.Text;
+        }
+        public TextElement() : base() { }
+
+        [JsonIgnore]
         public string Text { set; get; }
         public float FontSize { set; get; }
         public string FontName { set; get; }
@@ -14,5 +22,6 @@ namespace LyricPlayer.UI.Overlay.Elements
         public bool Italic { set; get; }
         public bool Bold { set; get; }
         public bool WordWrap { set; get; }
+        public bool AutoSize { set; get; } = true;       
     }
 }

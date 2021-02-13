@@ -1,4 +1,5 @@
-﻿using LyricPlayer.Models;
+﻿using LyricPlayer.Model;
+using LyricPlayer.Models;
 using LyricPlayer.SoundEngine;
 using System;
 

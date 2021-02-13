@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {
@@ -27,7 +28,6 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         protected float timeCounter;
         Font MainLineFont { set; get; }
-        Font MeasurementFont { set; get; }
         SolidBrush MainLineBrush { set; get; }
         Point MainLineSize { set; get; }
         Point MainLineLocation { set; get; }
@@ -36,14 +36,12 @@ namespace LyricPlayer.UI.Overlay.Renderers
         protected TrackLyric TrackLyric { set; get; }
         Image Image { set; get; }
 
-        System.Drawing.Bitmap RedChannel { set; get; }
-        System.Drawing.Bitmap BlueChannel { set; get; }
-        System.Drawing.Bitmap GreenChannel { set; get; }
-
         byte[] ImageContent { set; get; }
         TransformationMatrix TransformMatrix { set; get; }
-        Rectangle BackgroundRenderRectangle { set; get; }
+        Rectangle BackgroundRenderRectangle => CalculateBackgroundImageLocation();
         bool BackgroundChanged { set; get; }
+
+        bool Rendering, LyricChanging = false;
         public FloatingLyricRenderer()
         {
             CurrentLyricText = new List<string> { "..." };
@@ -68,6 +66,8 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         public virtual void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
         {
+            while(Rendering)
+            {  }
             if (trackLyric != TrackLyric)
                 if (Directory.Exists("Backgrounds"))
                 {
@@ -75,21 +75,22 @@ namespace LyricPlayer.UI.Overlay.Renderers
                     if (files.Any())
                         ImageContent = File.ReadAllBytes(files[1/*new Random().Next(0, files.Count)*/]);
 
-                    BackgroundRenderRectangle = CalculateBackgroundImageLocation();
                     Reset();
                     BackgroundChanged = true;
                 }
 
             TrackLyric = trackLyric;
 
+            LyricChanging = true;
             CurrentLyricText.Clear();
             CurrentLyricText.Add(currentLyric.Text);
+            LyricChanging = false;
         }
 
         public virtual void Render(DrawGraphicsEventArgs e)
         {
             var gfx = e.Graphics;
-            if (!(CurrentLyricText?.Any() ?? false))
+            if (!(CurrentLyricText?.Any() ?? false) || LyricChanging)
                 return;
 
             if (BackgroundChanged && ImageContent != null)
@@ -123,9 +124,10 @@ namespace LyricPlayer.UI.Overlay.Renderers
                 gfx.TransformEnd();
             }
 
-            TransformMatrix = TransformationMatrix.Rotation(Noise.GetCubic(timeCounter, 1) / 10, new Point { X = OverlayParent.Width / 2, Y = OverlayParent.Height / 2 });
+            TransformMatrix = TransformationMatrix.Rotation(Noise.GetCubic(timeCounter, 1) / 20, new Point { X = OverlayParent.Width / 2, Y = OverlayParent.Height / 2 });
             gfx.TransformStart(TransformMatrix);
-
+            
+            Rendering = true;
             for (int index = 0; index < CurrentLyricText.Count; index++)
             {
                 var line = CurrentLyricText[index];
@@ -204,18 +206,18 @@ namespace LyricPlayer.UI.Overlay.Renderers
             }
 
             gfx.TransformEnd();
-
+            Rendering = false;
            // var info = $"FPS:{gfx.FPS} delta:{e.DeltaTime}ms";
            // gfx.DrawText(MainLineFont, 9.5f, MainLineBrush, 0, 0, info);
 
 
-            var copyrightTextSize = gfx.MeasureString(MainLineFont, 10, TrackLyric?.Copyright ?? "");
+            var copyrightTextSize = gfx.MeasureString(MainLineFont, 7, TrackLyric?.Copyright ?? "");
             var copyrightLocation = new Point
             {
                 //X = OverlayParent.Width > copyrightTextSize.X ? OverlayParent.Width - copyrightTextSize.X : 0,
                 Y = OverlayParent.Height > copyrightTextSize.Y ? OverlayParent.Height - copyrightTextSize.Y : 0
             };
-            gfx.DrawText(MainLineFont, 10, MainLineBrush, copyrightLocation, TrackLyric?.Copyright ?? "");
+            gfx.DrawText(MainLineFont, 7, MainLineBrush, copyrightLocation, TrackLyric?.Copyright ?? "");
 
             gfx.EndScene();
         }
@@ -226,7 +228,6 @@ namespace LyricPlayer.UI.Overlay.Renderers
             MainLineBrush = gfx.CreateSolidBrush(FontColor);
             gfx.TextAntiAliasing = true;
             gfx.PerPrimitiveAntiAliasing = true;
-            BackgroundRenderRectangle = CalculateBackgroundImageLocation();
         }
 
         protected void Reset()
@@ -278,9 +279,5 @@ namespace LyricPlayer.UI.Overlay.Renderers
             //}
             return result;
         }
-
-
     }
-
-
 }

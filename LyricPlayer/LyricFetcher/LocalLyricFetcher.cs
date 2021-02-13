@@ -12,7 +12,8 @@ namespace LyricPlayer.LyricFetcher
     {
         public TrackLyric GetLyric(string trackName, string Title, string Album, string Artist, double trackLength)
         {
-            var filePath = Path.Combine("Lyrics", trackName + ".lyr");
+            var validFileName = trackName.ReplaceToValidFileName();
+            var filePath = Path.Combine("Lyrics", validFileName + ".lyr");
             if (!File.Exists(filePath))
                 return null;
 

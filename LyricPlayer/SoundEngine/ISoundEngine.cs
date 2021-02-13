@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LyricPlayer.Model;
 using LyricPlayer.Models;
+using System;
+
 
 namespace LyricPlayer.SoundEngine
 {

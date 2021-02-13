@@ -24,14 +24,6 @@ namespace LyricPlayer.UI
             R = (((color.R + secondColor.R) % 1f) + 1f) % 1f,
         };
 
-        public static GameOverlay.Drawing.Color Add(this GameOverlay.Drawing.Color color, ColorDelta secondColor) => new GameOverlay.Drawing.Color
-        {
-            A = (color.A + secondColor.A),
-            B = (color.B + secondColor.B),
-            G = (color.G + secondColor.G),
-            R = (color.R + secondColor.R),
-        };
-
         public static bool HasType<T, U>(this List<U> list) 
             => list.FirstOrDefault(x => x.GetType() == typeof(T)) != null;
     }

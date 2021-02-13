@@ -1,6 +1,6 @@
 ﻿using LyricPlayer.LyricEngine;
 using LyricPlayer.LyricFetcher;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using LyricPlayer.PlaylistController;
 using LyricPlayer.SoundEngine;
 using System;
@@ -17,14 +17,19 @@ namespace LyricPlayer.MusicPlayer
         }
         public override void Initialize()
         {
-            SoundEngine = new NAudioPlayer();
-            LyricEngine = new NarinoLyricEngine();
-            SoundEngine.TrackStopped += (s, e) =>
+            if (LyricEngine == null)
             {
-                Next();
-            };
-            LyricEngine.LyricChanged += (s, e) => OnLyricChanged(e);
-            //LyricFetcher = new LocalLyricFetcher();
+                LyricEngine = new NarinoLyricEngine();
+                LyricEngine.LyricChanged += (s, e) => OnLyricChanged(e);
+            }
+            if (SoundEngine == null)
+            {
+                SoundEngine = new NAudioPlayer();
+                SoundEngine.TrackStopped += (s, e) =>
+                {
+                    Next();
+                };
+            }
             LyricFetcher = new LocalWithMusicmatchLyricFetcher(AccessToken);
         }
 
