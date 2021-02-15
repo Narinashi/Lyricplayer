@@ -1,7 +1,7 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using LyricPlayer.Model;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using LyricPlayer.MusicPlayer;
 using LyricPlayer.SoundEngine;
 using System;

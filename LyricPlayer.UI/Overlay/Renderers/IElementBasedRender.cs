@@ -7,14 +7,18 @@ using LyricPlayer.UI.Overlay.Renderers.ElementRenderers;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {
-    internal interface IElementBasedRender : IElementRenderer
+    public interface IElementBasedRender 
     {
         RenderElement RootElement { set; get; }
+
+        void Destroy(Graphics gfx);
+
+        void Setup(Graphics gfx);
 
         void Render(DrawGraphicsEventArgs renderArgs);
 
         void LyricChanged(TrackLyric trackLyric, Lyric currentLyric);
 
-        void Init(ILyricEngine lyricEngine, Point size, Point location);
+        void Init(ILyricEngine lyricEngine,Point size);
     }
 }

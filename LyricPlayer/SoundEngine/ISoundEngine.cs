@@ -1,5 +1,5 @@
 ﻿using LyricPlayer.Model;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using System;
 
 

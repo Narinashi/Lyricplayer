@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{34A5B7A4-880C-47B8-A37E-C049A494BC36}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>LyricPlayer.Model</RootNamespace>
     <AssemblyName>LyricPlayer.Model</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GameOverlay, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GameOverlay.Net.4.3.0\lib\net45\GameOverlay.dll</HintPath>
@@ -55,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Effects\Effect.cs" />
     <Compile Include="Effects\ShakeEffect.cs" />
+    <Compile Include="Elements\BasicElement.cs" />
     <Compile Include="Elements\ElementCollection.cs" />
     <Compile Include="Elements\ImageElement.cs" />
     <Compile Include="Elements\RenderElement.cs" />

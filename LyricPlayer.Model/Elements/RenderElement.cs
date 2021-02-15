@@ -4,7 +4,7 @@ using System;
 
 namespace LyricPlayer.Model.Elements
 {
-    public class RenderElement : IDisposable
+    public abstract class RenderElement : IDisposable
     {
         public RenderElement()
         { ChildElements = new ElementCollection() { Parent = this }; }
@@ -45,15 +45,15 @@ namespace LyricPlayer.Model.Elements
             Left = AbsoluteLocation.X + Padding.Left,
             Top = AbsoluteLocation.Y + Padding.Top,
             Bottom = AbsoluteLocation.Y + Size.Y - Padding.Bottom,
-            Right = AbsoluteLocation.X + Size.Y - Padding.Right
+            Right = AbsoluteLocation.X + Size.X - Padding.Right
         };
 
         [JsonIgnore]
         public Lyric Lyric { get; protected set; }
 
         [JsonIgnore]
-        public RenderElement ParentElement { set; get; }
-        public ElementCollection ChildElements { get; }
+        public RenderElement ParentElement { get; set; }
+        public ElementCollection ChildElements { get; protected set; }
 
         public virtual void Dispose()
         {

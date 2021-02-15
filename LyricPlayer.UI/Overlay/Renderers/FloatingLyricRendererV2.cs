@@ -1,31 +1,27 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.LyricEffects;
-using LyricPlayer.Models;
-using LyricPlayer.UI.Overlay.EffectPlayers;
+using LyricPlayer.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {
     class FloatingLyricRendererV2 : FloatingLyricRenderer
     {
         public override string RendererKey => "FloatingLyricRendererV2";
-        Dictionary<Type, LyricEffectPlayerBase> EffectPlayers { set; get; }
+        //Dictionary<Type, LyricEffectPlayerBase> EffectPlayers { set; get; }
         LyricHolder Holder = new LyricHolder { TextToDraw = "...", Duration = int.MaxValue };
         Dictionary<string, Font> Fonts { set; get; }
-        Dictionary<Color,SolidBrush> Brushes { set; get; }
-        List<LyricEffect> CurrentLyricEffects { set; get; }
+        Dictionary<Color, SolidBrush> Brushes { set; get; }
+        //List<LyricEffect> CurrentLyricEffects { set; get; }
 
 
         public FloatingLyricRendererV2()
         {
-            EffectPlayers = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(LyricEffectPlayerBase)))
-                .ToDictionary(x => x.BaseType.GenericTypeArguments.First(),
-                a => Activator.CreateInstance(a) as LyricEffectPlayerBase);
+            //EffectPlayers = Assembly.GetExecutingAssembly().GetTypes()
+            //    .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(LyricEffectPlayerBase)))
+            //    .ToDictionary(x => x.BaseType.GenericTypeArguments.First(),
+            //    a => Activator.CreateInstance(a) as LyricEffectPlayerBase);
 
             Fonts = new Dictionary<string, Font>();
             Brushes = new Dictionary<Color, SolidBrush>();
@@ -41,22 +37,22 @@ namespace LyricPlayer.UI.Overlay.Renderers
             if (currentLyric == trackLyric.Lyric[0])
                 Reset();
 
-            Holder.TextToDraw = currentLyric.Text;
-            CurrentLyricEffects = currentLyric.Effects;
+            //Holder.TextToDraw = currentLyric.Text;
+            //CurrentLyricEffects = currentLyric.Effects;
 
-            foreach (var player in EffectPlayers)
-                player.Value.Initiated = false;
+            //foreach (var player in EffectPlayers)
+            //    player.Value.Initiated = false;
         }
 
         public override void Render(DrawGraphicsEventArgs e)
         {
             var gfx = e.Graphics;
-            
-            if ((CurrentLyricEffects?.Any() ?? false) && e.FrameCount > 60)
-            {
-                foreach (var effect in CurrentLyricEffects)
-                    EffectPlayers[effect.GetType()].ApplyEffect(Holder, effect, e);
-            }
+
+            //if ((CurrentLyricEffects?.Any() ?? false) && e.FrameCount > 60)
+            //{
+            //    foreach (var effect in CurrentLyricEffects)
+            //        EffectPlayers[effect.GetType()].ApplyEffect(Holder, effect, e);
+            //}
 
             gfx.BeginScene();
             gfx.ClearScene(Holder.BackgroundColor);
@@ -89,18 +85,18 @@ namespace LyricPlayer.UI.Overlay.Renderers
             //decay faster at higher values
             Trauma -= deltaTime * TraumaDecay * (Trauma + 0.3f);
 
-            gfx.DrawText(Fonts[Holder.FontName],Holder.FontSize, Brushes[Holder.ForeColor], Holder.CurrentLocation, Holder.TextToDraw);
+            gfx.DrawText(Fonts[Holder.FontName], Holder.FontSize, Brushes[Holder.ForeColor], Holder.CurrentLocation, Holder.TextToDraw);
 
             var info = $"FPS:{gfx.FPS} delta:{e.DeltaTime}ms";
             gfx.DrawText(Fonts[Holder.FontName], 9.5f, Brushes[Holder.ForeColor], 0, 0, info);
 
-            var copyrightTextSize = gfx.MeasureString(Fonts[Holder.FontName],10, TrackLyric?.Copyright??"");
+            var copyrightTextSize = gfx.MeasureString(Fonts[Holder.FontName], 10, TrackLyric?.Copyright ?? "");
             var copyrightLocation = new Point
             {
                 X = OverlayParent.Width > copyrightTextSize.X ? OverlayParent.Width - copyrightTextSize.X : 0,
                 Y = OverlayParent.Height > copyrightTextSize.Y ? OverlayParent.Height - copyrightTextSize.Y : 0
             };
-            gfx.DrawText(Fonts[Holder.FontName], 10, Brushes[Holder.ForeColor], copyrightLocation, TrackLyric?.Copyright??"");
+            gfx.DrawText(Fonts[Holder.FontName], 10, Brushes[Holder.ForeColor], copyrightLocation, TrackLyric?.Copyright ?? "");
 
             gfx.EndScene();
         }

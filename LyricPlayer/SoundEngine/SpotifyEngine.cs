@@ -1,5 +1,5 @@
 ﻿using LyricPlayer.LyricEngine;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using Newtonsoft.Json;
 using SpotifyAPI.Web;
 using System;
@@ -59,7 +59,7 @@ namespace LyricPlayer.SoundEngine
             }
         }
 
-        public Models.FileInfo CurrentFileInfo { get; private set; }
+        public Model.FileInfo CurrentFileInfo { get; private set; }
 
         public int TrackLength { get; private set; }
 
@@ -76,7 +76,7 @@ namespace LyricPlayer.SoundEngine
 
         public event EventHandler TrackStopped;
 
-        public void Load(Models.FileInfo trackInfo)
+        public void Load(Model.FileInfo trackInfo)
         { }
 
         public void Pause()

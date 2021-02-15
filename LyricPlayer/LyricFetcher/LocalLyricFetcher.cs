@@ -1,8 +1,6 @@
-﻿using LyricPlayer.LyricEffects;
-using LyricPlayer.Models;
+﻿using LyricPlayer.Model;
+using LyricPlayer.Model.Elements;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 
@@ -27,9 +25,9 @@ namespace LyricPlayer.LyricFetcher
             if (lyric[0].StartAt > 0)
                 lyric.Insert(0, new Lyric
                 {
-                    Text = "...",
                     StartAt = 0,
-                    Duration = lyric[0].StartAt
+                    Duration = lyric[0].StartAt,
+                    Element = new TextElement("...")
                 });
 
             for (int index = 0; index < lyric.Count - 1; index++)
@@ -46,33 +44,8 @@ namespace LyricPlayer.LyricFetcher
         {
             var lyric = trackLyric.Lyric;
 
-            for (int index = 0; index < lyric.Count; index++)
-            {
-                if (index % 2 == 0)
-                    lyric[index].Effects = new List<LyricEffect>
-                    {
-                        new ColorChangeEffect
-                        {
-                            BackgroundColorChangeFrom = Color.FromArgb(70, 0, 0, 0),
-                            BackgroundColorChangeTo = Color.FromArgb(70, 255, 80, 255),
-                            ForeColorChangeTo = Color.FromArgb(210, 255, 255, 80),
-                            ForeColorChangeFrom = Color.FromArgb(210, 255, 255, 255),
-                            Duration = lyric[index].Duration
-                        }
-                    };
-                else
-                    lyric[index].Effects = new List<LyricEffect>
-                    {
-                        new ColorChangeEffect
-                        {
-                            BackgroundColorChangeTo = Color.FromArgb(70, 0, 0, 0),
-                            BackgroundColorChangeFrom = Color.FromArgb(70, 255, 80, 255),
-                            ForeColorChangeFrom = Color.FromArgb(210, 255, 255, 80),
-                            ForeColorChangeTo = Color.FromArgb(210, 255, 255, 255),
-                            Duration = lyric[index].Duration
-                        }
-                    };
-            }
+            foreach (var l in lyric.Where(x => x.Element == null))
+                l.Element = new TextElement(l) { AutoSize = true, FontName = "Antonio", FontSize = 70 };
 
             return trackLyric;
         }

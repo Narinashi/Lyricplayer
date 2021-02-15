@@ -78,6 +78,7 @@
     <Compile Include="Overlay\Renderers\ElementBasedRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\BasicElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\ElementRenderer.cs" />
+    <Compile Include="Overlay\Renderers\ElementRenderers\RendererResolver.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\TextElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\FloatingLyricRenderer.cs" />
     <Compile Include="Overlay\Renderers\FloatingLyricRendererV2.cs" />

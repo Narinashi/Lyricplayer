@@ -1,62 +1,56 @@
-﻿using GameOverlay.Drawing;
-using GameOverlay.Windows;
-using LyricPlayer.Model.Elements;
-using LyricPlayer.UI.Overlay.Elements;
-using System;
-
-namespace LyricPlayer.UI.Overlay.EffectPlayers
+﻿namespace LyricPlayer.UI.Overlay.EffectPlayers
 {
-    internal class FloatingEffectPlayer : EffectPlayer<RenderElement>
-    {
-        private FastNoise Noise { set; get; }
-      
-        protected float timeCounter;
+    //internal class FloatingEffectPlayer : EffectPlayer<RenderElement>
+    //{
+    //    private FastNoise Noise { set; get; }
 
-        protected override void InternalApplyEffect(RenderElement element, DrawGraphicsEventArgs renderArgs)
-        {
-            var deltaTime = renderArgs.DeltaTime / 1000f;
-            var point = GetPoint(1, timeCounter);
+    //    protected float timeCounter;
 
-            timeCounter += deltaTime * (float)Math.Pow(Trauma, 0.3f) * TraumaMult;
+    //    protected override void InternalApplyEffect(RenderElement element, DrawGraphicsEventArgs renderArgs)
+    //    {
+    //        var deltaTime = renderArgs.DeltaTime / 1000f;
+    //        var point = GetPoint(1, timeCounter);
 
-            point.X *= TraumaMag * Trauma;
-            point.Y *= TraumaMag * Trauma;
+    //        timeCounter += deltaTime * (float)Math.Pow(Trauma, 0.3f) * TraumaMult;
 
-            element.Rotation += Noise.GetCubic(timeCounter, 1) / 10;
-            element.Location = new Point
-            {
-                X = element.Location.X + point.X,
-                Y = element.Location.Y + point.Y
-            };
+    //        point.X *= TraumaMag * Trauma;
+    //        point.Y *= TraumaMag * Trauma;
 
-            Trauma -= deltaTime * TraumaDecay * (Trauma + 0.3f);
-        }
+    //        element.Rotation += Noise.GetCubic(timeCounter, 1) / 10;
+    //        element.Location = new Point
+    //        {
+    //            X = element.Location.X + point.X,
+    //            Y = element.Location.Y + point.Y
+    //        };
 
-        protected override void Setup()
-        {
-            Noise = new FastNoise();
-            Noise.SetFrequency(0.001f);
-            Reset();
-        }
+    //        Trauma -= deltaTime * TraumaDecay * (Trauma + 0.3f);
+    //    }
 
-        protected Point GetPoint(float time, float seed)
-        {
-            var f1 = Noise.GetPerlin(seed, seed - time);
-            var f2 = Noise.GetCubic(seed, seed + time);
-            return new Point
-            {
-                X = f1,
-                Y = f2
-            };
-        }
+    //    protected override void Setup()
+    //    {
+    //        Noise = new FastNoise();
+    //        Noise.SetFrequency(0.001f);
+    //        Reset();
+    //    }
 
-        protected void Reset()
-        {
-            Trauma = 1;
-            TraumaMult = 12; //the power of movement
-            TraumaMag = 4; //the range of movment
-            TraumaDecay = 0.000000000001f;
-            timeCounter = 0;
-        }
-    }
+    //    protected Point GetPoint(float time, float seed)
+    //    {
+    //        var f1 = Noise.GetPerlin(seed, seed - time);
+    //        var f2 = Noise.GetCubic(seed, seed + time);
+    //        return new Point
+    //        {
+    //            X = f1,
+    //            Y = f2
+    //        };
+    //    }
+
+    //    protected void Reset()
+    //    {
+    //        Trauma = 1;
+    //        TraumaMult = 12; //the power of movement
+    //        TraumaMag = 4; //the range of movment
+    //        TraumaDecay = 0.000000000001f;
+    //        timeCounter = 0;
+    //    }
+    //}
 }

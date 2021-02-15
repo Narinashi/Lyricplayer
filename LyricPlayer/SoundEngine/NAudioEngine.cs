@@ -1,4 +1,4 @@
-﻿using LyricPlayer.Models;
+﻿using LyricPlayer.Model;
 using NAudio.Wave;
 using System;
 using System.IO;
@@ -28,7 +28,7 @@ namespace LyricPlayer.SoundEngine
                     fileReader.CurrentTime = value;
             }
         }
-        public Models.FileInfo CurrentFileInfo => _CurrentFileInfo;
+        public Model.FileInfo CurrentFileInfo => _CurrentFileInfo;
         public event EventHandler TrackStopped;
         public int TrackLength => (int)(fileReader?.TotalTime.TotalMilliseconds ?? 0);
 
@@ -53,10 +53,10 @@ namespace LyricPlayer.SoundEngine
         }
         public WaveOutEvent waveOutEvent { set; get; }
         public Mp3FileReader fileReader { set; get; }
-        private Models.FileInfo _CurrentFileInfo { set; get; }
+        private Model.FileInfo _CurrentFileInfo { set; get; }
         private float volumeBeforeMute { set; get; } = 0.3f;
         private bool stoppedByUser { set; get; } = false;
-        public void Load(Models.FileInfo fileInfo)
+        public void Load(Model.FileInfo fileInfo)
         {
             if (fileInfo == null)
                 throw new ArgumentNullException("fileInfo");

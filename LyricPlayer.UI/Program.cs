@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LyricPlayer.Model;
+using System;
 using System.IO;
 
 namespace LyricPlayer.UI
@@ -26,10 +27,10 @@ namespace LyricPlayer.UI
                     {
                         var directoryFiles = Directory.GetFiles(file);
                         foreach (var directoryFile in directoryFiles)
-                            overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = directoryFile });
+                            overlay.Player.Playlist.Add(new TrackInfo { FileAddress = directoryFile });
                     }
                     else if (File.Exists(file))
-                        overlay.Player.Playlist.Add(new Models.TrackInfo { FileAddress = file });
+                        overlay.Player.Playlist.Add(new TrackInfo { FileAddress = file });
                 }
             }
 
@@ -41,7 +42,7 @@ namespace LyricPlayer.UI
 
                 if (data.Key == ConsoleKey.Spacebar)
                 {
-                    if (overlay.Player.PlayerStatus == Models.PlayerStatus.Playing)
+                    if (overlay.Player.PlayerStatus == Model.PlayerStatus.Playing)
                         overlay.Player.Pause();
                     else
                         overlay.Player.Play();

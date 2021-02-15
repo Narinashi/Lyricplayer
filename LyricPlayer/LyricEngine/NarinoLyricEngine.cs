@@ -1,5 +1,6 @@
 ﻿using LyricPlayer.Model;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
+using LyricPlayer.Model.Elements;
 using LyricPlayer.SoundEngine;
 using LyricPlayer.Utilities;
 using System;
@@ -69,7 +70,7 @@ namespace LyricPlayer.LyricEngine
                     Synchronized = true,
                     Lyric = new List<Lyric>
                     {
-                        new Lyric { Duration=int.MaxValue, Text = string.Join("\r\n",lyric.Lyric.Select(x=>x.Text).ToArray()) }
+                        new Lyric { Duration=int.MaxValue, Element = new TextElement("Lyric isnt synchronized") }
                     }
                 };
             else

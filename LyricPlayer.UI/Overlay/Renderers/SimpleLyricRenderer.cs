@@ -1,6 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,23 +74,23 @@ namespace LyricPlayer.UI.Overlay.Renderers
             var skipCount = currnetLyricIndex - halfSize;
             List<Lyric> fakeLyric = new List<Lyric>();
 
-            if (skipCount < 0)
-            {
-                fakeLyric = Enumerable.Range(0, Math.Abs(skipCount))
-                    .Select(x => new Lyric { Text = "..." }).ToList();
-                skipCount = 0;
-            }
+            //if (skipCount < 0)
+            //{
+            //    fakeLyric = Enumerable.Range(0, Math.Abs(skipCount))
+            //        .Select(x => new Lyric { Text = "..." }).ToList();
+            //    skipCount = 0;
+            //}
 
             var displayingLyric = fakeLyric.Concat(TrackLyric.Lyric).Skip(skipCount)
                  .Take(DisplayingLyricLinesCount).ToList();
 
             var lowOnLines = DisplayingLyricLinesCount - displayingLyric.Count;
 
-            if (lowOnLines > 0)
-                displayingLyric.AddRange(Enumerable.Range(0, lowOnLines).Select(x => new Lyric { Text = "..." }));
+            //if (lowOnLines > 0)
+            //    displayingLyric.AddRange(Enumerable.Range(0, lowOnLines).Select(x => new Lyric { Text = "..." }));
 
-            for (int index = 0; index < DisplayingLyricLinesCount; index++)
-                DisplayingLyric[index].TextToDraw = displayingLyric[index].Text;
+            //for (int index = 0; index < DisplayingLyricLinesCount; index++)
+            //    DisplayingLyric[index].TextToDraw = displayingLyric[index].Text;
         }
 
         public virtual void Render(DrawGraphicsEventArgs e)

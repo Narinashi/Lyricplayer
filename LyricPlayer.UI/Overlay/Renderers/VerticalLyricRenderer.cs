@@ -1,6 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,31 +44,31 @@ namespace LyricPlayer.UI.Overlay.Renderers
             var skipCount = currnetLyricIndex - halfSize;
             List<Lyric> fakeLyric = new List<Lyric>();
 
-            if (skipCount < 0)
-            {
-                fakeLyric = Enumerable.Range(0, Math.Abs(skipCount))
-                    .Select(x => new Lyric { Text = "..." }).ToList();
-                skipCount = 0;
-            }
+            //if (skipCount < 0)
+            //{
+            //    fakeLyric = Enumerable.Range(0, Math.Abs(skipCount))
+            //        .Select(x => new Lyric { Text = "..." }).ToList();
+            //    skipCount = 0;
+            //}
 
             var displayingLyric = fakeLyric.Concat(TrackLyric.Lyric).Skip(skipCount)
                  .Take(DisplayingLyricLinesCount).ToList();
 
             var lowOnLines = DisplayingLyricLinesCount - displayingLyric.Count +1;
 
-            if (lowOnLines > 0)
-                displayingLyric.AddRange(Enumerable.Range(0, lowOnLines).Select(x => new Lyric { Text = "..." }));
+            //if (lowOnLines > 0)
+            //    displayingLyric.AddRange(Enumerable.Range(0, lowOnLines).Select(x => new Lyric { Text = "..." }));
 
           
-            if (displayingLyric.Count < DisplayingLyricLinesCount)
-                return;
+            //if (displayingLyric.Count < DisplayingLyricLinesCount)
+            //    return;
 
-            TextHandler.MoveUp();
-            for (int index = 0; index < DisplayingLyricLinesCount; index++)
-            {
-                DisplayingLyric[index].TextToDraw = displayingLyric[index].Text;
-                DisplayingLyric[index].IsCurrent = displayingLyric[index] == currentLyric;
-            }
+            //TextHandler.MoveUp();
+            //for (int index = 0; index < DisplayingLyricLinesCount; index++)
+            //{
+            //    DisplayingLyric[index].TextToDraw = displayingLyric[index].Text;
+            //    DisplayingLyric[index].IsCurrent = displayingLyric[index] == currentLyric;
+            //}
         }
 
         public override void Render(DrawGraphicsEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using GameOverlay.Windows;
 using LyricPlayer.MusicPlayer;
+using LyricPlayer.UI.Overlay.Renderers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -7,13 +8,13 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 
-
 namespace LyricPlayer.UI.Overlay
 {
     public class LyricOverlay
     {
         public NarinoMusicPlayer Player { protected set; get; }
         public GraphicsWindow Overlay { protected set; get; }
+        public IElementBasedRender Renderer { get; protected set; }
         public Point OverlayLocation { set; get; }
         public Size OverlaySize { set; get; }
         public int FPS
@@ -33,9 +34,10 @@ namespace LyricPlayer.UI.Overlay
         {
             var token = File.ReadAllText("Token.Token");
             Player = new SpotifyMusicPlayer(token);
-
+            Renderer = new ElementBasedRenderer();
             var size = DisplayTools.GetPhysicalDisplaySize();
-            OverlaySize = new Size(size.Width, 115);
+            OverlaySize = new Size(1920, 115);
+            OverlayLocation = new Point(0, 0);
         }
 
         public void ShowOverlay(string processName)
@@ -52,6 +54,9 @@ namespace LyricPlayer.UI.Overlay
             Overlay.SetupGraphics += OverlaySetupGraphics;
             Overlay.DestroyGraphics += OverlayDestroyGraphics;
             Overlay.DrawGraphics += OverlayDrawGraphics;
+
+            Player.LyricChanged += (s, e) => Renderer.LyricChanged(Player.Lyric, e);
+            Renderer.Init(null, new GameOverlay.Drawing.Point((float)OverlaySize.Width, (float)OverlaySize.Height));
 
             Overlay.Create();
             Overlay.Show();
@@ -79,16 +84,18 @@ namespace LyricPlayer.UI.Overlay
         private void OverlayDrawGraphics(object sender, DrawGraphicsEventArgs e)
         {
             Overlay.IsTopmost = true;
+            Renderer.Render(e);
         }
 
         private void OverlayDestroyGraphics(object sender, DestroyGraphicsEventArgs e)
-        { }
+        { Renderer?.Destroy(e.Graphics); }
 
 
         private void OverlaySetupGraphics(object sender, SetupGraphicsEventArgs e)
         {
             e.Graphics.MeasureFPS = true;
             e.Graphics.TextAntiAliasing = true;
+            Renderer.Setup(e.Graphics);
         }
     }
 }

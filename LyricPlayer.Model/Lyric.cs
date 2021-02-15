@@ -7,11 +7,6 @@ namespace LyricPlayer.Model
     public class Lyric
     {
         /// <summary>
-        /// a paragraph or sentence
-        /// </summary>
-        public string Text { set; get; }
-
-        /// <summary>
         /// can be used to display other type of texts (or even elements)
         /// </summary>
         public List<Lyric> SubTexts { set; get; }

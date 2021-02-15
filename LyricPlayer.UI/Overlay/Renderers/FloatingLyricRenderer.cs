@@ -1,6 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.Models;
+using LyricPlayer.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -83,7 +83,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
             LyricChanging = true;
             CurrentLyricText.Clear();
-            CurrentLyricText.Add(currentLyric.Text);
+            //CurrentLyricText.Add(currentLyric.Text);
             LyricChanging = false;
         }
 

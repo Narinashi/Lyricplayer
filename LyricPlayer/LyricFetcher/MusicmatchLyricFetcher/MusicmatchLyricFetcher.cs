@@ -1,9 +1,8 @@
-﻿using LyricPlayer.LyricEffects;
-using LyricPlayer.Models;
+﻿using LyricPlayer.Model;
+using LyricPlayer.Model.Elements;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -38,7 +37,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                 return AddDefaultLyricEffects(new TrackLyric
                 {
                     Synchronized = true,
-                    Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Text = "Lyric not found" } }
+                    Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Element = new TextElement("Lyric not found") } }
                 });
 
             var response = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(body);
@@ -66,14 +65,14 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     lyric = JsonConvert.DeserializeObject<List<MusicmatchLyricMDL>>(resBody)
                                     .Select(x => new Lyric
                                     {
-                                        Text = x.text,
+                                        Element = new TextElement(x.text),
                                         StartAt = (int)(x.time.total * 1000)
                                     }).ToList();
 
                                     for (int index = 0; index < lyric.Count; index++)
                                     {
-                                        if (string.IsNullOrEmpty(lyric[index].Text?.Trim()))
-                                            lyric[index].Text = "...";
+                                        if (string.IsNullOrEmpty((lyric[index].Element as TextElement).Text?.Trim()))
+                                            (lyric[index].Element as TextElement).Text = "...";
 
                                         if (index == lyric.Count - 1)
                                             lyric[index].Duration = int.MaxValue;
@@ -82,7 +81,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     }
 
                                     if (lyric[0].StartAt > 1)
-                                        lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
+                                        lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Element = new TextElement("...") });
 
                                     //lyric.Add(new Lyric { Duration = int.MaxValue/2 , Text = "..." });
                                     return AddDefaultLyricEffects(new TrackLyric
@@ -98,14 +97,14 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 lyric = JsonConvert.DeserializeObject<List<MusicmatchLyricMDL>>(resBody)
                                    .Select(x => new Lyric
                                    {
-                                       Text = x.text,
+                                       Element = new TextElement(x.text),
                                        StartAt = (int)(x.time.total * 1000)
                                    }).ToList();
 
                                 for (int index = 0; index < lyric.Count; index++)
                                 {
-                                    if (string.IsNullOrEmpty(lyric[index].Text?.Trim()))
-                                        lyric[index].Text = "...";
+                                    if (string.IsNullOrEmpty((lyric[index].Element as TextElement).Text?.Trim()))
+                                        (lyric[index].Element as TextElement).Text = "...";
 
                                     if (index == lyric.Count - 1)
                                         lyric[index].Duration = int.MaxValue;
@@ -113,7 +112,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                         lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                 }
                                 if (lyric[0].StartAt > 1)
-                                    lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Text = "..." });
+                                    lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Element = new TextElement("...") });
 
                                 //lyric.Add(new Lyric { Duration = int.MaxValue/2, Text = "..." });
 
@@ -142,7 +141,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             return new TrackLyric
                             {
                                 Synchronized = false,
-                                Lyric = resBody.Split('\n').Select(x => new Lyric { Text = x }).ToList(),
+                                Lyric = resBody.Split('\n').Select(x => new Lyric { Element = new TextElement(x) }).ToList(),
                                 Copyright = copyrightHolder
                             };
                         }
@@ -156,7 +155,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         return new TrackLyric
                         {
                             Synchronized = false,
-                            Lyric = resBody.Split('\n').Select(x => new Lyric { Text = x }).ToList(),
+                            Lyric = resBody.Split('\n').Select(x => new Lyric { Element = new TextElement(x) }).ToList(),
                             Copyright = copyrightHolder
                         };
                     }
@@ -173,7 +172,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             {
                                 new Lyric
                                 {
-                                    Text ="Let the beat goes on (Instrumental)",
+                                    Element = new TextElement("Let the beat goes on (Instrumental)"),
                                     Duration = int.MaxValue
                                 }
                             }
@@ -182,7 +181,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             return AddDefaultLyricEffects(new TrackLyric
             {
                 Synchronized = true,
-                Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Text = "Lyric not found" } }
+                Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue } }
             });
         }
 
@@ -193,33 +192,8 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             if (!Directory.Exists("Lyrics"))
                 Directory.CreateDirectory("Lyrics");
 
-            for (int index = 0; index < lyric.Count; index++)
-            {
-                if (index % 2 == 0)
-                    lyric[index].Effects = new List<LyricEffect>
-                    {
-                        new ColorChangeEffect
-                        {
-                            BackgroundColorChangeFrom = Color.FromArgb(70, 0, 0, 0),
-                            BackgroundColorChangeTo = Color.FromArgb(70, 255, 80, 255),
-                            ForeColorChangeTo = Color.FromArgb(210, 255, 255, 80),
-                            ForeColorChangeFrom = Color.FromArgb(210, 255, 255, 255),
-                            Duration = lyric[index].Duration
-                        }
-                    };
-                else
-                    lyric[index].Effects = new List<LyricEffect>
-                    {
-                        new ColorChangeEffect
-                        {
-                            BackgroundColorChangeTo = Color.FromArgb(70, 0, 0, 0),
-                            BackgroundColorChangeFrom = Color.FromArgb(70, 255, 80, 255),
-                            ForeColorChangeFrom = Color.FromArgb(210, 255, 255, 80),
-                            ForeColorChangeTo = Color.FromArgb(210, 255, 255, 255),
-                            Duration = lyric[index].Duration
-                        }
-                    };
-            }
+            foreach (var l in lyric.Where(x => x.Element == null))
+                l.Element = new TextElement(l) { Bold = true, WordWrap = true, FontName = "Antonio", FontSize = 70 };
 
             File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
 

@@ -1,6 +1,7 @@
 ﻿using LyricPlayer.LyricEngine;
 using LyricPlayer.LyricFetcher;
 using LyricPlayer.Model;
+using LyricPlayer.Model.Elements;
 using LyricPlayer.SoundEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace LyricPlayer.MusicPlayer
                             {
                             Duration = int.MaxValue,
                             StartAt = 0,
-                            Text ="Lyric not found"
+                            Element = new TextElement("Lyric isnt synchronized")
                             }
                         }
                         }, SoundEngine);
