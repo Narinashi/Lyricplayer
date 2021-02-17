@@ -37,7 +37,12 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                 return AddDefaultLyricEffects(new TrackLyric
                 {
                     Synchronized = true,
-                    Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue, Element = new TextElement("Lyric not found") } }
+                    Lyric = new List<Lyric> {
+                        new Lyric {
+                        Duration = int.MaxValue,
+                        Element = new TextElement("Lyric not found") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
+                        }
+                    }
                 });
 
             var response = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(body);
@@ -65,7 +70,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     lyric = JsonConvert.DeserializeObject<List<MusicmatchLyricMDL>>(resBody)
                                     .Select(x => new Lyric
                                     {
-                                        Element = new TextElement(x.text),
+                                        Element = new TextElement(x.text) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize },
                                         StartAt = (int)(x.time.total * 1000)
                                     }).ToList();
 
@@ -81,7 +86,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     }
 
                                     if (lyric[0].StartAt > 1)
-                                        lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Element = new TextElement("...") });
+                                        lyric.Insert(0, new Lyric
+                                        {
+                                            Duration = lyric[0].StartAt,
+                                            Element = new TextElement("...") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
+                                        });
 
                                     //lyric.Add(new Lyric { Duration = int.MaxValue/2 , Text = "..." });
                                     return AddDefaultLyricEffects(new TrackLyric
@@ -97,7 +106,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 lyric = JsonConvert.DeserializeObject<List<MusicmatchLyricMDL>>(resBody)
                                    .Select(x => new Lyric
                                    {
-                                       Element = new TextElement(x.text),
+                                       Element = new TextElement(x.text) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize },
                                        StartAt = (int)(x.time.total * 1000)
                                    }).ToList();
 
@@ -112,7 +121,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                         lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                 }
                                 if (lyric[0].StartAt > 1)
-                                    lyric.Insert(0, new Lyric { Duration = lyric[0].StartAt, Element = new TextElement("...") });
+                                    lyric.Insert(0, new Lyric
+                                    {
+                                        Duration = lyric[0].StartAt,
+                                        Element = new TextElement("...") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
+                                    });
 
                                 //lyric.Add(new Lyric { Duration = int.MaxValue/2, Text = "..." });
 
@@ -141,7 +154,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             return new TrackLyric
                             {
                                 Synchronized = false,
-                                Lyric = resBody.Split('\n').Select(x => new Lyric { Element = new TextElement(x) }).ToList(),
+                                Lyric = resBody.Split('\n').Select(x => new Lyric { Element = new TextElement(x) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize } }).ToList(),
                                 Copyright = copyrightHolder
                             };
                         }
@@ -155,7 +168,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         return new TrackLyric
                         {
                             Synchronized = false,
-                            Lyric = resBody.Split('\n').Select(x => new Lyric { Element = new TextElement(x) }).ToList(),
+                            Lyric = resBody.Split('\n').Select(x => new Lyric { Element = new TextElement(x) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize } }).ToList(),
                             Copyright = copyrightHolder
                         };
                     }
@@ -172,7 +185,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             {
                                 new Lyric
                                 {
-                                    Element = new TextElement("Let the beat goes on (Instrumental)"),
+                                    Element = new TextElement("Let the beat goes on (Instrumental)"){ FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize },
                                     Duration = int.MaxValue
                                 }
                             }
@@ -193,7 +206,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                 Directory.CreateDirectory("Lyrics");
 
             foreach (var l in lyric.Where(x => x.Element == null))
-                l.Element = new TextElement(l) { Bold = true, WordWrap = true, FontName = "Antonio", FontSize = 70 };
+                l.Element = new TextElement(l) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize };
 
             File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
 

@@ -124,14 +124,17 @@ namespace LyricPlayer.SoundEngine
                     Status = PlayerStatus.Playing;
                     Offset = ((int)currentPlaying.ProgressMs) - Tracker.ElapsedMilliseconds + delta;
                     Tracker.Start();
-                    LyricEngine?.Resume();
+                    if (LyricEngine?.Status != LyricPlayerStaus.Loading)
+                        LyricEngine?.Resume();
                 }
                 else
                 {
                     Tracker.Reset();
                     Status = PlayerStatus.Paused;
                     Offset = ((int)currentPlaying.ProgressMs) - Tracker.ElapsedMilliseconds;
-                    LyricEngine?.Pause();
+
+                    if (LyricEngine?.Status != LyricPlayerStaus.Loading)  
+                        LyricEngine?.Pause();
                 }
                 if (LyricEngine != null)
                     LyricEngine.CurrentTime = CurrentTime;

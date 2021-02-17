@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LyricPlayer.Model.Effects
 {
-    public class Effect
+    public abstract class Effect
     {
         public int Duration { set; get; }
         public bool IsInstant => Duration <= 0;

@@ -1,25 +1,58 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace LyricPlayer.Model.Elements
 {
-    public class ElementCollection : Collection<RenderElement>
+    public class ElementCollection : ICollection<RenderElement>
     {
         public RenderElement Parent { set; get; }
-        protected override void InsertItem(int index, RenderElement item)
+        Collection<RenderElement> Collection { set; get; }
+
+        public int Count => Collection.Count;
+
+        public bool IsReadOnly => false;
+
+        object _lock = new object();
+        public ElementCollection()
         {
-            item.ParentElement = Parent;
-            base.InsertItem(index, item);
+            Collection = new Collection<RenderElement>();
         }
-        protected override void RemoveItem(int index)
+        public ElementCollection(RenderElement parent) : this()
         {
-            Items[index].ParentElement = null;
-            base.RemoveItem(index);
+            Parent = parent;
         }
 
-        protected override void SetItem(int index, RenderElement item)
+        public void Add(RenderElement element)
         {
-            item.ParentElement = Parent;
-            base.SetItem(index, item);
+            element.ParentElement = Parent;
+            lock (_lock)
+            { Collection.Add(element); }
         }
+        public bool Remove(RenderElement element)
+        {
+            element.ParentElement = null;
+            lock (_lock)
+            { return Collection.Remove(element); }
+        }
+        public void Clear()
+        {
+            lock (_lock)
+            { Collection.Clear(); }
+        }
+
+        public bool Contains(RenderElement item)
+        {
+            return Collection.Contains(item);
+        }
+
+        public void CopyTo(RenderElement[] array, int arrayIndex)
+        { Collection.CopyTo(array, arrayIndex); }
+
+        public IEnumerator<RenderElement> GetEnumerator()
+        { lock (_lock) { return Collection.GetEnumerator(); } }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        { lock (_lock) { return Collection.GetEnumerator(); } }
     }
 }

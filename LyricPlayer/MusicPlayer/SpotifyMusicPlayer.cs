@@ -25,7 +25,7 @@ namespace LyricPlayer.MusicPlayer
 
             SoundEngine.TrackStopped += (s, e) =>
             {
-                LyricEngine.Stop();
+                LyricEngine.Clear();
                 Task.Run(() =>
                 {
                     var trackInfo = (SoundEngine as SpotifyEngine).TrackInfo;
@@ -41,7 +41,7 @@ namespace LyricPlayer.MusicPlayer
                             {
                             Duration = int.MaxValue,
                             StartAt = 0,
-                            Element = new TextElement("Lyric isnt synchronized")
+                            Element = new TextElement("Lyric isnt synchronized") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
                             }
                         }
                         }, SoundEngine);

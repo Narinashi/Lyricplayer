@@ -1,5 +1,4 @@
 ﻿using LyricPlayer.Model;
-using LyricPlayer.Model;
 using LyricPlayer.SoundEngine;
 using System;
 
@@ -7,7 +6,7 @@ namespace LyricPlayer.LyricEngine
 {
     public interface ILyricEngine
     {
-        PlayerStatus Status { get; }
+        LyricPlayerStaus Status { get; }
         TimeSpan CurrentTime { get; set; }
         TrackLyric TrackLyric { get; }
         int Offset { set; get; }
@@ -17,6 +16,7 @@ namespace LyricPlayer.LyricEngine
         void Pause();
         void Resume();
         void Stop();
+        void Clear();
         void Load(TrackLyric lyric, ISoundEngine soundEngine);
     }
 }

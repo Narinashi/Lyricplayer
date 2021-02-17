@@ -1,5 +1,4 @@
-﻿using GameOverlay.Drawing;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace LyricPlayer.Model.Elements
 {
@@ -9,6 +8,6 @@ namespace LyricPlayer.Model.Elements
         public ImageElement() : base() { }
 
         [JsonIgnore]
-        public Image Image { set; get; }
+        public byte[] ImageContent { set; get; }
     }
 }

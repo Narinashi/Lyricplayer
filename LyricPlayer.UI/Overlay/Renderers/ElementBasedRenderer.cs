@@ -23,13 +23,14 @@ namespace LyricPlayer.UI.Overlay.Renderers
         public void Setup(Graphics gfx)
         {
             if (RootElement == null)
-                RootElement = new BasicElement { Size = new Point(1, 1) };
+                RootElement = new BasicElement { Size = new System.Drawing.Point (1, 1) };
         }
 
         public void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
         {
             while (Rendering)
             { }
+            Console.WriteLine((currentLyric.Element as TextElement)?.Text ?? "");
             ChangingLyric = true;
 
             RootElement.ChildElements.Clear();
@@ -52,12 +53,13 @@ namespace LyricPlayer.UI.Overlay.Renderers
             Rendering = false;
         }
 
-        public void Init(ILyricEngine lyricEngine, Point size)
+        public void Init(ILyricEngine lyricEngine, System.Drawing.Point size)
         {
             LyricEngine = lyricEngine;
             RootElement = new BasicElement
             {
                 Size = size,
+                Padding = new System.Drawing.Rectangle(100, 100, size.X - 100, size.Y - 100)
             };
         }
 
@@ -66,5 +68,6 @@ namespace LyricPlayer.UI.Overlay.Renderers
             RootElement?.Dispose();
             RootElement = null;
         }
+        
     }
 }

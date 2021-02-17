@@ -1,5 +1,4 @@
 ﻿using LyricPlayer.Model;
-using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
 using LyricPlayer.SoundEngine;
 using LyricPlayer.Utilities;
@@ -13,7 +12,7 @@ namespace LyricPlayer.LyricEngine
 {
     public class NarinoLyricEngine : ILyricEngine, IDisposable
     {
-        public PlayerStatus Status { get; private set; }
+        public LyricPlayerStaus Status { get; private set; }
         public TimeSpan CurrentTime
         {
             get => Watcher?.Elapsed.Add(TimeSpan.FromMilliseconds(WatcherOffset)) ?? TimeSpan.Zero;
@@ -62,6 +61,10 @@ namespace LyricPlayer.LyricEngine
                 throw new ObjectDisposedException("Engine");
             if (lyric?.Lyric == null)
                 throw new ArgumentNullException();
+            if (Status == LyricPlayerStaus.Playing)
+                throw new InvalidOperationException("Cant initialize while playing");
+
+            Clear();
 
             if (!lyric.Synchronized)
                 TrackLyric = new TrackLyric
@@ -70,7 +73,9 @@ namespace LyricPlayer.LyricEngine
                     Synchronized = true,
                     Lyric = new List<Lyric>
                     {
-                        new Lyric { Duration=int.MaxValue, Element = new TextElement("Lyric isnt synchronized") }
+                        new Lyric {
+                            Duration =int.MaxValue,
+                            Element = new TextElement("Lyric isnt synchronized"){ FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize } }
                     }
                 };
             else
@@ -82,32 +87,36 @@ namespace LyricPlayer.LyricEngine
 
         public void Pause()
         {
-            if (Status != PlayerStatus.Playing)
+            if (Status != LyricPlayerStaus.Playing)
                 return;
 
             Watcher.Stop();
             Timer.Pause();
-            Status = PlayerStatus.Paused;
+            Status = LyricPlayerStaus.Paused;
         }
 
         public void Resume()
         {
-            if (Status == PlayerStatus.Paused)
+            if (Status == LyricPlayerStaus.Paused)
             {
                 Timer.Resume();
                 Watcher.Start();
-                Status = PlayerStatus.Playing;
+                Status = LyricPlayerStaus.Playing;
             }
-            else if (Status == PlayerStatus.Stopped)
+            else if (Status == LyricPlayerStaus.Stopped || Status == LyricPlayerStaus.Loading)
                 Start();
         }
 
         public void Start()
         {
-            if (Status == PlayerStatus.Stopped)
+            if (Status == LyricPlayerStaus.Playing)
                 return;
-            if (Status == PlayerStatus.Paused)
+
+            if (Status == LyricPlayerStaus.Paused)
             { Resume(); return; }
+           
+            if (Status == LyricPlayerStaus.Loading && TrackLyric == null)
+                return;
 
             CurrentIndex = 0;
             if (!(TrackLyric?.Lyric?.Any() ?? false))
@@ -119,11 +128,14 @@ namespace LyricPlayer.LyricEngine
             WatcherOffset = 0;
             Watcher.Restart();
             Timer.Start();
-            Status = PlayerStatus.Playing;
+            Status = LyricPlayerStaus.Playing;
         }
 
         public void Stop()
         {
+            if (Status == LyricPlayerStaus.Loading)
+                return;
+
             Watcher?.Reset();
             if (Timer != null)
             {
@@ -132,7 +144,14 @@ namespace LyricPlayer.LyricEngine
             }
             WatcherOffset = 0;
             CurrentIndex = 0;
-            Status = PlayerStatus.Stopped;
+            Status = LyricPlayerStaus.Stopped;
+        }
+
+        public void Clear()
+        {
+            Stop();
+            TrackLyric = null;
+            Status = LyricPlayerStaus.Loading;
         }
 
         public void Dispose()
@@ -199,7 +218,7 @@ namespace LyricPlayer.LyricEngine
                 Watcher.Reset();
                 CurrentIndex = 0;
                 WatcherOffset = Offset;
-                Status = PlayerStatus.Stopped;
+                Status = LyricPlayerStaus.Stopped;
                 return;
             }
 

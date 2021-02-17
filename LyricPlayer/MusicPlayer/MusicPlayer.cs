@@ -1,7 +1,6 @@
 ﻿using LyricPlayer.LyricEngine;
 using LyricPlayer.LyricFetcher;
 using LyricPlayer.Model;
-using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
 using LyricPlayer.PlaylistController;
 using LyricPlayer.SoundEngine;
@@ -54,11 +53,7 @@ namespace LyricPlayer.MusicPlayer
         public virtual void Play()
         {
             SoundEngine.Play();
-
-            if (LyricEngine.Status == PlayerStatus.Paused)
-                LyricEngine.Resume();
-            else
-                LyricEngine.Start();
+            LyricEngine.Resume();
 
             LyricEngine.CurrentTime = SoundEngine.CurrentTime;
         }
@@ -104,7 +99,7 @@ namespace LyricPlayer.MusicPlayer
                             {
                             Duration = int.MaxValue,
                             StartAt = 0,
-                            Element = new TextElement("Lyric isn't synchronized")
+                            Element = new TextElement("Lyric isn't synchronized") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
                             }
                         }
                     }, SoundEngine);

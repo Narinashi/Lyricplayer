@@ -9,6 +9,9 @@ namespace LyricPlayer
         public const int SongTrackingInterval = 2000;
         public static long UnixTime => (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
 
+        public static string DefaultFontName => "Antonio";
+        public static int DefaultFontSize => 55;
+
         public static int RNG(int from, int to)
         {
             var random = new Random();

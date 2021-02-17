@@ -1,5 +1,5 @@
-﻿using GameOverlay.Drawing;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Drawing;
 
 namespace LyricPlayer.Model.Elements
 {
@@ -11,14 +11,14 @@ namespace LyricPlayer.Model.Elements
         public TextElement() : base() { }
         public TextElement(string text) : base() { Text = text; }
         public string Text { set; get; }
-        public float FontSize { set; get; } = 16;
+        public float FontSize { set; get; } = 40;
         public string FontName { set; get; } = "Times New Roman";
 
-        public Color TextColor { set; get; } = new Color(1f,1f,1f,1f);
+        public Color TextColor { set; get; } = Color.White;
         public Color BackGroundColor { set; get; }
 
         public bool Italic { set; get; }
-        public bool Bold { set; get; }
+        public bool Bold { set; get; } = true;
         public bool WordWrap { set; get; }
         public bool AutoSize { set; get; } = true;
         /// <summary>

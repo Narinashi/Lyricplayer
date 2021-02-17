@@ -27,7 +27,7 @@ namespace LyricPlayer.LyricFetcher
                 {
                     StartAt = 0,
                     Duration = lyric[0].StartAt,
-                    Element = new TextElement("...")
+                    Element = new TextElement("...") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
                 });
 
             for (int index = 0; index < lyric.Count - 1; index++)
@@ -45,7 +45,7 @@ namespace LyricPlayer.LyricFetcher
             var lyric = trackLyric.Lyric;
 
             foreach (var l in lyric.Where(x => x.Element == null))
-                l.Element = new TextElement(l) { AutoSize = true, FontName = "Antonio", FontSize = 70 };
+                l.Element = new TextElement(l) { AutoSize = true, FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize };
 
             return trackLyric;
         }

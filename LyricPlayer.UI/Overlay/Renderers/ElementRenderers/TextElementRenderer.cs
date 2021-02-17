@@ -17,10 +17,13 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             if (!Fonts.ContainsKey(element.FontName))
                 Fonts.Add(element.FontName, gfx.CreateFont(element.FontName, element.FontSize, element.Bold, element.Italic, element.WordWrap));
 
+            if (string.IsNullOrEmpty(element.Text))
+                element.Text = "...";
+
             var textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
-            
+
             if (element.AutoSize)
-                element.Size = textSize;
+                element.Size = textSize.ToDrawingPoint();
 
             if (element.Size.X < element.LineWidthBreakTreshold * textSize.X)
             {
@@ -44,7 +47,10 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 }
 
                 if (element.AutoSize)
-                    element.Size = textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
+                {
+                    textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
+                    element.Size = textSize.ToDrawingPoint();
+                }
             }
 
             element.AlignToCenter();
@@ -56,23 +62,23 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 
             if (!Fonts.ContainsKey(element.FontName))
                 Fonts.Add(element.FontName, gfx.CreateFont(element.FontName, element.FontSize, element.Bold, element.Italic, element.WordWrap));
-            if (!Brushes.ContainsKey(element.TextColor))
-                Brushes.Add(element.TextColor, gfx.CreateSolidBrush(element.TextColor));
-            if (!Brushes.ContainsKey(element.BackGroundColor))
-                Brushes.Add(element.BackGroundColor, gfx.CreateSolidBrush(element.BackGroundColor));
+            if (!Brushes.ContainsKey(element.TextColor.ToOverlayColor()))
+                Brushes.Add(element.TextColor.ToOverlayColor(), gfx.CreateSolidBrush(element.TextColor.ToOverlayColor()));
+            if (!Brushes.ContainsKey(element.BackGroundColor.ToOverlayColor()))
+                Brushes.Add(element.BackGroundColor.ToOverlayColor(), gfx.CreateSolidBrush(element.BackGroundColor.ToOverlayColor()));
 
             var font = Fonts[element.FontName];
 
-            if (element.BackGroundColor == Color.Transparent)
+            if (element.BackGroundColor.A == 0)
                 gfx.DrawText(font, font.FontSize,
-                    Brushes[element.TextColor],
+                    Brushes[element.TextColor.ToOverlayColor()],
                     element.AbsoluteLocation.X + element.Padding.Left,
                     element.AbsoluteLocation.Y + element.Padding.Top,
                     element.Text);
             else
                 gfx.DrawTextWithBackground(font, font.FontSize,
-                    Brushes[element.TextColor],
-                    Brushes[element.BackGroundColor],
+                    Brushes[element.TextColor.ToOverlayColor()],
+                    Brushes[element.BackGroundColor.ToOverlayColor()],
                     element.AbsoluteLocation.X + element.Padding.Left,
                     element.AbsoluteLocation.Y + element.Padding.Top,
                     element.Text);

@@ -16,8 +16,8 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 Setup(renderArgs.Graphics);
 
             var gfx = renderArgs.Graphics;
-            gfx.DrawRectangleEdges(Brush, element.AbsoluteArea, 3);
-            gfx.DrawRectangleEdges(Brush, element.AbsoluteRenderArea, 3);
+            gfx.DrawRectangleEdges(Brush, element.AbsoluteArea.ToOverlayRectangle(), 3);
+            gfx.DrawRectangleEdges(Brush, element.AbsoluteRenderArea.ToOverlayRectangle(), 3);
         }
 
         public override void Setup(Graphics gfx)

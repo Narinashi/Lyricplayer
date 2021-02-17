@@ -56,7 +56,7 @@ namespace LyricPlayer.UI.Overlay
             Overlay.DrawGraphics += OverlayDrawGraphics;
 
             Player.LyricChanged += (s, e) => Renderer.LyricChanged(Player.Lyric, e);
-            Renderer.Init(null, new GameOverlay.Drawing.Point((float)OverlaySize.Width, (float)OverlaySize.Height));
+            Renderer.Init(null, new System.Drawing.Point((int)OverlaySize.Width, (int)OverlaySize.Height));
 
             Overlay.Create();
             Overlay.Show();

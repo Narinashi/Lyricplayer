@@ -1,6 +1,7 @@
-﻿using GameOverlay.Drawing;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+
 using System;
+using System.Drawing;
 
 namespace LyricPlayer.Model.Elements
 {
@@ -33,19 +34,19 @@ namespace LyricPlayer.Model.Elements
         [JsonIgnore]
         public Rectangle AbsoluteArea => new Rectangle
         {
-            Top = Location.Y,
-            Left = Location.X,
-            Bottom = Location.Y + Size.Y,
-            Right = Location.X + Size.X
+            Y = Location.Y,
+            X = Location.X,
+            Height = Size.Y,
+            Width = Size.X
         };
 
         [JsonIgnore]
         public Rectangle AbsoluteRenderArea => new Rectangle
         {
-            Left = AbsoluteLocation.X + Padding.Left,
-            Top = AbsoluteLocation.Y + Padding.Top,
-            Bottom = AbsoluteLocation.Y + Size.Y - Padding.Bottom,
-            Right = AbsoluteLocation.X + Size.X - Padding.Right
+            X = AbsoluteLocation.X + Padding.Left,
+            Y = AbsoluteLocation.Y + Padding.Top,
+            Height = Size.Y - Padding.Bottom,
+            Width = Size.X - Padding.Right
         };
 
         [JsonIgnore]
