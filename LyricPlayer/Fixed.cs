@@ -10,7 +10,7 @@ namespace LyricPlayer
         public static long UnixTime => (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
 
         public static string DefaultFontName => "Antonio";
-        public static int DefaultFontSize => 55;
+        public static int DefaultFontSize => 72;
 
         public static int RNG(int from, int to)
         {

@@ -35,10 +35,36 @@ namespace LyricPlayer.Model.Elements
             lock (_lock)
             { return Collection.Remove(element); }
         }
+        public void RemoveAt(int index)
+        {
+            var item = Collection[index];
+            item.ParentElement = null;
+            lock (_lock) { Collection.RemoveAt(index); }
+        }
         public void Clear()
         {
             lock (_lock)
             { Collection.Clear(); }
+        }
+
+        public void Replace(List<RenderElement> elements)
+        {
+            lock (_lock)
+            {
+                for (int i = 0; i < Collection.Count; i++)
+                    if (!elements.Contains(Collection[i]))
+                    {
+                        Collection[i].ParentElement = null;
+                        Collection.RemoveAt(i);
+                        i--;
+                    }
+
+                foreach (var item in elements)
+                {
+                    item.ParentElement = Parent;
+                    Collection.Add(item);
+                }
+            }
         }
 
         public bool Contains(RenderElement item)

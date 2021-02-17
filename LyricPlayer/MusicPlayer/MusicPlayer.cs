@@ -45,8 +45,8 @@ namespace LyricPlayer.MusicPlayer
             }
             get => _Playlist;
         }
-        public ISoundEngine SoundEngine { set; get; }
-        protected ILyricEngine LyricEngine { set; get; }
+        public ISoundEngine SoundEngine { protected set; get; }
+        public ILyricEngine LyricEngine {protected set; get; }
         protected ILyricFetcher LyricFetcher { set; get; }
         private PlaylistController<T> _Playlist;
 

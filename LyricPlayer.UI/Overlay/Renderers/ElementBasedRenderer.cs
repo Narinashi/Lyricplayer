@@ -26,16 +26,18 @@ namespace LyricPlayer.UI.Overlay.Renderers
                 RootElement = new BasicElement { Size = new System.Drawing.Point (1, 1) };
         }
 
-        public void LyricChanged(TrackLyric trackLyric, Lyric currentLyric)
+        public void LyricChanged(TrackLyric trackLyric)
         {
             while (Rendering)
             { }
-            Console.WriteLine((currentLyric.Element as TextElement)?.Text ?? "");
+            var lyrics = LyricEngine.PlayingLyrics;
             ChangingLyric = true;
 
-            RootElement.ChildElements.Clear();
-            RootElement.ChildElements.Add(currentLyric.Element);
+            foreach (var lyric in lyrics)
+                Console.WriteLine((lyric.Element as TextElement)?.Text ?? "");
 
+            RootElement.ChildElements.Replace(lyrics.Select(x=>x.Element).ToList());
+            
             ChangingLyric = false;
         }
 

@@ -33,10 +33,10 @@ namespace LyricPlayer.MusicPlayer
             LyricFetcher = new LocalWithMusicmatchLyricFetcher(AccessToken);
         }
 
-        public event EventHandler<Lyric> LyricChanged;
-        protected virtual void OnLyricChanged(Lyric l)
+        public event EventHandler LyricChanged;
+        protected virtual void OnLyricChanged(EventArgs e)
         {
-            LyricChanged?.Invoke(this, l);
+            LyricChanged?.Invoke(this, e);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         void Render(DrawGraphicsEventArgs renderArgs);
 
-        void LyricChanged(TrackLyric trackLyric, Lyric currentLyric);
+        void LyricChanged(TrackLyric trackLyric);
 
         void Init(ILyricEngine lyricEngine, System.Drawing.Point size);
     }
