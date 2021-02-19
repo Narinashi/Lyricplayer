@@ -6,11 +6,11 @@ namespace LyricPlayer
     static class Fixed
     {
         public const float AlmostZero = 0.0001f;
-        public const int SongTrackingInterval = 2000;
+        public const int SongTrackingInterval = 1700;
         public static long UnixTime => (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
 
         public static string DefaultFontName => "Antonio";
-        public static int DefaultFontSize => 72;
+        public static int DefaultFontSize => 58;
 
         public static int RNG(int from, int to)
         {

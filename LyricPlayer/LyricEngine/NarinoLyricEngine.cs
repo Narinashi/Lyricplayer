@@ -22,7 +22,7 @@ namespace LyricPlayer.LyricEngine
                 if (value < TimeSpan.Zero)
                     throw new ArgumentOutOfRangeException();
 
-                JumpAtTime((int)value.TotalMilliseconds);
+                Synchronzie();
             }
         }
         public int Offset
@@ -190,24 +190,23 @@ namespace LyricPlayer.LyricEngine
             Watcher.Reset();
         }
 
-        private void JumpAtTime(int time)
+        public void Synchronzie()
         {
             if (!(TrackLyric?.Lyric.Any() ?? false))
                 return;
-            //return;
-            WatcherOffset = time - (int)Watcher.ElapsedMilliseconds;
-            //var interval = CalculateTimerDuration();
-            //Timer.Interval = interval < 3 ? 3 : interval;
-            Timer.Interval = 3;
-           //Console.WriteLine($"force set Interval:{interval}");
 
-            //CurrentIndex = TrackLyric.Lyric.IndexOf(lyricAtTime);
+            WatcherOffset += (long)(SoundEngine.CurrentTime.TotalMilliseconds - CurrentTime.TotalMilliseconds);
+            Timer.Interval = CalculateTimerDuration();
         }
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            //Console.WriteLine($"CurrentTime:{CurrentTime}");
-            if (CurrentIndex >= TrackLyric.Lyric.Count - 1)
+            //var currentLyrics = PlayingLyrics;
+            //var currentLyric = currentLyrics.First();
+
+            WatcherOffset += (long)(SoundEngine.CurrentTime.TotalMilliseconds - CurrentTime.TotalMilliseconds);
+            var interval = CalculateTimerDuration();
+            if (interval == int.MaxValue)
             {
                 Timer.Stop();
                 Watcher.Reset();
@@ -215,57 +214,41 @@ namespace LyricPlayer.LyricEngine
                 Status = LyricPlayerStaus.Stopped;
                 return;
             }
-            var currentLyrics = PlayingLyrics;
-            var currentLyric = currentLyrics.First();
 
-            var playerCurrentTime = SoundEngine.CurrentTime.TotalMilliseconds;
-            if (playerCurrentTime < currentLyric.StartAt || playerCurrentTime >= currentLyric.EndAt)
-            {
-                Console.WriteLine("Time was off waaay too much");
-                JumpAtTime((int)playerCurrentTime);
-                //return;
-            }
-
-            if (Math.Abs(playerCurrentTime - (Watcher.ElapsedMilliseconds + WatcherOffset)) > 1)
-                WatcherOffset += (long)playerCurrentTime - (Watcher.ElapsedMilliseconds + WatcherOffset);
-
-            Timer.Interval = CalculateTimerDuration();
-            
+            Timer.Interval = interval;
             OnLyricChanged(EventArgs.Empty);
-            //Console.WriteLine($"Interval:{Timer.Interval}");
-            //CurrentIndex = TrackLyric.Lyric.IndexOf(currentLyric);
         }
 
         private int CalculateTimerDuration()
         {
             var currentLyrics = PlayingLyrics;
-            var currentLyric = currentLyrics.First();
-            var currentIndex = TrackLyric.Lyric.IndexOf(currentLyric);
-            Console.WriteLine($"Current lyric Index:{currentIndex}");
-            Console.WriteLine($"CurrentTime :{CurrentTime}");
-            var incomingLyric = currentLyrics.FirstOrDefault(x => x.StartAt > currentLyric.StartAt) ?? TrackLyric.Lyric[currentIndex + 1];
-            var timerDuration = 0;
+            if (!currentLyrics.Any())
+                return int.MaxValue;
 
-            if (currentLyrics.Count < 3)
+            Lyric nearestEvent = null;
+            var nearestEventTime = int.MaxValue;
+            var lastLyricIndex = TrackLyric.Lyric.IndexOf(currentLyrics.Last());
+            if (lastLyricIndex <= TrackLyric.Lyric.Count - 1)
+                currentLyrics.Add(TrackLyric.Lyric[lastLyricIndex + 1]);
+
+            for (int i = 0; i < currentLyrics.Count; i++)
             {
-                timerDuration = incomingLyric.EndAt <= currentLyric.EndAt ?
-                   incomingLyric.Duration : currentLyric.EndAt - (int)CurrentTime.TotalMilliseconds;
+                var lyric = currentLyrics[i];
+                var currentTime = (int)CurrentTime.TotalMilliseconds;
+                if (lyric.StartAt - currentTime < nearestEventTime && lyric.StartAt > currentTime)
+                {
+                    nearestEventTime = currentTime - lyric.StartAt;
+                    nearestEvent = lyric;
+                }
+                if (lyric.EndAt - currentTime < nearestEventTime)
+                {
+                    nearestEventTime = lyric.EndAt - currentTime;
+                    nearestEvent = lyric;
+                }
             }
-            else
-            {
-                var nextLyricAfterIncomingOne = currentLyrics.FirstOrDefault(x => x.StartAt > incomingLyric.StartAt) ?? incomingLyric;
 
-                if (nextLyricAfterIncomingOne.EndAt <= currentLyric.EndAt && nextLyricAfterIncomingOne.EndAt <= incomingLyric.EndAt)
-                    timerDuration = nextLyricAfterIncomingOne.StartAt - (int)CurrentTime.TotalMilliseconds;
-                else if (incomingLyric.EndAt <= nextLyricAfterIncomingOne.EndAt && incomingLyric.EndAt <= currentLyric.EndAt)
-                    timerDuration = incomingLyric.StartAt - (int)CurrentTime.TotalMilliseconds;
-                else
-                    timerDuration = currentLyric.EndAt - (int)CurrentTime.TotalMilliseconds;
-            }
-
-            var timerError = (int)CurrentTime.TotalMilliseconds - incomingLyric.StartAt;
-            Console.WriteLine($"Calculated Interval:{timerDuration - timerError}");
-            return timerDuration - timerError < 3 ? 3 : timerDuration - timerError;
+            Console.WriteLine($"Calculated Interval:{nearestEventTime}");
+            return nearestEventTime < 3 ? 3 : nearestEventTime;
         }
 
         protected virtual void OnLyricChanged(EventArgs e)

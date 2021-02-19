@@ -12,7 +12,6 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             PrepareToRender(element, renderArgs);
 
             var gfx = renderArgs.Graphics;
-            gfx.ClearScene(new Color(20,20,20,0.35f));
             gfx.ClipRegionStart(element.AbsoluteRenderArea.ToOverlayRectangle());
             gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation));
 

@@ -16,12 +16,12 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 Setup(renderArgs.Graphics);
 
             var gfx = renderArgs.Graphics;
-            gfx.DrawRectangleEdges(Brush, element.AbsoluteArea.ToOverlayRectangle(), 3);
-            gfx.DrawRectangleEdges(Brush, element.AbsoluteRenderArea.ToOverlayRectangle(), 3);
+            gfx.DrawRectangleEdges(Brush, element.AbsoluteArea.ToOverlayRectangle(), 5);
+            gfx.DrawRectangleEdges(Brush, element.AbsoluteRenderArea.ToOverlayRectangle(), 5);
         }
 
         public override void Setup(Graphics gfx)
-        { Brush = gfx.CreateSolidBrush(0, 0, 0); }
+        { Brush = gfx.CreateSolidBrush(255, 0, 0, 255); }
 
         public override void Dispose()
         { Destroy(null); }

@@ -43,12 +43,16 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         public void Render(DrawGraphicsEventArgs renderArgs)
         {
+            var gfx = renderArgs.Graphics;
+            RootElement.Size = new System.Drawing.Point(gfx.Width, gfx.Height);
+
             var type = RootElement.GetType();
             while (ChangingLyric)
             { }
 
             Rendering = true;
 
+            gfx.ClearScene(new Color(20, 20, 20, 0.35f));
             if (RendererResolver.Renderers.ContainsKey(type))
                 RendererResolver.Renderers[type].Render(RootElement, renderArgs);
 
@@ -61,7 +65,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
             RootElement = new BasicElement
             {
                 Size = size,
-                Padding = new System.Drawing.Rectangle(100, 100, size.X - 100, size.Y - 100)
+                //Padding = new System.Drawing.Rectangle(100, 100, size.X - 100, size.Y - 100)
             };
         }
 

@@ -3,6 +3,7 @@ using LyricPlayer.Model.Elements;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -205,8 +206,11 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             if (!Directory.Exists("Lyrics"))
                 Directory.CreateDirectory("Lyrics");
 
-            foreach (var l in lyric.Where(x => x.Element == null))
-                l.Element = new TextElement(l) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize };
+            foreach (var l in lyric)
+            {
+                if (l.Element == null)
+                    l.Element = new TextElement(l) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize };               
+            }
 
             File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
 

@@ -49,10 +49,12 @@
     <Compile Include="Effects\ShakeEffect.cs" />
     <Compile Include="Elements\BasicElement.cs" />
     <Compile Include="Elements\ElementCollection.cs" />
+    <Compile Include="Elements\Enums\ElementDock.cs" />
     <Compile Include="Elements\ImageElement.cs" />
     <Compile Include="Elements\RenderElement.cs" />
     <Compile Include="Elements\Panels\StackPanelElement.cs" />
-    <Compile Include="Elements\Panels\StackPanelItemRenderRotation.cs" />
+    <Compile Include="Elements\Enums\StackPanelItemRenderRotation.cs" />
+    <Compile Include="Elements\Enums\TextAlignment.cs" />
     <Compile Include="Elements\TextElement.cs" />
     <Compile Include="FileInfo.cs" />
     <Compile Include="Lyric.cs" />

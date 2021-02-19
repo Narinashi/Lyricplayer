@@ -34,8 +34,8 @@ namespace LyricPlayer.Model.Elements
         [JsonIgnore]
         public Rectangle AbsoluteArea => new Rectangle
         {
-            Y = Location.Y,
-            X = Location.X,
+            Y = AbsoluteLocation.Y,
+            X = AbsoluteLocation.X,
             Height = Size.Y,
             Width = Size.X
         };
