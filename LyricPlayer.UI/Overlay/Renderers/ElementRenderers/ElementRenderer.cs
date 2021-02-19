@@ -29,7 +29,37 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
         }
 
         private void PrepareToRender<T>(T element, DrawGraphicsEventArgs renderArgs) where T : RenderElement
-        { InternalRenderPreparation(element, renderArgs); }
+        {
+            ComputeElementSizeAndLocation(element);
+            InternalRenderPreparation(element, renderArgs);
+        }
+        private void ComputeElementSizeAndLocation(RenderElement element)
+        {
+            if (element.ParentElement == null) return;
+            switch (element.Dock)
+            {
+                case ElementDock.Fill:
+                    element.Size = element.ParentElement.Size;
+                    element.Location = new System.Drawing.Point(0,0);
+                    break;
+                case ElementDock.Top:
+                    element.Size = new System.Drawing.Point(element.ParentElement.Size.X, element.Size.Y);
+                    element.Location = new System.Drawing.Point(0,0);
+                    break;
+                case ElementDock.Left:
+                    element.Size = new System.Drawing.Point(element.Size.X, element.ParentElement.Size.Y);
+                    element.Location = new System.Drawing.Point(0, 0);
+                    break;
+                case ElementDock.Bottom:
+                    element.Size = new System.Drawing.Point(element.ParentElement.Size.X, element.Size.Y);
+                    element.Location = new System.Drawing.Point(0, element.ParentElement.Size.Y - element.Size.Y);
+                    break;
+                case ElementDock.Right:
+                    element.Size = new System.Drawing.Point(element.Size.X, element.ParentElement.Size.Y);
+                    element.Location = new System.Drawing.Point(element.ParentElement.Size.X - element.Size.X, 0);
+                    break;
+            }
+        }
 
         protected abstract void InternalRenderPreparation(RenderElement element, DrawGraphicsEventArgs renderArgs);
         protected abstract void InternalRender(RenderElement element, DrawGraphicsEventArgs renderArgs);

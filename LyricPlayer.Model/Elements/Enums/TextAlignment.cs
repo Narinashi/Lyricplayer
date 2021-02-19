@@ -1,6 +1,6 @@
 ﻿namespace LyricPlayer.Model.Elements
 {
-    public enum TextHorizantalAlignment
+    public enum TextHorizontalAlignment
     {
         None,
         Left,

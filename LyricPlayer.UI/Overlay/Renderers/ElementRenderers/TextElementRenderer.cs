@@ -36,10 +36,10 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                     if (tempLineSize.X > element.ParentElement.Size.X * element.LineWidthBreakTreshold)
                     {
                         if (string.IsNullOrEmpty(stringToAdd))
-                            element.Text += words[wordIndex] + "\n";
+                            element.Text += words[wordIndex] + "\r\n";
                         else
                         {
-                            element.Text += stringToAdd + "\n";
+                            element.Text += stringToAdd + "\r\n";
                             stringToAdd = string.Empty;
                         }
                     }
@@ -52,8 +52,6 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                     element.Size = textSize.ToDrawingPoint();
                 }
             }
-
-            element.AlignToCenter();
         }
 
         protected override void InternalRender(TextElement element, DrawGraphicsEventArgs renderArgs)
@@ -68,22 +66,47 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 Brushes.Add(element.BackGroundColor.ToOverlayColor(), gfx.CreateSolidBrush(element.BackGroundColor.ToOverlayColor()));
 
             var font = Fonts[element.FontName];
+            var textLocation = !element.AutoSize ? CalculateTextLocation(element, gfx) : element.AbsoluteLocation;
 
             if (element.BackGroundColor.A == 0)
                 gfx.DrawText(font, font.FontSize,
                     Brushes[element.TextColor.ToOverlayColor()],
-                    element.AbsoluteLocation.X + element.Padding.Left,
-                    element.AbsoluteLocation.Y + element.Padding.Top,
+                    textLocation.X + element.Padding.Left,
+                    textLocation.Y + element.Padding.Top,
                     element.Text);
             else
                 gfx.DrawTextWithBackground(font, font.FontSize,
                     Brushes[element.TextColor.ToOverlayColor()],
                     Brushes[element.BackGroundColor.ToOverlayColor()],
-                    element.AbsoluteLocation.X + element.Padding.Left,
-                    element.AbsoluteLocation.Y + element.Padding.Top,
+                    textLocation.X + element.Padding.Left,
+                    textLocation.Y + element.Padding.Top,
                     element.Text);
         }
 
+        private System.Drawing.Point CalculateTextLocation(TextElement element, Graphics gfx)
+        {
+            var location = new System.Drawing.Point(0, 0);
+            var textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
+            switch (element.HorizontalAligment)
+            {
+                case TextHorizontalAlignment.Left:
+                    location.X = 0; break;
+                case TextHorizontalAlignment.Right:
+                    location.X = element.Size.X - (int)textSize.X; break;
+                case TextHorizontalAlignment.Center:
+                    location.X = (element.Size.X - (int)textSize.X) / 2; break;
+            }
+            switch (element.VerticalAligment)
+            {
+                case TextVerticalAlignment.Top:
+                    location.Y = 0; break;
+                case TextVerticalAlignment.Center:
+                    location.Y = (element.Size.Y - (int)textSize.Y) / 2; break;
+                case TextVerticalAlignment.Bottm:
+                    location.Y = element.Size.Y - (int)textSize.Y; break;
+            }
+            return new System.Drawing.Point(location.X + element.AbsoluteLocation.X,location.Y + element.AbsoluteLocation.Y);
+        }
 
         public override void Destroy(Graphics gfx)
         {

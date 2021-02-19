@@ -14,6 +14,9 @@ namespace LyricPlayer.Model.Elements
         public float FontSize { set; get; } = 40;
         public string FontName { set; get; } = "Times New Roman";
 
+        public TextHorizontalAlignment HorizontalAligment { set; get; }
+        public TextVerticalAlignment VerticalAligment { set; get; }
+
         public Color TextColor { set; get; } = Color.White;
         public Color BackGroundColor { set; get; }
 

@@ -209,7 +209,24 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             foreach (var l in lyric)
             {
                 if (l.Element == null)
-                    l.Element = new TextElement(l) { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize };               
+                    l.Element = new TextElement(l)
+                    {
+                        FontName = Fixed.DefaultFontName,
+                        FontSize = Fixed.DefaultFontSize,
+                        AutoSize = false,
+                        VerticalAligment = TextVerticalAlignment.Center,
+                        HorizontalAligment = TextHorizontalAlignment.Center,
+                        Dock = ElementDock.Fill,
+                    };
+                l.Element.ChildElements.Add(new TextElement("RANDOM TEXT")
+                {
+                    Dock = ElementDock.Top,
+                    TextColor = Color.AliceBlue,
+                    FontName = Fixed.DefaultFontName,
+                    FontSize = 24,
+                    HorizontalAligment = TextHorizontalAlignment.Center,
+                    AutoSize = true,
+                });
             }
 
             File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));

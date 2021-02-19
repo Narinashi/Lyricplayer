@@ -16,6 +16,7 @@ namespace LyricPlayer.Model.Elements
         public Point Location { set; get; }
         public virtual Point Size { set; get; }
         public Rectangle Padding { set; get; }
+        public ElementDock Dock { set; get; }
 
         /// <summary>
         /// In degree

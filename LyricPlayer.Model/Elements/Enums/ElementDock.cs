@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LyricPlayer.Model.Elements.Enums
+namespace LyricPlayer.Model.Elements
 {
     public enum ElementDock
     {
