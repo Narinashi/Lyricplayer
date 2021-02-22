@@ -228,7 +228,7 @@ namespace LyricPlayer.LyricEngine
             Lyric nearestEvent = null;
             var nearestEventTime = int.MaxValue;
             var lastLyricIndex = TrackLyric.Lyric.IndexOf(currentLyrics.Last());
-            if (lastLyricIndex <= TrackLyric.Lyric.Count - 1)
+            if (lastLyricIndex < TrackLyric.Lyric.Count - 1)
                 currentLyrics.Add(TrackLyric.Lyric[lastLyricIndex + 1]);
 
             for (int i = 0; i < currentLyrics.Count; i++)

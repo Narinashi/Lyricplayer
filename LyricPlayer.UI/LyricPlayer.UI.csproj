@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Fixed.cs" />
     <Compile Include="Overlay\EffectPlayers\EffectPlayer.cs" />
+    <Compile Include="Overlay\EffectPlayers\EffectPlayerResolver.cs" />
     <Compile Include="Overlay\EffectPlayers\ShakeEffectPlayer.cs" />
     <Compile Include="Overlay\LyricHolder.cs" />
     <Compile Include="Overlay\Renderers\ElementBasedRenderer.cs" />
@@ -102,7 +103,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Utilities\FloatPoint.cs" />
     <None Include="SpotifyToken.Token">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

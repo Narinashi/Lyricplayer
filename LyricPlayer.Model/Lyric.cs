@@ -20,8 +20,12 @@ namespace LyricPlayer.Model
         /// in millisecond
         /// </summary>
         public int EndAt => StartAt + Duration;
-
-        public RenderElement Element { set; get; }
+        private RenderElement _Element;
+        public RenderElement Element
+        {
+            set { value.Lyric = this; _Element = value; }
+            get => _Element;
+        }
 
         public List<Effect> Effects { set; get; }
     }

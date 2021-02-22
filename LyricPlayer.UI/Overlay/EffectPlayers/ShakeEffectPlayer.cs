@@ -1,4 +1,5 @@
 ﻿using GameOverlay.Windows;
+using LyricPlayer.Model;
 using LyricPlayer.Model.Effects;
 using LyricPlayer.Model.Elements;
 using System;
@@ -11,7 +12,7 @@ namespace LyricPlayer.UI.Overlay.EffectPlayers
         private FastNoise Noise { set; get; }
         public ShakeEffectPlayer()
         {
-            Noise = new FastNoise(new Random().Next(int.MaxValue));
+            Noise = new FastNoise(/*new Random().Next(int.MaxValue)*/);
         }
 
         protected override void InternalApplyEffect(RenderElement element, ShakeEffect effect, DrawGraphicsEventArgs renderArgs)
@@ -24,11 +25,11 @@ namespace LyricPlayer.UI.Overlay.EffectPlayers
             point.X *= effect.TraumaMag * effect.Trauma;
             point.Y *= effect.TraumaMag * effect.Trauma;
 
-            element.Rotation += Noise.GetCubic(effect.TimeCounter, 1) / 10;
-            element.Location = new Point
+            element.Rotation = Noise.GetCubic(effect.TimeCounter, 1) / 8;
+            element.Location = new FloatPoint
             {
-                X = (int)(element.Location.X + point.X),
-                Y = (int)(element.Location.Y + point.Y)
+                X = (element.Location.X + point.X),
+                Y = (element.Location.Y + point.Y)
             };
 
             effect.Trauma -= deltaTime * effect.TraumaDecay * (effect.Trauma + 0.3f);
@@ -37,8 +38,8 @@ namespace LyricPlayer.UI.Overlay.EffectPlayers
 
         protected FloatPoint GetPoint(float time, float seed)
         {
-            var f1 = Noise.GetPerlin(seed, seed - time);
-            var f2 = Noise.GetCubic(seed, seed + time);
+            var f1 = Noise.GetCubic(seed, seed - time);
+            var f2 = Noise.GetPerlin(seed, seed + time);
             return new FloatPoint
             {
                 X = f1,

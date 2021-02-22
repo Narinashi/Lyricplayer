@@ -57,6 +57,7 @@
     <Compile Include="Elements\Enums\TextAlignment.cs" />
     <Compile Include="Elements\TextElement.cs" />
     <Compile Include="FileInfo.cs" />
+    <Compile Include="FloatPoint.cs" />
     <Compile Include="Lyric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrackInfo.cs" />

@@ -40,7 +40,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     Synchronized = true,
                     Lyric = new List<Lyric> {
                         new Lyric {
-                        Duration = int.MaxValue,
+                        Duration = int.MaxValue / 2,
                         Element = new TextElement("Lyric not found") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
                         }
                     }
@@ -81,7 +81,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                             (lyric[index].Element as TextElement).Text = "...";
 
                                         if (index == lyric.Count - 1)
-                                            lyric[index].Duration = int.MaxValue;
+                                            lyric[index].Duration = int.MaxValue / 2;
                                         else
                                             lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                     }
@@ -93,7 +93,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                             Element = new TextElement("...") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
                                         });
 
-                                    //lyric.Add(new Lyric { Duration = int.MaxValue/2 , Text = "..." });
+                                    //lyric.Add(new Lyric { Duration = int.MaxValue / 2/2 , Text = "..." });
                                     return AddDefaultLyricEffects(new TrackLyric
                                     {
                                         Synchronized = true,
@@ -117,7 +117,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                         (lyric[index].Element as TextElement).Text = "...";
 
                                     if (index == lyric.Count - 1)
-                                        lyric[index].Duration = int.MaxValue;
+                                        lyric[index].Duration = int.MaxValue / 2;
                                     else
                                         lyric[index].Duration = lyric[index + 1].StartAt - lyric[index].StartAt;
                                 }
@@ -128,7 +128,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                         Element = new TextElement("...") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
                                     });
 
-                                //lyric.Add(new Lyric { Duration = int.MaxValue/2, Text = "..." });
+                                //lyric.Add(new Lyric { Duration = int.MaxValue / 2/2, Text = "..." });
 
                                 return AddDefaultLyricEffects(new TrackLyric
                                 {
@@ -187,7 +187,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 new Lyric
                                 {
                                     Element = new TextElement("Let the beat goes on (Instrumental)"){ FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize },
-                                    Duration = int.MaxValue
+                                    Duration = int.MaxValue / 2
                                 }
                             }
                     };
@@ -195,7 +195,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             return AddDefaultLyricEffects(new TrackLyric
             {
                 Synchronized = true,
-                Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue } }
+                Lyric = new List<Lyric> { new Lyric { Duration = int.MaxValue / 2 } }
             });
         }
 
@@ -213,23 +213,24 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     {
                         FontName = Fixed.DefaultFontName,
                         FontSize = Fixed.DefaultFontSize,
-                        AutoSize = false,
-                        VerticalAligment = TextVerticalAlignment.Center,
-                        HorizontalAligment = TextHorizontalAlignment.Center,
-                        Dock = ElementDock.Fill,
                     };
-                l.Element.ChildElements.Add(new TextElement("RANDOM TEXT")
-                {
-                    Dock = ElementDock.Top,
-                    TextColor = Color.AliceBlue,
-                    FontName = Fixed.DefaultFontName,
-                    FontSize = 24,
-                    HorizontalAligment = TextHorizontalAlignment.Center,
-                    AutoSize = true,
-                });
+                l.Effects = new List<Model.Effects.Effect> { new Model.Effects.ShakeEffect {
+                    Duration = l.Duration,
+                    Trauma = 24,
+                    TraumaDecay = 0.000000000001f,
+                    TraumaMag = 1.5f,
+                    TraumaMult = 5f
+                } };
+
+                var txtElement = l.Element as TextElement;
+                txtElement.HorizontalAligment = TextHorizontalAlignment.Center;
+                txtElement.VerticalAligment = TextVerticalAlignment.Center;
+                txtElement.Dock = ElementDock.Fill;
+                txtElement.AutoSize = false;
+                txtElement.TextColor = Color.AliceBlue;
             }
 
-            File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
+            //File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
 
             return trackLyric;
         }

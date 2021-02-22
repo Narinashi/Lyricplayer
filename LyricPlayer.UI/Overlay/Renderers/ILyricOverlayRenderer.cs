@@ -1,14 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using LyricPlayer.Model;
-using LyricPlayer.Model;
-using LyricPlayer.MusicPlayer;
-using LyricPlayer.SoundEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {

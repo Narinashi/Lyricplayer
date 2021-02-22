@@ -1,5 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
+using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
 using System;
 using System.Collections.Generic;
@@ -20,10 +21,15 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             if (string.IsNullOrEmpty(element.Text))
                 element.Text = "...";
 
+            element.Text = element.Text.Replace("\n", " ");
             var textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
 
             if (element.AutoSize)
-                element.Size = textSize.ToDrawingPoint();
+            {
+                var tp = textSize.ToDrawingPoint();
+                element.Size = new System.Drawing.Point(Math.Min(tp.X, element.ParentElement.Size.X),
+                                                            Math.Min(tp.Y, element.ParentElement.Size.Y));
+            }
 
             if (element.Size.X < element.LineWidthBreakTreshold * textSize.X)
             {
@@ -36,10 +42,10 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                     if (tempLineSize.X > element.ParentElement.Size.X * element.LineWidthBreakTreshold)
                     {
                         if (string.IsNullOrEmpty(stringToAdd))
-                            element.Text += words[wordIndex] + "\r\n";
+                            element.Text += words[wordIndex] + "\n";
                         else
                         {
-                            element.Text += stringToAdd + "\r\n";
+                            element.Text += stringToAdd + "\n";
                             stringToAdd = string.Empty;
                         }
                     }
@@ -48,10 +54,18 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 
                 if (element.AutoSize)
                 {
-                    textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
-                    element.Size = textSize.ToDrawingPoint();
+                    var tp = textSize.ToDrawingPoint();
+                    element.Size = new System.Drawing.Point(Math.Min(tp.X, element.ParentElement.Size.X),
+                                                                Math.Min(tp.Y, element.ParentElement.Size.Y));
                 }
+
             }
+
+            var dummyTextSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, "A");
+            if (element.Size.X < dummyTextSize.X || element.Size.Y < dummyTextSize.Y)
+                element.Size = new System.Drawing.Point(
+                                                (int)(element.Size.X < dummyTextSize.X ? dummyTextSize.X : element.Size.X),
+                                                (int)(element.Size.Y < dummyTextSize.Y ? dummyTextSize.Y : element.Size.Y));
         }
 
         protected override void InternalRender(TextElement element, DrawGraphicsEventArgs renderArgs)
@@ -83,7 +97,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                     element.Text);
         }
 
-        private System.Drawing.Point CalculateTextLocation(TextElement element, Graphics gfx)
+        private FloatPoint CalculateTextLocation(TextElement element, Graphics gfx)
         {
             var location = new System.Drawing.Point(0, 0);
             var textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
@@ -105,7 +119,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 case TextVerticalAlignment.Bottm:
                     location.Y = element.Size.Y - (int)textSize.Y; break;
             }
-            return new System.Drawing.Point(location.X + element.AbsoluteLocation.X,location.Y + element.AbsoluteLocation.Y);
+            return new FloatPoint(location.X + element.AbsoluteLocation.X, location.Y + element.AbsoluteLocation.Y);
         }
 
         public override void Destroy(Graphics gfx)

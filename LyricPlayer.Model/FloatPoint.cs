@@ -1,6 +1,6 @@
-﻿namespace LyricPlayer.UI
+﻿namespace LyricPlayer.Model
 {
-    struct FloatPoint
+    public struct FloatPoint
     {
        public float X;
        public float Y;
