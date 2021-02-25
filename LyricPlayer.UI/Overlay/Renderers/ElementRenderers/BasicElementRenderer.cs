@@ -1,27 +1,37 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using LyricPlayer.Model.Elements;
+using System.Collections.Generic;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
     internal class BasicElementRenderer : ElementRenderer<BasicElement>
     {
-        private IBrush Brush { set; get; }
+        private static Dictionary<Color, IBrush> Brushes { set; get; }
         public override void Destroy(Graphics gfx)
-        { Brush?.Brush.Dispose(); }
+        {
+            if (Brushes == null) return;
+            foreach (var brush in Brushes)
+                brush.Value.Brush.Dispose();
+        }
 
         protected override void InternalRender(BasicElement element, DrawGraphicsEventArgs renderArgs)
         {
-            if (Brush == null)
+            if (Brushes == null)
                 Setup(renderArgs.Graphics);
 
             var gfx = renderArgs.Graphics;
-            gfx.DrawRectangleEdges(Brush, element.AbsoluteArea.ToOverlayRectangle(), 5);
-            gfx.DrawRectangleEdges(Brush, element.AbsoluteRenderArea.ToOverlayRectangle(), 5);
+            var color = element.BackgroundColor.ToOverlayColor();
+            if (!Brushes.ContainsKey(color))
+                Brushes.Add(color, gfx.CreateSolidBrush(color));
+
+            gfx.FillRectangle(Brushes[color], element.AbsoluteRenderArea.ToOverlayRectangle());
         }
 
         public override void Setup(Graphics gfx)
-        { Brush = gfx.CreateSolidBrush(255, 0, 0, 255); }
+        {
+            Brushes = Brushes ?? new Dictionary<Color, IBrush>();
+        }
 
         public override void Dispose()
         { Destroy(null); }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LyricPlayer.Model;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -32,6 +33,8 @@ namespace LyricPlayer.UI
         public static Point ToDrawingPoint(this GameOverlay.Drawing.Point point)
             => new Point((int)point.X, (int)point.Y);
 
+        public static GameOverlay.Drawing.Point ToOverlayPoint(this FloatPoint point) =>
+            new GameOverlay.Drawing.Point(point.X, point.Y);
         
     }
 }

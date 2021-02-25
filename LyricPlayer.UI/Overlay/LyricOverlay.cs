@@ -55,8 +55,8 @@ namespace LyricPlayer.UI.Overlay
             Overlay.DestroyGraphics += OverlayDestroyGraphics;
             Overlay.DrawGraphics += OverlayDrawGraphics;
 
-            Player.LyricChanged += (s, e) => Renderer.LyricChanged(Player.Lyric);
-            Renderer.Init(Player.LyricEngine, new System.Drawing.Point((int)OverlaySize.Width, (int)OverlaySize.Height));
+            Player.TrackChanged += (s, e) => Renderer.TrackChanged(Player.CurrentTrackLyric);
+            Renderer.Init(Player.SoundEngine, new System.Drawing.Point((int)OverlaySize.Width, (int)OverlaySize.Height));
 
             Overlay.Create();
             Overlay.Show();

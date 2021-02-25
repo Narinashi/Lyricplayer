@@ -3,7 +3,6 @@ using LyricPlayer.Model;
 using LyricPlayer.Model.Effects;
 using LyricPlayer.Model.Elements;
 using System;
-using System.Drawing;
 
 namespace LyricPlayer.UI.Overlay.EffectPlayers
 {
@@ -17,22 +16,25 @@ namespace LyricPlayer.UI.Overlay.EffectPlayers
 
         protected override void InternalApplyEffect(RenderElement element, ShakeEffect effect, DrawGraphicsEventArgs renderArgs)
         {
+            if (element.Rotation == null)
+                element.Rotation = new RotationInfo();
+
             var deltaTime = renderArgs.DeltaTime / 1000f;
             var point = GetPoint(1, effect.TimeCounter);
 
-            effect.TimeCounter += deltaTime * (float)Math.Pow(effect.Trauma, 0.3f) * effect.TraumaMult;
+            effect.TimeCounter += deltaTime * (float)Math.Pow(effect.Trauma, 0.7f) * effect.TraumaMult;
 
             point.X *= effect.TraumaMag * effect.Trauma;
             point.Y *= effect.TraumaMag * effect.Trauma;
 
-            element.Rotation = Noise.GetCubic(effect.TimeCounter, 1) / 8;
+            element.Rotation.Rotation = Noise.GetCubic(effect.TimeCounter, 1) / 8;
             element.Location = new FloatPoint
             {
                 X = (element.Location.X + point.X),
                 Y = (element.Location.Y + point.Y)
             };
 
-            effect.Trauma -= deltaTime * effect.TraumaDecay * (effect.Trauma + 0.3f);
+            effect.Trauma -= deltaTime * effect.TraumaDecay * (effect.Trauma + 0.7f);
         }
 
 

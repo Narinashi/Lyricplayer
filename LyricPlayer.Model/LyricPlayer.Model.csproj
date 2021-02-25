@@ -55,10 +55,10 @@
     <Compile Include="Elements\Panels\StackPanelElement.cs" />
     <Compile Include="Elements\Enums\StackPanelItemRenderRotation.cs" />
     <Compile Include="Elements\Enums\TextAlignment.cs" />
+    <Compile Include="Elements\RotationInfo.cs" />
     <Compile Include="Elements\TextElement.cs" />
     <Compile Include="FileInfo.cs" />
     <Compile Include="FloatPoint.cs" />
-    <Compile Include="Lyric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrackInfo.cs" />
     <Compile Include="TrackLyric.cs" />

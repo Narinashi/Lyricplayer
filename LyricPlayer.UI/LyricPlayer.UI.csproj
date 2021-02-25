@@ -81,14 +81,8 @@
     <Compile Include="Overlay\Renderers\ElementRenderers\ElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\RendererResolver.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\TextElementRenderer.cs" />
-    <Compile Include="Overlay\Renderers\FloatingLyricRenderer.cs" />
-    <Compile Include="Overlay\Renderers\FloatingLyricRendererV2.cs" />
     <Compile Include="Overlay\Renderers\IElementBasedRender.cs" />
-    <Compile Include="Overlay\Renderers\ElementRenderers\IElementRenderer.cs" />
-    <Compile Include="Overlay\Renderers\ILyricOverlayRenderer.cs" />
     <Compile Include="Overlay\LyricOverlay.cs" />
-    <Compile Include="Overlay\Renderers\SimpleLyricRenderer.cs" />
-    <Compile Include="Overlay\Renderers\VerticalLyricRenderer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -2,33 +2,46 @@
 using GameOverlay.Windows;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
+using LyricPlayer.SoundEngine;
 using LyricPlayer.UI.Overlay.EffectPlayers;
 using System;
+using System.Linq;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
-    internal abstract class ElementRenderer : IElementRenderer, IDisposable
+    internal abstract class ElementRenderer : IDisposable
     {
-        public void Render<T>(T element, DrawGraphicsEventArgs renderArgs) where T : RenderElement
+        public void Render<T>(T element, ISoundEngine soundEngine, DrawGraphicsEventArgs renderArgs) where T : RenderElement
         {
             PrepareToRender(element, renderArgs);
             ApplyEffects(element, renderArgs);
 
             var gfx = renderArgs.Graphics;
             gfx.ClipRegionStart(element.AbsoluteRenderArea.ToOverlayRectangle());
-            gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation, new Point(element.Size.X / 2, element.Size.Y / 2)));
+
+            if (element.Rotation != null)
+                gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation.Rotation,
+                    element.Rotation.RotationCenter.HasValue ?
+                    element.Rotation.RotationCenter.Value.ToOverlayPoint() :
+                    new Point(element.Size.X / 2f, element.Size.Y / 2f)));
 
             InternalRender(element, renderArgs);
 
-            gfx.TransformEnd();
-            gfx.ClipRegionEnd();
-
+            var time = soundEngine.CurrentTime.TotalMilliseconds;
             foreach (var child in element.ChildElements)
             {
+                if (child.EndAt < time) continue;
+                if (child.StartAt > time) break;
+
                 var type = child.GetType();
                 if (RendererResolver.Renderers.ContainsKey(type))
-                    RendererResolver.Renderers[type].Render(child, renderArgs);
+                    RendererResolver.Renderers[type].Render(child, soundEngine, renderArgs);
             }
+
+            if (element.Rotation != null)
+                gfx.TransformEnd();
+
+            gfx.ClipRegionEnd();
         }
 
         private void PrepareToRender<T>(T element, DrawGraphicsEventArgs renderArgs) where T : RenderElement
@@ -38,12 +51,12 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
         }
         private void ApplyEffects<T>(T element, DrawGraphicsEventArgs renderArgs) where T : RenderElement
         {
-            if (element?.Lyric?.Effects == null) return;
-            foreach (var effect in element.Lyric.Effects)
+            if (!(element.Effects?.Any() ?? false)) return;
+            foreach (var effect in element.Effects)
             {
-                var type = effect.GetType();
-                if (EffectPlayerResolver.EffectPlayers.ContainsKey(type))
-                    EffectPlayerResolver.EffectPlayers[type].ApplyEffect(element, effect, renderArgs);
+                var effectType = effect.GetType();
+                if (EffectPlayerResolver.EffectPlayers.Keys.Contains(effectType))
+                    EffectPlayerResolver.EffectPlayers[effectType].ApplyEffect(element, effect, renderArgs);
             }
         }
 
@@ -86,8 +99,6 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 
     internal abstract class ElementRenderer<T> : ElementRenderer where T : RenderElement
     {
-
-
         protected override sealed void InternalRender(RenderElement element, DrawGraphicsEventArgs renderArgs)
         {
             InternalRender((T)element, renderArgs);

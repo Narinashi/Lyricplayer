@@ -1,13 +1,10 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.LyricEngine;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
+using LyricPlayer.SoundEngine;
 using LyricPlayer.UI.Overlay.Renderers.ElementRenderers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using System.Threading;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {
@@ -15,56 +12,55 @@ namespace LyricPlayer.UI.Overlay.Renderers
     {
         public RenderElement RootElement { get; set; }
         TrackLyric CurrentPlayingTrack { set; get; }
-        ILyricEngine LyricEngine { set; get; }
+        ISoundEngine SoundEngine { set; get; }
 
         private bool Rendering { set; get; }
         private bool ChangingLyric { set; get; }
-        
+
         public void Setup(Graphics gfx)
         {
             if (RootElement == null)
-                RootElement = new BasicElement { Size = new System.Drawing.Point (1, 1) };
+                RootElement = new BasicElement { Size = new System.Drawing.Point(1, 1) };
         }
 
-        public void LyricChanged(TrackLyric trackLyric)
+        public void TrackChanged(TrackLyric trackLyric)
         {
-            while (Rendering)
-            { }
-            var lyrics = LyricEngine.PlayingLyrics;
+            while (Rendering) { Thread.Sleep(1); }
             ChangingLyric = true;
 
-            foreach (var lyric in lyrics)
-                Console.WriteLine((lyric.Element as TextElement)?.Text ?? "");
+            RootElement.Dispose();
+            CurrentPlayingTrack = trackLyric;
+            RootElement = CurrentPlayingTrack.RootElement;
 
-            RootElement.ChildElements.Replace(lyrics.Select(x=>x.Element).ToList());
-            
             ChangingLyric = false;
         }
 
         public void Render(DrawGraphicsEventArgs renderArgs)
         {
-            var gfx = renderArgs.Graphics;
-            RootElement.Size = new System.Drawing.Point(gfx.Width, gfx.Height);
-
-            var type = RootElement.GetType();
-            while (ChangingLyric)
-            { }
+            if (ChangingLyric)
+                return;
 
             Rendering = true;
 
-            gfx.ClearScene(new Color(20, 20, 20, 0.35f));
+            var gfx = renderArgs.Graphics;
+
+            gfx.ClearScene();
+            RootElement.Size = new System.Drawing.Point(gfx.Width, gfx.Height);
+
+            var type = RootElement.GetType();
             if (RendererResolver.Renderers.ContainsKey(type))
-                RendererResolver.Renderers[type].Render(RootElement, renderArgs);
+                RendererResolver.Renderers[type].Render(RootElement, SoundEngine, renderArgs);
 
             Rendering = false;
         }
 
-        public void Init(ILyricEngine lyricEngine, System.Drawing.Point size)
+        public void Init(ISoundEngine engine, System.Drawing.Point size)
         {
-            LyricEngine = lyricEngine;
+            SoundEngine = engine;
             RootElement = new BasicElement
             {
                 Size = size,
+                BackgroundColor = System.Drawing.Color.FromArgb(180, 20, 20, 20)
                 //Padding = new System.Drawing.Rectangle(100, 100, size.X - 100, size.Y - 100)
             };
         }
@@ -74,6 +70,6 @@ namespace LyricPlayer.UI.Overlay.Renderers
             RootElement?.Dispose();
             RootElement = null;
         }
-        
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using LyricPlayer.LyricEngine;
-using LyricPlayer.Model;
+﻿using LyricPlayer.Model;
 using Newtonsoft.Json;
 using SpotifyAPI.Web;
 using System;
@@ -25,7 +24,6 @@ namespace LyricPlayer.SoundEngine
         private long Offset { set; get; }
         private Stopwatch Tracker { set; get; }
         public FullTrack TrackInfo { set; get; }
-        ILyricEngine LyricEngine { set; get; }
 
         public SpotifyEngine()
         {
@@ -40,11 +38,6 @@ namespace LyricPlayer.SoundEngine
             RefreshAccessToken();
             AccessTokenRefreshTimer.Start();
             SongTrackingTimer.Start();
-        }
-
-        public SpotifyEngine(ILyricEngine lyricEngine) : this()
-        {
-            LyricEngine = lyricEngine;
         }
 
         public PlayerStatus Status { get; private set; }
@@ -124,27 +117,17 @@ namespace LyricPlayer.SoundEngine
                     Status = PlayerStatus.Playing;
                     Offset = ((int)currentPlaying.ProgressMs) - Tracker.ElapsedMilliseconds + delta;
                     Tracker.Start();
-                    if (LyricEngine?.Status != LyricPlayerStaus.Loading)
-                        LyricEngine?.Resume();
                 }
                 else
                 {
                     Tracker.Reset();
                     Status = PlayerStatus.Paused;
                     Offset = ((int)currentPlaying.ProgressMs) - Tracker.ElapsedMilliseconds;
-
-                    if (LyricEngine?.Status != LyricPlayerStaus.Loading)  
-                        LyricEngine?.Pause();
                 }
-                if (LyricEngine != null)
-                    LyricEngine.CurrentTime = CurrentTime;
-
-                Console.WriteLine($"finalTime:{CurrentTime} SpotifyTrack:{TimeSpan.FromMilliseconds((int)currentPlaying.ProgressMs)} Offset:{Offset} Delta:{delta}");
             }
             SongTrackingTimer.Start();
 
-            if (currentPlaying?.Item is FullTrack track &&
-                track.Name != (CurrentFileInfo as TrackInfo)?.TrackName)
+            if (currentPlaying?.Item is FullTrack track && track.Id != TrackInfo?.Id)
             {
                 TrackInfo = track;
                 CurrentFileInfo = new TrackInfo

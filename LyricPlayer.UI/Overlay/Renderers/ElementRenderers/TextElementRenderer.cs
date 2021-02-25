@@ -76,13 +76,13 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 Fonts.Add(element.FontName, gfx.CreateFont(element.FontName, element.FontSize, element.Bold, element.Italic, element.WordWrap));
             if (!Brushes.ContainsKey(element.TextColor.ToOverlayColor()))
                 Brushes.Add(element.TextColor.ToOverlayColor(), gfx.CreateSolidBrush(element.TextColor.ToOverlayColor()));
-            if (!Brushes.ContainsKey(element.BackGroundColor.ToOverlayColor()))
-                Brushes.Add(element.BackGroundColor.ToOverlayColor(), gfx.CreateSolidBrush(element.BackGroundColor.ToOverlayColor()));
+            if (!Brushes.ContainsKey(element.BackgroundColor.ToOverlayColor()))
+                Brushes.Add(element.BackgroundColor.ToOverlayColor(), gfx.CreateSolidBrush(element.BackgroundColor.ToOverlayColor()));
 
             var font = Fonts[element.FontName];
             var textLocation = !element.AutoSize ? CalculateTextLocation(element, gfx) : element.AbsoluteLocation;
 
-            if (element.BackGroundColor.A == 0)
+            if (element.BackgroundColor.A == 0)
                 gfx.DrawText(font, font.FontSize,
                     Brushes[element.TextColor.ToOverlayColor()],
                     textLocation.X + element.Padding.Left,
@@ -91,7 +91,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             else
                 gfx.DrawTextWithBackground(font, font.FontSize,
                     Brushes[element.TextColor.ToOverlayColor()],
-                    Brushes[element.BackGroundColor.ToOverlayColor()],
+                    Brushes[element.BackgroundColor.ToOverlayColor()],
                     textLocation.X + element.Padding.Left,
                     textLocation.Y + element.Padding.Top,
                     element.Text);
@@ -101,7 +101,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
         {
             var location = new System.Drawing.Point(0, 0);
             var textSize = gfx.MeasureString(Fonts[element.FontName], element.FontSize, element.Text);
-            switch (element.HorizontalAligment)
+            switch (element.HorizontalAlignment)
             {
                 case TextHorizontalAlignment.Left:
                     location.X = 0; break;
@@ -110,7 +110,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 case TextHorizontalAlignment.Center:
                     location.X = (element.Size.X - (int)textSize.X) / 2; break;
             }
-            switch (element.VerticalAligment)
+            switch (element.VerticalAlignment)
             {
                 case TextVerticalAlignment.Top:
                     location.Y = 0; break;

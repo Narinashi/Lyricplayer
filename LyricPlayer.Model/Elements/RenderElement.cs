@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using LyricPlayer.Model.Effects;
+using Newtonsoft.Json;
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LyricPlayer.Model.Elements
@@ -10,18 +12,16 @@ namespace LyricPlayer.Model.Elements
         public RenderElement()
         { ChildElements = new ElementCollection() { Parent = this }; }
 
-        public RenderElement(Lyric lyric) : this()
-        { Lyric = lyric; }
+        public uint StartAt { set; get; }
+        public uint Duration { set; get; }
+        public uint EndAt => StartAt + Duration;
 
         public FloatPoint Location { set; get; }
         public virtual Point Size { set; get; }
         public Rectangle Padding { set; get; }
         public ElementDock Dock { set; get; }
 
-        /// <summary>
-        /// In degree
-        /// </summary>
-        public float Rotation { set; get; }
+        public RotationInfo Rotation { set; get; }
 
         [JsonIgnore]
         public FloatPoint AbsoluteLocation => ParentElement == null ?
@@ -51,11 +51,11 @@ namespace LyricPlayer.Model.Elements
         };
 
         [JsonIgnore]
-        public Lyric Lyric { get; set; }
-
-        [JsonIgnore]
-        public RenderElement ParentElement { get; set; }
+        public RenderElement ParentElement { set; get; }
+        
         public ElementCollection ChildElements { get; protected set; }
+
+        public List<Effect> Effects { set; get; }
 
         public virtual void Dispose()
         {
@@ -65,7 +65,7 @@ namespace LyricPlayer.Model.Elements
             ChildElements.Clear();
             Location = default(FloatPoint);
             Size = default(Point);
-            Rotation = 0;
+            Rotation = null;
         }
 
         public void AlignToLeft()

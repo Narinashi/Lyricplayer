@@ -29,6 +29,17 @@ namespace LyricPlayer.Model.Elements
             lock (_lock)
             { Collection.Add(element); }
         }
+        public void Add(IEnumerable<RenderElement> elements)
+        {
+            lock (_lock)
+            {
+                foreach(var e in elements)
+                {
+                    e.ParentElement = Parent;
+                    Collection.Add(e);
+                }
+            }
+        }
         public bool Remove(RenderElement element)
         {
             element.ParentElement = null;

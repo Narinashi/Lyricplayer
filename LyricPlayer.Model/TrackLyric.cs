@@ -1,15 +1,12 @@
-﻿using System;
+﻿using LyricPlayer.Model.Elements;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LyricPlayer.Model
 {
     public class TrackLyric
     {
+        public RenderElement RootElement { set; get; }
         public bool Synchronized { set; get; }
-        public List<Lyric> Lyric { set; get; }
         public string Copyright { set; get; }
     }
 }

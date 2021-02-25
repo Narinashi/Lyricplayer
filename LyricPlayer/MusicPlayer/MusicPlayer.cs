@@ -1,14 +1,8 @@
-﻿using LyricPlayer.LyricEngine;
-using LyricPlayer.LyricFetcher;
+﻿using LyricPlayer.LyricFetcher;
 using LyricPlayer.Model;
-using LyricPlayer.Model.Elements;
 using LyricPlayer.PlaylistController;
 using LyricPlayer.SoundEngine;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LyricPlayer.MusicPlayer
 {
@@ -21,52 +15,43 @@ namespace LyricPlayer.MusicPlayer
             get => SoundEngine == null ? TimeSpan.Zero : SoundEngine.CurrentTime;
             set
             {
-                if (SoundEngine != null && LyricEngine != null)
-                {
+                if (SoundEngine != null)
                     SoundEngine.CurrentTime = value;
-                    LyricEngine.CurrentTime = SoundEngine.CurrentTime;
-                }
             }
         }
-        public T CurrnetTrack => Playlist?.CurrentTrack;
-        public TrackLyric Lyric => LyricEngine?.TrackLyric;
+        public T CurrentTrack => Playlist?.CurrentTrack;
         public PlaylistController<T> Playlist
         {
             protected set
             {
                 if (Playlist != null)
-                    Playlist.TrackChanged -= TrackChanged;
+                    Playlist.TrackChanged -= PlaylistTrackChanged;
 
                 _Playlist = value;
 
                 if (Playlist != null)
-                    value.TrackChanged += TrackChanged;
+                    value.TrackChanged += PlaylistTrackChanged;
 
             }
             get => _Playlist;
         }
         public ISoundEngine SoundEngine { protected set; get; }
-        public ILyricEngine LyricEngine {protected set; get; }
         protected ILyricFetcher LyricFetcher { set; get; }
+        public TrackLyric CurrentTrackLyric { set; get; }
         private PlaylistController<T> _Playlist;
+
+        public event EventHandler TrackChanged;
 
         public virtual void Play()
         {
             SoundEngine.Play();
-            LyricEngine.Resume();
-
-            LyricEngine.CurrentTime = SoundEngine.CurrentTime;
         }
         public virtual void Pause()
         {
-            LyricEngine.CurrentTime = SoundEngine.CurrentTime;
-
             SoundEngine.Pause();
-            LyricEngine.Pause();
         }
         public virtual void Stop()
         {
-            LyricEngine.Stop();
             SoundEngine.Stop();
         }
 
@@ -78,40 +63,21 @@ namespace LyricPlayer.MusicPlayer
            => Playlist.Previous();
 
 
-        private void TrackChanged(object sender, T track)
-            => TrackChanged(track);
+        private void PlaylistTrackChanged(object sender, T track)
+            => PlaylistTrackChanged(track);
 
-        protected virtual void TrackChanged(T track)
+        protected virtual void PlaylistTrackChanged(T track)
         {
             Stop();
             SoundEngine.Load(track);
             SoundEngine.Play();
-
-            Task.Run(() =>
-            {
-                var lyric = LyricFetcher.GetLyric(Path.GetFileNameWithoutExtension(track.FileAddress ?? ""), track.Title, track.Album, track.Artists, SoundEngine.TrackLength / 1000);
-                if (lyric.Lyric.Any(x => x.Duration <= 0))
-                    LyricEngine.Load(new TrackLyric
-                    {
-                        Lyric = new List<Lyric>
-                        {
-                            new Lyric
-                            {
-                            Duration = int.MaxValue,
-                            StartAt = 0,
-                            Element = new TextElement("Lyric isn't synchronized") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
-                            }
-                        }
-                    }, SoundEngine);
-
-                else
-                    LyricEngine.Load(lyric, SoundEngine);
-
-                LyricEngine.Start();
-                LyricEngine.CurrentTime = SoundEngine.CurrentTime;
-            });
+            OnTrackChanged();
         }
 
+        protected virtual void OnTrackChanged()
+        {
+            TrackChanged?.Invoke(this, EventArgs.Empty);
+        }
         public abstract void Initialize();
     }
 }

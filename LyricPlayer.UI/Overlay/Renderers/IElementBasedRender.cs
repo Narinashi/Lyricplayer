@@ -1,13 +1,12 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
-using LyricPlayer.LyricEngine;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
-using LyricPlayer.UI.Overlay.Renderers.ElementRenderers;
+using LyricPlayer.SoundEngine;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {
-    public interface IElementBasedRender 
+    public interface IElementBasedRender
     {
         RenderElement RootElement { set; get; }
 
@@ -17,8 +16,8 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         void Render(DrawGraphicsEventArgs renderArgs);
 
-        void LyricChanged(TrackLyric trackLyric);
+        void TrackChanged(TrackLyric trackLyric);
 
-        void Init(ILyricEngine lyricEngine, System.Drawing.Point size);
+        void Init(ISoundEngine soundEngine, System.Drawing.Point size);
     }
 }

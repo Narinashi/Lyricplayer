@@ -1,9 +1,7 @@
-﻿using LyricPlayer.LyricEngine;
-using LyricPlayer.LyricFetcher;
+﻿using LyricPlayer.LyricFetcher;
 using LyricPlayer.Model;
-using LyricPlayer.Model.Elements;
 using LyricPlayer.SoundEngine;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,49 +11,28 @@ namespace LyricPlayer.MusicPlayer
     {
         public SpotifyMusicPlayer(string token) : base(token) { }
 
-        protected override void TrackChanged(TrackInfo track)
+        protected override void PlaylistTrackChanged(TrackInfo track)
         {
 
         }
 
         public override void Initialize()
         {
-            LyricEngine = new NarinoLyricEngine();
-            SoundEngine = new SpotifyEngine(LyricEngine);
-
+            SoundEngine = new SpotifyEngine();
+            LyricFetcher = new LocalWithMusicmatchLyricFetcher(AccessToken);
             SoundEngine.TrackStopped += (s, e) =>
             {
-                LyricEngine.Clear();
                 Task.Run(() =>
                 {
                     var trackInfo = (SoundEngine as SpotifyEngine).TrackInfo;
-                    var lyric = LyricFetcher.GetLyric(trackInfo.Name, trackInfo.Name, trackInfo.Album?.Name ?? "",
+                    CurrentTrackLyric = LyricFetcher.GetLyric(trackInfo.Name, trackInfo.Name, trackInfo.Album?.Name ?? "",
                         trackInfo.Artists?.FirstOrDefault()?.Name ?? "", SoundEngine.TrackLength / 1000);
 
-                    if (lyric.Lyric.Any(x => x.Duration <= 0))
-                        LyricEngine.Load(new TrackLyric
-                        {
-                            Lyric = new List<Lyric>
-                        {
-                            new Lyric
-                            {
-                            Duration = int.MaxValue,
-                            StartAt = 0,
-                            Element = new TextElement("Lyric isnt synchronized") { FontName = Fixed.DefaultFontName, FontSize = Fixed.DefaultFontSize }
-                            }
-                        }
-                        }, SoundEngine);
-
-                    else
-                        LyricEngine.Load(lyric, SoundEngine);
-
-                    LyricEngine.Start();
-                    LyricEngine.CurrentTime = SoundEngine.CurrentTime;
+                    Console.WriteLine($"Lyric for {trackInfo.Name} loaded");
+                    OnTrackChanged();
                 });
             };
-            LyricEngine.LyricChanged += (s, e) =>
-            { OnLyricChanged(e); };
-            LyricFetcher = new LocalWithMusicmatchLyricFetcher(AccessToken);
+
         }
     }
 }
