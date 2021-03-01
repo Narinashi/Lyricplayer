@@ -52,7 +52,20 @@ namespace LyricPlayer.Model.Elements
 
         [JsonIgnore]
         public RenderElement ParentElement { set; get; }
-        
+
+        [JsonIgnore]
+        public RenderElement RootElement
+        {
+            get
+            {
+                RenderElement element = this;
+                while (element.ParentElement != null)
+                    element = element.ParentElement;
+
+                return element;
+            }
+        }
+
         public ElementCollection ChildElements { get; protected set; }
 
         public List<Effect> Effects { set; get; }

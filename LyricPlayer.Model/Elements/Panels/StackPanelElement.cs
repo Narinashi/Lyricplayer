@@ -8,7 +8,7 @@ namespace LyricPlayer.Model.Elements
 {
    public class StackPanelElement : RenderElement
     {
-        public StackPanelItemRenderRotation ItemsRenderRotation { set; get; }
+        public StackPanelItemRenderRotation ItemsOrientation { set; get; }
         public bool AutoSize { set; get; } = true;
     }
 }

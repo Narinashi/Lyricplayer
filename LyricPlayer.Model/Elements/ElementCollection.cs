@@ -8,7 +8,7 @@ namespace LyricPlayer.Model.Elements
     {
         public RenderElement Parent { set; get; }
         Collection<RenderElement> Collection { set; get; }
-
+        public RenderElement this[int index] { get => Collection[index]; }
         public int Count => Collection.Count;
 
         public bool IsReadOnly => false;

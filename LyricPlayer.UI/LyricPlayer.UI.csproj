@@ -46,6 +46,9 @@
       <HintPath>..\packages\GameOverlay.Net.4.3.0\lib\net45\GameOverlay.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -79,7 +82,9 @@
     <Compile Include="Overlay\Renderers\ElementBasedRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\BasicElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\ElementRenderer.cs" />
+    <Compile Include="Overlay\Renderers\ElementRenderers\ImageRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\RendererResolver.cs" />
+    <Compile Include="Overlay\Renderers\ElementRenderers\StackPanelRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\TextElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\IElementBasedRender.cs" />
     <Compile Include="Overlay\LyricOverlay.cs" />

@@ -94,7 +94,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
         public abstract void Destroy(Graphics gfx);
         public abstract void Setup(Graphics gfx);
         public abstract void Dispose();
-
+        public virtual void Cleanup() { }
     }
 
     internal abstract class ElementRenderer<T> : ElementRenderer where T : RenderElement

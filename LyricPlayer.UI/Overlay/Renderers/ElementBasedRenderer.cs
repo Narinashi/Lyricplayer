@@ -29,6 +29,8 @@ namespace LyricPlayer.UI.Overlay.Renderers
             ChangingLyric = true;
 
             RootElement.Dispose();
+            RendererResolver.Cleanup();
+
             CurrentPlayingTrack = trackLyric;
             RootElement = CurrentPlayingTrack.RootElement;
 

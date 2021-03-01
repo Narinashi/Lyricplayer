@@ -18,5 +18,11 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(ElementRenderer)))
                .ToDictionary(x => x.BaseType.GenericTypeArguments[0], a => Activator.CreateInstance(a) as ElementRenderer);
         }
+        public static void Cleanup()
+        {
+            if (Renderers == null) return;
+            foreach (var renderer in Renderers)
+                renderer.Value.Cleanup();
+        }
     }
 }

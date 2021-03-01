@@ -35,6 +35,9 @@ namespace LyricPlayer.UI
 
         public static GameOverlay.Drawing.Point ToOverlayPoint(this FloatPoint point) =>
             new GameOverlay.Drawing.Point(point.X, point.Y);
-        
+
+        public static FloatPoint ToFloatPoint(this GameOverlay.Drawing.Point point)
+            => new FloatPoint(point.X, point.Y);
+
     }
 }

@@ -197,32 +197,41 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                 Directory.CreateDirectory("Lyrics");
 
             var rootElement = new BasicElement() { BackgroundColor = Color.FromArgb(160, 20, 20, 20), };
+            var imageElement = new ImageElement()
+            {
+                Dock = ElementDock.Fill,
+                ImagePath = @"F:\Backgrounds2\temp8345.jpg",
+                Opacity = .9f,
+                Duration = int.MaxValue,
+            };
             var child = new BasicElement
             {
                 Duration = int.MaxValue,
                 Dock = ElementDock.Fill,
                 Effects = new List<Effect>
                 {
-                    new ShakeEffect{
-                    Duration = int.MaxValue,
-                    Trauma = 9,
-                    TraumaDecay = 0.000000000001f,
-                    TraumaMag = 3.5f,
-                    TraumaMult = 2f
+                    new ShakeEffect
+                    {
+                        Duration = int.MaxValue,
+                        Trauma = 13,
+                        TraumaDecay = 0.000000000001f,
+                        TraumaMag = 3.5f,
+                        TraumaMult = 2f
                     }
                 }
             };
 
             foreach (var e in elements)
             {
-                e.TextColor = Color.Azure;
+                e.TextColor = Color.White;
                 e.HorizontalAlignment = TextHorizontalAlignment.Center;
                 e.VerticalAlignment = TextVerticalAlignment.Center;
                 e.Dock = ElementDock.Fill;
                 e.AutoSize = false;
             }
             child.ChildElements.Add(elements);
-            rootElement.ChildElements.Add(child);
+            imageElement.ChildElements.Add(child);
+            rootElement.ChildElements.Add(imageElement);
             var trackLyric = new TrackLyric
             {
                 Copyright = copyRightHolder,
