@@ -78,6 +78,7 @@
     <Compile Include="Overlay\EffectPlayers\EffectPlayer.cs" />
     <Compile Include="Overlay\EffectPlayers\EffectPlayerResolver.cs" />
     <Compile Include="Overlay\EffectPlayers\ShakeEffectPlayer.cs" />
+    <Compile Include="Overlay\EffectPlayers\SpinEffectPlayer.cs" />
     <Compile Include="Overlay\LyricHolder.cs" />
     <Compile Include="Overlay\Renderers\ElementBasedRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\BasicElementRenderer.cs" />

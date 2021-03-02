@@ -1,10 +1,9 @@
-﻿using LyricPlayer.Model;
-using LyricPlayer.Model.Effects;
+﻿using LyricPlayer.LyricFetcher.LyricEffectProviders;
+using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,7 +17,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
     {
         protected static HttpClientHandler Handler = new HttpClientHandler();
         protected static HttpClient Client = new HttpClient(Handler);
-        protected string TrackName { set; get; }
+        readonly NarinoLyricEffectProvider EffectProvider = new NarinoLyricEffectProvider();
         private string UserToken { set; get; }
 
         public MusicmatchLyricFetcher(string token, string proxy)
@@ -40,8 +39,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     new TextElement()
                     {
                         Text = "Lyric not found",
-                        FontName = Fixed.DefaultFontName,
-                        FontSize = Fixed.DefaultFontSize,
                         Duration = int.MaxValue / 2
                     }
                 });
@@ -72,8 +69,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                     elements = JsonConvert.DeserializeObject<List<MusicmatchLyricMDL>>(resBody)
                                         .Select(x => new TextElement()
                                         {
-                                            FontName = Fixed.DefaultFontName,
-                                            FontSize = Fixed.DefaultFontSize,
                                             Text = x.text,
                                             StartAt = (uint)(x.time.total * 1000)
                                         }).ToList();
@@ -93,8 +88,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                         elements.Insert(0,
                                          new TextElement()
                                          {
-                                             FontName = Fixed.DefaultFontName,
-                                             FontSize = Fixed.DefaultFontSize,
                                              Text = "...",
                                              Duration = elements[0].StartAt
                                          });
@@ -126,8 +119,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 if (elements[0].StartAt > 1)
                                     elements.Insert(0, new TextElement()
                                     {
-                                        FontName = Fixed.DefaultFontName,
-                                        FontSize = Fixed.DefaultFontSize,
                                         Duration = elements[0].StartAt,
                                         Text = "..."
                                     });
@@ -153,8 +144,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                                 .Select(x => new TextElement()
                                 {
                                     Text = x,
-                                    FontName = Fixed.DefaultFontName,
-                                    FontSize = Fixed.DefaultFontSize
                                 }), copyrightHolder, false);
                         }
                     }
@@ -167,8 +156,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                             .Select(x => new TextElement()
                             {
                                 Text = x,
-                                FontName = Fixed.DefaultFontName,
-                                FontSize = Fixed.DefaultFontSize
                             }), copyrightHolder, false);
                     }
                 }
@@ -182,8 +169,6 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                         {
                             Text = "Let the beat goes on (Instrumental)",
                             Duration = int.MaxValue,
-                            FontName = Fixed.DefaultFontName,
-                            FontSize = Fixed.DefaultFontSize
                         }
                     }, copyrightHolder);
 
@@ -196,91 +181,20 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
             if (!Directory.Exists("Lyrics"))
                 Directory.CreateDirectory("Lyrics");
 
-            var rootElement = new BasicElement() { BackgroundColor = Color.FromArgb(160, 20, 20, 20), };
-            var imageElement = new ImageElement()
+            var rootElement = new BasicElement()
             {
                 Dock = ElementDock.Fill,
-                ImagePath = @"F:\Backgrounds2\temp8345.jpg",
-                Opacity = .9f,
-                Duration = int.MaxValue,
-                Size = new Point(50, 50),
+                Duration = int.MaxValue
             };
-
-            var panel = new StackPanelElement()
-            {
-                ItemsOrientation = StackPanelItemRenderRotation.LeftToRight,
-                Duration = int.MaxValue,
-                Dock = ElementDock.Fill
-            };
-            var leftImagePanel = new ImageElement()
-            {
-                Dock = ElementDock.Left,
-                ImagePath = @"E:\l.png",
-                Opacity = .9f,
-                Duration = int.MaxValue,
-                Size = new Point(50, 50),
-            };
-            var img = new Bitmap(@"E:\l.png");
-
-            img.RotateFlip(RotateFlipType.RotateNoneFlipX);
-            img.Save(@"E:\l-1.png");
-
-            var rightImagePanel = new ImageElement()
-            {
-                Dock = ElementDock.Right,
-                Size = new Point(50, 50),
-                ImagePath = @"E:\l-1.png",
-                Opacity = .9f,
-                Duration = int.MaxValue,
-            };
-            var rightPanel = new StackPanelElement()
-            {
-                Duration = int.MaxValue,
-                ItemsOrientation = StackPanelItemRenderRotation.RightToLeft,
-                Dock = ElementDock.Right
-            };
-            var parentPanel = new BasicElement() { Duration = int.MaxValue, Dock = ElementDock.Fill };
-
-            rightPanel.ChildElements.Add(rightImagePanel);
-            panel.ChildElements.Add(leftImagePanel);
-            panel.ChildElements.Add(rightPanel);
-            var child = new BasicElement
-            {
-                Duration = int.MaxValue,
-                Dock = ElementDock.Fill,
-                Effects = new List<Effect>
-                {
-                    new ShakeEffect
-                    {
-                        Duration = int.MaxValue,
-                        Trauma = 12,
-                        TraumaDecay = 0.000000000001f,
-                        TraumaMag = 2.8f,
-                        TraumaMult = 2f
-                    }
-                }
-            };
-
-            foreach (var e in elements)
-            {
-                e.TextColor = Color.White;
-                e.HorizontalAlignment = TextHorizontalAlignment.Center;
-                e.VerticalAlignment = TextVerticalAlignment.Center;
-                e.Dock = ElementDock.Fill;
-                e.AutoSize = false;
-            }
-            parentPanel.ChildElements.Add(panel);
-            child.ChildElements.Add(elements);
-
-            //imageElement.ChildElements.Add(child);
-            rootElement.ChildElements.Add(child);
-            rootElement.ChildElements.Add(parentPanel);
+            rootElement.ChildElements.Add(elements);
             var trackLyric = new TrackLyric
             {
                 Copyright = copyRightHolder,
                 Synchronized = synchronized,
                 RootElement = rootElement
             };
+
+            EffectProvider.AddEffects(trackLyric);
             //File.WriteAllText(Path.Combine("Lyrics", TrackName.ReplaceToValidFileName() + ".lyr"), JsonConvert.SerializeObject(trackLyric, Fixed.JsonSerializationSetting));
 
             return trackLyric;
@@ -288,7 +202,7 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 
         private string CallMusicMatchService(string trackName, string title, string album, string artist, double trackLength)
         {
-            TrackName = trackName = new string(trackName
+            trackName = new string(trackName
                 .Replace("[Copyright Free]", "")
                 .Replace("[Official Video]", "")
                 .Replace("[Official Audio]", "")

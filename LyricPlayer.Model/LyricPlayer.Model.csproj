@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Effects\Effect.cs" />
     <Compile Include="Effects\ShakeEffect.cs" />
+    <Compile Include="Effects\SpinEffect.cs" />
     <Compile Include="Elements\BasicElement.cs" />
     <Compile Include="Elements\ElementCollection.cs" />
     <Compile Include="Elements\Enums\ElementDock.cs" />

@@ -36,8 +36,8 @@ namespace LyricPlayer.UI.Overlay
             Player = new SpotifyMusicPlayer(token);
             Renderer = new ElementBasedRenderer();
             var size = DisplayTools.GetPhysicalDisplaySize();
-            OverlaySize = new Size(size.Width, 50);
-            OverlayLocation = new Point(0, size.Height - 50);
+            OverlaySize = new Size(size.Width, 80);
+            OverlayLocation = new Point(0, 0);
         }
 
         public void ShowOverlay(string processName)

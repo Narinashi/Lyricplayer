@@ -23,7 +23,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 gfx.TransformStart(TransformationMatrix.Rotation(element.Rotation.Rotation,
                     element.Rotation.RotationCenter.HasValue ?
                     element.Rotation.RotationCenter.Value.ToOverlayPoint() :
-                    new Point(element.Size.X / 2f, element.Size.Y / 2f)));
+                    new Point(element.AbsoluteLocation.X + (element.Size.X / 2f), element.AbsoluteLocation.Y + (element.Size.Y / 2f))));
 
             InternalRender(element, renderArgs);
 

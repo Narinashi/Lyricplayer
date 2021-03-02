@@ -27,7 +27,7 @@ namespace LyricPlayer.UI.Overlay.EffectPlayers
             point.X *= effect.TraumaMag * effect.Trauma;
             point.Y *= effect.TraumaMag * effect.Trauma;
 
-            element.Rotation.Rotation = Noise.GetCubic(effect.TimeCounter, 1) / 8;
+            element.Rotation.Rotation = Noise.GetCubic(effect.TimeCounter, 1) / 6;
             element.Location = new FloatPoint
             {
                 X = (element.Location.X + point.X),

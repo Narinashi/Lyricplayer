@@ -20,6 +20,7 @@ namespace LyricPlayer.Model.Elements
         public virtual Point Size { set; get; }
         public Rectangle Padding { set; get; }
         public ElementDock Dock { set; get; }
+        public Color BackgroundColor { set; get; }
 
         public RotationInfo Rotation { set; get; }
 

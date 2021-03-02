@@ -10,6 +10,7 @@ namespace LyricPlayer.Model.Elements
         public byte[] ImageContent { set; get; }
         public float Opacity { set; get; } = 0.75f;
         public string ImagePath { set; get; }
+        public bool AutoSize { set; get; } = true;
 
         [JsonIgnore]
         public bool Initializing { set; get; }

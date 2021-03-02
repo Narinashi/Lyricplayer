@@ -67,6 +67,8 @@
     <Compile Include="LyricFetcher\ILyricFetcher.cs" />
     <Compile Include="LyricFetcher\LocalLyricFetcher.cs" />
     <Compile Include="LyricFetcher\LocaWithMusicmatchLyricFetcher.cs" />
+    <Compile Include="LyricFetcher\LyricEffectProviders\ILyricEffectProvider.cs" />
+    <Compile Include="LyricFetcher\LyricEffectProviders\NarinoLyricEffectProvider.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicmatchLyricFetcher.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicMatchModels.cs" />
     <Compile Include="LyricFetcher\MusicmatchLyricFetcher\ProxiedMusicmatchLyricFetcher.cs" />

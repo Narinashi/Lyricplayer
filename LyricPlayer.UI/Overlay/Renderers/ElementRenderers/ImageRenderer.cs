@@ -13,6 +13,44 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
     {
         static Dictionary<ImageElement, Image> ImageElements { set; get; } = new Dictionary<ImageElement, Image>();
 
+        protected override void InternalRenderPreparation(ImageElement element, DrawGraphicsEventArgs renderArgs)
+        {
+            base.InternalRenderPreparation(element, renderArgs);
+            if (element.AutoSize) return;
+            if (element.ParentElement == null) return;
+            if (!ImageElements.ContainsKey(element)) return;
+
+            var image = ImageElements[element];
+            if (image.Bitmap?.IsDisposed ?? true) return;
+
+            var ratio = image.Width / image.Height;
+            if (element.Dock == ElementDock.None)
+            {
+                FillAsMuchAsPossible(element, image);
+                return;
+            }
+
+
+
+            var currentHeight = element.Size.Y;
+           // element.Size = new System.Drawing.Point(ratio * currentHeight)
+        }
+
+        private void FillAsMuchAsPossible(ImageElement element, Image image)
+        {
+            var ratio = image.Width / image.Height;
+            if (image.Width <= element.ParentElement.Size.X && image.Height <= element.ParentElement.Size.Y)
+            {
+                element.Size = new System.Drawing.Point((int)image.Width,(int)image.Height);
+                return;
+            }
+            if(ratio < 1)
+            {
+                //var multiplier = element.ParentElement.Size.X / image.Width;
+                //element.Size = new System.Drawing.Point(multiplier * image.Width, multiplier * image.Height * ratio);
+            }
+        }
+
         protected override void InternalRender(ImageElement element, DrawGraphicsEventArgs renderArgs)
         {
             if (element.Initializing)
