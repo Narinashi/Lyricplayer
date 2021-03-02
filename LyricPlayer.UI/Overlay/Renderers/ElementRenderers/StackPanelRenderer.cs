@@ -50,7 +50,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
         {
             base.InternalRenderPreparation(element, renderArgs);
             foreach (var child in element.ChildElements)
-                InternalRenderPreparation(child, renderArgs);
+               RendererResolver.Renderers[child.GetType()].PrepareToRender(child, renderArgs);
         }
 
 

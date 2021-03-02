@@ -107,7 +107,9 @@ namespace LyricPlayer.SoundEngine
 
             var request = new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track);
             var timeBeforeRequesting = Tracker.ElapsedMilliseconds;
-            var currentPlaying = SpotifyClient.Player.GetCurrentlyPlaying(request).Result;
+            CurrentlyPlaying currentPlaying = null;
+            try { currentPlaying = SpotifyClient.Player.GetCurrentlyPlaying(request).Result; }
+            catch { }
             if (currentPlaying != null)
             {
                 var delta = (int)((Tracker.ElapsedMilliseconds - timeBeforeRequesting) / 2f);

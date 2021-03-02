@@ -44,7 +44,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             gfx.ClipRegionEnd();
         }
 
-        private void PrepareToRender<T>(T element, DrawGraphicsEventArgs renderArgs) where T : RenderElement
+        public void PrepareToRender<T>(T element, DrawGraphicsEventArgs renderArgs) where T : RenderElement
         {
             ComputeElementSizeAndLocation(element);
             InternalRenderPreparation(element, renderArgs);

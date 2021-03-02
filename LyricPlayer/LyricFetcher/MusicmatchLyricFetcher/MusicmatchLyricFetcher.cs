@@ -14,12 +14,12 @@ using System.Web;
 
 namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
 {
-    class MusicmatchLyricFetcher : ILyricFetcher
+    internal class MusicmatchLyricFetcher : ILyricFetcher
     {
         protected static HttpClientHandler Handler = new HttpClientHandler();
         protected static HttpClient Client = new HttpClient(Handler);
         protected string TrackName { set; get; }
-        string UserToken { set; get; }
+        private string UserToken { set; get; }
 
         public MusicmatchLyricFetcher(string token, string proxy)
         {
@@ -203,7 +203,47 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                 ImagePath = @"F:\Backgrounds2\temp8345.jpg",
                 Opacity = .9f,
                 Duration = int.MaxValue,
+                Size = new Point(50, 50),
             };
+
+            var panel = new StackPanelElement()
+            {
+                ItemsOrientation = StackPanelItemRenderRotation.LeftToRight,
+                Duration = int.MaxValue,
+                Dock = ElementDock.Fill
+            };
+            var leftImagePanel = new ImageElement()
+            {
+                Dock = ElementDock.Left,
+                ImagePath = @"E:\l.png",
+                Opacity = .9f,
+                Duration = int.MaxValue,
+                Size = new Point(50, 50),
+            };
+            var img = new Bitmap(@"E:\l.png");
+
+            img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            img.Save(@"E:\l-1.png");
+
+            var rightImagePanel = new ImageElement()
+            {
+                Dock = ElementDock.Right,
+                Size = new Point(50, 50),
+                ImagePath = @"E:\l-1.png",
+                Opacity = .9f,
+                Duration = int.MaxValue,
+            };
+            var rightPanel = new StackPanelElement()
+            {
+                Duration = int.MaxValue,
+                ItemsOrientation = StackPanelItemRenderRotation.RightToLeft,
+                Dock = ElementDock.Right
+            };
+            var parentPanel = new BasicElement() { Duration = int.MaxValue, Dock = ElementDock.Fill };
+
+            rightPanel.ChildElements.Add(rightImagePanel);
+            panel.ChildElements.Add(leftImagePanel);
+            panel.ChildElements.Add(rightPanel);
             var child = new BasicElement
             {
                 Duration = int.MaxValue,
@@ -213,9 +253,9 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                     new ShakeEffect
                     {
                         Duration = int.MaxValue,
-                        Trauma = 13,
+                        Trauma = 12,
                         TraumaDecay = 0.000000000001f,
-                        TraumaMag = 3.5f,
+                        TraumaMag = 2.8f,
                         TraumaMult = 2f
                     }
                 }
@@ -229,9 +269,12 @@ namespace LyricPlayer.LyricFetcher.MusicmatchLyricFetcher
                 e.Dock = ElementDock.Fill;
                 e.AutoSize = false;
             }
+            parentPanel.ChildElements.Add(panel);
             child.ChildElements.Add(elements);
-            imageElement.ChildElements.Add(child);
-            rootElement.ChildElements.Add(imageElement);
+
+            //imageElement.ChildElements.Add(child);
+            rootElement.ChildElements.Add(child);
+            rootElement.ChildElements.Add(parentPanel);
             var trackLyric = new TrackLyric
             {
                 Copyright = copyRightHolder,
