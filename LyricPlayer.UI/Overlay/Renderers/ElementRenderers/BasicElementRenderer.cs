@@ -1,6 +1,7 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using LyricPlayer.Model.Elements;
+using LyricPlayer.MusicPlayer;
 using System.Collections.Generic;
 
 namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
@@ -15,7 +16,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                 brush.Value.Brush.Dispose();
         }
 
-        protected override void InternalRender(BasicElement element, DrawGraphicsEventArgs renderArgs)
+        protected override void InternalRender(BasicElement element, AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs)
         {
             if (Brushes == null)
                 Setup(renderArgs.Graphics);

@@ -42,12 +42,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GameOverlay, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GameOverlay.Net.4.3.0\lib\net45\GameOverlay.dll</HintPath>
+    <Reference Include="GameOverlay, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GameOverlay.Net.4.3.1\lib\net45\GameOverlay.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
@@ -62,12 +62,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -75,16 +75,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
+    <Compile Include="HotKeyManager.cs" />
     <Compile Include="Overlay\EffectPlayers\EffectPlayer.cs" />
     <Compile Include="Overlay\EffectPlayers\EffectPlayerResolver.cs" />
     <Compile Include="Overlay\EffectPlayers\ShakeEffectPlayer.cs" />
     <Compile Include="Overlay\EffectPlayers\SpinEffectPlayer.cs" />
-    <Compile Include="Overlay\LyricHolder.cs" />
     <Compile Include="Overlay\Renderers\ElementBasedRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\BasicElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\ElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\ImageRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\RendererResolver.cs" />
+    <Compile Include="Overlay\Renderers\ElementRenderers\SpectrumVisualizerRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\StackPanelRenderer.cs" />
     <Compile Include="Overlay\Renderers\ElementRenderers\TextElementRenderer.cs" />
     <Compile Include="Overlay\Renderers\IElementBasedRender.cs" />
@@ -103,12 +104,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SpotifyToken.Token">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="SpotifyCredentials.Token">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Compile Include="Utilities\Extentions.cs" />
     <Compile Include="Utilities\FastNoise.cs" />
     <Compile Include="Utilities\DisplayTools.cs" />
@@ -120,9 +115,6 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Token.Token">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +130,10 @@
       <Name>LyricPlayer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Tracks.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

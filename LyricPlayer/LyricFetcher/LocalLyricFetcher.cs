@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace LyricPlayer.LyricFetcher
 {
-    class LocalLyricFetcher : ILyricFetcher
+    class LocalLyricFetcher : LyricFetcher
     {
-        public TrackLyric GetLyric(string trackName, string Title, string Album, string Artist, double trackLength)
+        public override TrackLyric GetLyric(TrackInfo trackInfo)
         {
-            var validFileName = trackName.ReplaceToValidFileName();
+            var validFileName = trackInfo.TrackName.ReplaceToValidFileName();
             var filePath = Path.Combine("Lyrics", validFileName + ".lyr");
             if (!File.Exists(filePath))
                 return null;
@@ -21,7 +21,7 @@ namespace LyricPlayer.LyricFetcher
                 return null;
 
             trackLyric.Copyright = trackLyric.Copyright?.Trim()?.Replace("\n", " ") ?? string.Empty;
-            elements.Last().Duration = int.MaxValue;
+            elements.Last().Duration = uint.MaxValue/2;
 
             return trackLyric;
         }

@@ -2,7 +2,7 @@
 using GameOverlay.Windows;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
-using LyricPlayer.SoundEngine;
+using LyricPlayer.MusicPlayer;
 using LyricPlayer.UI.Overlay.Renderers.ElementRenderers;
 using System.Threading;
 
@@ -10,9 +10,21 @@ namespace LyricPlayer.UI.Overlay.Renderers
 {
     internal class ElementBasedRenderer : IElementBasedRender
     {
+        public long Offset
+        {
+            get => _Offset;
+            set
+            {
+                foreach (var renderer in RendererResolver.Renderers)
+                    renderer.Value.Offset = value;
+
+                _Offset = value;
+            }
+        }
+        long _Offset;
         public RenderElement RootElement { get; set; }
         TrackLyric CurrentPlayingTrack { set; get; }
-        ISoundEngine SoundEngine { set; get; }
+        AudioPlayer AudioPlayer { set; get; }
 
         private bool Rendering { set; get; }
         private bool ChangingLyric { set; get; }
@@ -25,7 +37,7 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         public void TrackChanged(TrackLyric trackLyric)
         {
-            while (Rendering) { Thread.Sleep(1); }
+            while (Rendering) { Thread.Sleep(3); }
             ChangingLyric = true;
 
             RootElement.Dispose();
@@ -51,14 +63,14 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
             var type = RootElement.GetType();
             if (RendererResolver.Renderers.ContainsKey(type))
-                RendererResolver.Renderers[type].Render(RootElement, SoundEngine, renderArgs);
+                RendererResolver.Renderers[type].Render(RootElement, AudioPlayer, renderArgs);
 
             Rendering = false;
         }
 
-        public void Init(ISoundEngine engine, System.Drawing.Point size)
+        public void Init(AudioPlayer audioPlayer, System.Drawing.Point size)
         {
-            SoundEngine = engine;
+            AudioPlayer = audioPlayer;
             RootElement = new BasicElement
             {
                 Size = size,

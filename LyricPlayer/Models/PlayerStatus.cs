@@ -1,4 +1,4 @@
-﻿namespace LyricPlayer.Model
+﻿namespace LyricPlayer
 {
     public enum PlayerStatus
     {

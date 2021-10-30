@@ -41,20 +41,25 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSCore, Version=1.2.1.2, Culture=neutral, PublicKeyToken=5a08f2b6f4415dea, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSCore.1.2.1.2\lib\net35-client\CSCore.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpotifyAPI.Web.6.0.0\lib\netstandard2.0\SpotifyAPI.Web.dll</HintPath>
+      <HintPath>..\packages\SpotifyAPI.Web.6.2.2\lib\netstandard2.0\SpotifyAPI.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -64,32 +69,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixed.cs" />
-    <Compile Include="LyricFetcher\ILyricFetcher.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="LyricFetcher\LyricFetcher.cs" />
     <Compile Include="LyricFetcher\LocalLyricFetcher.cs" />
     <Compile Include="LyricFetcher\LocaWithMusicmatchLyricFetcher.cs" />
-    <Compile Include="LyricFetcher\LyricEffectProviders\ILyricEffectProvider.cs" />
-    <Compile Include="LyricFetcher\LyricEffectProviders\NarinoLyricEffectProvider.cs" />
-    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicmatchLyricFetcher.cs" />
-    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicMatchModels.cs" />
-    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\ProxiedMusicmatchLyricFetcher.cs" />
+    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicxMatchLyricFetcher.cs" />
+    <Compile Include="LyricFetcher\MusicmatchLyricFetcher\MusicXMatchModels.cs" />
     <Compile Include="Models\PlayerStatus.cs" />
-    <Compile Include="MusicPlayer\MusicPlayer.cs" />
-    <Compile Include="MusicPlayer\NarinoMusicPlayer.cs" />
-    <Compile Include="MusicPlayer\RepeatType.cs" />
-    <Compile Include="MusicPlayer\SpotifyMusicPlayer.cs" />
+    <Compile Include="Models\RepeatType.cs" />
+    <Compile Include="MusicPlayer\AudioPlayer.cs" />
+    <Compile Include="MusicPlayer\AudioAnalyse\BasicSpectrumProvider.cs" />
+    <Compile Include="MusicPlayer\AudioAnalyse\RawSpectrumDataProvider.cs" />
+    <Compile Include="MusicPlayer\AudioAnalyse\SpectrumBase.cs" />
+    <Compile Include="MusicPlayer\SpotifyPlayer.cs" />
     <Compile Include="PlaylistController\PlaylistController.cs" />
-    <Compile Include="SoundEngine\ISoundEngine.cs" />
-    <None Include="Token.Token">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Compile Include="SoundEngine\SpotifyEngine.cs" />
     <Compile Include="Utilities\Extentions.cs" />
     <Compile Include="Utilities\PauseableTimer.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SoundEngine\NAudioEngine.cs" />
+    <Compile Include="MusicPlayer\NAudioPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -7,7 +7,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
     class StackPanelRenderer : ElementRenderer<StackPanelElement>
     {
-        protected override void InternalRender(StackPanelElement element, DrawGraphicsEventArgs renderArgs)
+        protected override void InternalRender(StackPanelElement element, MusicPlayer.AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs)
         {
             Point childLocation = new Point(0, 0);
             Point childElementSize = new Point(0, 0);

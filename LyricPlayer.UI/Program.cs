@@ -1,4 +1,6 @@
 ﻿using LyricPlayer.Model;
+using LyricPlayer.MusicPlayer;
+using LyricPlayer.UI.Overlay;
 using System;
 using System.IO;
 
@@ -7,13 +9,27 @@ namespace LyricPlayer.UI
     internal class Program
     {
         public static float Mulitplier { set; get; } = 2f;
+        static LyricOverlay Overlay { set; get; }
         public static void Main()
         {
-            var overlay = new Overlay.LyricOverlay();
-            var processName = File.Exists("ProcessName.txt") ? File.ReadAllText("ProcessName.txt") : "";
-            overlay.ShowOverlay(processName);
+            Overlay = new LyricOverlay();
 
-            if (File.Exists("Tracks.txt"))
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Add, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Subtract, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.A, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.S, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.D, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.W, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Up, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Down, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Left, KeyModifiers.Alt);
+            HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.Right, KeyModifiers.Alt);
+
+            HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
+            var processName = File.Exists("ProcessName.txt") ? File.ReadAllText("ProcessName.txt") : "";
+            Overlay.ShowOverlay(processName);
+
+            if (File.Exists("Tracks.txt") && Overlay.MusicPlayer is NAudioPlayer)
             {
                 var files = File.ReadAllLines("Tracks.txt");
                 foreach (var file in files)
@@ -27,10 +43,10 @@ namespace LyricPlayer.UI
                     {
                         var directoryFiles = Directory.GetFiles(file);
                         foreach (var directoryFile in directoryFiles)
-                            overlay.Player.Playlist.Add(new TrackInfo { FileAddress = directoryFile });
+                            Overlay.MusicPlayer.Playlist.Add(new TrackInfo { FileAddress = directoryFile });
                     }
                     else if (File.Exists(file))
-                        overlay.Player.Playlist.Add(new TrackInfo { FileAddress = file });
+                        Overlay.MusicPlayer.Playlist.Add(new TrackInfo { FileAddress = file });
                 }
             }
 
@@ -42,26 +58,26 @@ namespace LyricPlayer.UI
 
                 if (data.Key == ConsoleKey.Spacebar)
                 {
-                    if (overlay.Player.PlayerStatus == Model.PlayerStatus.Playing)
-                        overlay.Player.Pause();
+                    if (Overlay.MusicPlayer.Status == PlayerStatus.Playing)
+                        Overlay.MusicPlayer.Pause();
                     else
-                        overlay.Player.Play();
+                        Overlay.MusicPlayer.Play();
                 }
                 else if (char.IsDigit(data.KeyChar))
                     str += data.KeyChar;
                 else if (data.Key == ConsoleKey.Backspace || data.Key == ConsoleKey.BrowserBack && str.Length > 0)
                     str = str.Substring(0, str.Length - 1);
                 else if (data.Key == ConsoleKey.N)
-                    overlay.Player.Playlist.Next();
+                    Overlay.MusicPlayer.Playlist.Next();
                 else if (data.Key == ConsoleKey.P)
-                    overlay.Player.Playlist.Previous();
+                    Overlay.MusicPlayer.Playlist.Previous();
                 else if (data.Key == ConsoleKey.Enter && int.TryParse(str, out time))
                 {
-                    overlay.Player.CurrentTime = TimeSpan.FromSeconds(time);
+                    Overlay.MusicPlayer.CurrentTime = TimeSpan.FromSeconds(time);
                     str = string.Empty;
                 }
                 else if (data.Key == ConsoleKey.Enter && string.IsNullOrEmpty(str))
-                    overlay.Player.Next();
+                    Overlay.MusicPlayer.Playlist.Next();
 
                 else if (data.Key == ConsoleKey.UpArrow)
                     Mulitplier *= 1.4f;
@@ -70,29 +86,82 @@ namespace LyricPlayer.UI
                     Mulitplier /= 1.4f;
 
                 else if (data.Key == ConsoleKey.RightArrow)
-                    overlay.Player.CurrentTime = overlay.Player.CurrentTime.Add(TimeSpan.FromSeconds(5));
+                    Overlay.MusicPlayer.CurrentTime = Overlay.MusicPlayer.CurrentTime.Add(TimeSpan.FromSeconds(5));
 
                 else if (data.Key == ConsoleKey.LeftArrow)
                 {
-                    if (overlay.Player.CurrentTime.TotalSeconds <= 5)
-                        overlay.Player.CurrentTime = TimeSpan.Zero;
+                    if (Overlay.MusicPlayer.CurrentTime.TotalSeconds <= 5)
+                        Overlay.MusicPlayer.CurrentTime = TimeSpan.Zero;
                     else
-                        overlay.Player.CurrentTime = overlay.Player.CurrentTime.Subtract(TimeSpan.FromSeconds(5));
+                        Overlay.MusicPlayer.CurrentTime = Overlay.MusicPlayer.CurrentTime.Subtract(TimeSpan.FromSeconds(5));
                 }
                 else if (data.Key == ConsoleKey.W)
-                    overlay.Overlay.Height += 10;
+                    Overlay.Overlay.Height += 10;
                 else if (data.Key == ConsoleKey.S)
-                    overlay.Overlay.Height -= 10;
+                    Overlay.Overlay.Height -= 10;
                 else if (data.Key == ConsoleKey.D)
-                    overlay.Overlay.Width += 20;
+                    Overlay.Overlay.Width += 20;
                 else if (data.Key == ConsoleKey.A)
-                    overlay.Overlay.Width -= 20;
+                    Overlay.Overlay.Width -= 20;
 
-                if (String.IsNullOrEmpty(str))
-                    Console.Clear();
+                //if (String.IsNullOrEmpty(str))
+                    //Console.Clear();
             }
 
-            overlay.Overlay.Join();
+            Overlay.Overlay.Join();
+        }
+
+        private static void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
+        {
+            if (Overlay.Renderer == null)
+                return;
+
+            switch (e.Key)
+            {
+                case System.Windows.Forms.Keys.Add:
+                    Overlay.Renderer.Offset += 200;
+                    break;
+
+                case System.Windows.Forms.Keys.Subtract:
+                    Overlay.Renderer.Offset -= 200;
+                    break;
+
+                case System.Windows.Forms.Keys.A:
+                    Overlay.Overlay.Move(Overlay.Overlay.X - 20, Overlay.Overlay.Y);
+                    break;
+
+                case System.Windows.Forms.Keys.D:
+                    Overlay.Overlay.Move(Overlay.Overlay.X + 20, Overlay.Overlay.Y);
+                    break;
+
+                case System.Windows.Forms.Keys.W:
+                    Overlay.Overlay.Move(Overlay.Overlay.X, Overlay.Overlay.Y - 20);
+                    break;
+
+                case System.Windows.Forms.Keys.S:
+                    Overlay.Overlay.Move(Overlay.Overlay.X, Overlay.Overlay.Y + 20);
+                    break;
+
+                case System.Windows.Forms.Keys.Up:
+                    Overlay.Overlay.Height += 20;
+                    break;
+
+                case System.Windows.Forms.Keys.Down:
+                    Overlay.Overlay.Height -= 20;
+                    break;
+
+                case System.Windows.Forms.Keys.Left:
+                    Overlay.Overlay.Width -= 20;
+                    break;
+
+                case System.Windows.Forms.Keys.Right:
+                    Overlay.Overlay.Width += 20;
+                    break;
+
+                default:
+                    return;
+            }
+            Console.WriteLine($"Changed Renderer Offset to {Overlay.Renderer.Offset}");
         }
     }
 }

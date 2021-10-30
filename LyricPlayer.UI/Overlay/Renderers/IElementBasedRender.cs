@@ -2,12 +2,13 @@
 using GameOverlay.Windows;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
-using LyricPlayer.SoundEngine;
+using LyricPlayer.MusicPlayer;
 
 namespace LyricPlayer.UI.Overlay.Renderers
 {
     public interface IElementBasedRender
     {
+        long Offset { set; get; }
         RenderElement RootElement { set; get; }
 
         void Destroy(Graphics gfx);
@@ -18,6 +19,6 @@ namespace LyricPlayer.UI.Overlay.Renderers
 
         void TrackChanged(TrackLyric trackLyric);
 
-        void Init(ISoundEngine soundEngine, System.Drawing.Point size);
+        void Init(AudioPlayer audioPlayer, System.Drawing.Point size);
     }
 }

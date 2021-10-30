@@ -1,7 +1,7 @@
 ﻿namespace LyricPlayer.Model.Effects
 {
 #pragma warning disable CS0659
-    public class ShakeEffect : Effect
+    public class ShakeEffect : ElementEffect
     {
 #pragma warning restore CS0659
         public float Trauma { set; get; }

@@ -18,9 +18,16 @@ namespace LyricPlayer.Model.Elements
         {
             Collection = new Collection<RenderElement>();
         }
+
         public ElementCollection(RenderElement parent) : this()
         {
             Parent = parent;
+        }
+
+        public ElementCollection(IEnumerable<RenderElement> children) : this()
+        {
+            foreach (var child in children)
+                Collection.Add(child);
         }
 
         public void Add(RenderElement element)
@@ -33,7 +40,7 @@ namespace LyricPlayer.Model.Elements
         {
             lock (_lock)
             {
-                foreach(var e in elements)
+                foreach (var e in elements)
                 {
                     e.ParentElement = Parent;
                     Collection.Add(e);

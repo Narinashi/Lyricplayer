@@ -1,4 +1,6 @@
 ﻿using GameOverlay.Windows;
+using LyricPlayer.LyricFetcher;
+using LyricPlayer.LyricFetcher.MusicmatchLyricFetcher;
 using LyricPlayer.MusicPlayer;
 using LyricPlayer.UI.Overlay.Renderers;
 using System;
@@ -12,7 +14,8 @@ namespace LyricPlayer.UI.Overlay
 {
     public class LyricOverlay
     {
-        public NarinoMusicPlayer Player { protected set; get; }
+        public AudioPlayer MusicPlayer { protected set; get; }
+        public LyricFetcher.LyricFetcher LyricFetcher { protected set; get; }
         public GraphicsWindow Overlay { protected set; get; }
         public IElementBasedRender Renderer { get; protected set; }
         public Point OverlayLocation { set; get; }
@@ -32,9 +35,9 @@ namespace LyricPlayer.UI.Overlay
 
         public LyricOverlay()
         {
-            var token = File.ReadAllText("Token.Token");
-            Player = new SpotifyMusicPlayer(token);
+            MusicPlayer = new NAudioPlayer();
             Renderer = new ElementBasedRenderer();
+            LyricFetcher = new MusicxMatchLyricFetcher();
             var size = DisplayTools.GetPhysicalDisplaySize();
             OverlaySize = new Size(size.Width, 80);
             OverlayLocation = new Point(0, 0);
@@ -49,14 +52,14 @@ namespace LyricPlayer.UI.Overlay
 
         public void ShowOverlay(IntPtr processWindowHandle)
         {
-            Player.Initialize();
             Overlay = new GraphicsWindow((int)OverlayLocation.X, (int)OverlayLocation.Y, (int)OverlaySize.Width, (int)OverlaySize.Height);
             Overlay.SetupGraphics += OverlaySetupGraphics;
             Overlay.DestroyGraphics += OverlayDestroyGraphics;
             Overlay.DrawGraphics += OverlayDrawGraphics;
 
-            Player.TrackChanged += (s, e) => Renderer.TrackChanged(Player.CurrentTrackLyric);
-            Renderer.Init(Player.SoundEngine, new System.Drawing.Point((int)OverlaySize.Width, (int)OverlaySize.Height));
+            MusicPlayer.TrackChanged += (s, e) => Renderer.TrackChanged(LyricFetcher.GetLyric(MusicPlayer.CurrentlyPlaying));
+            
+            Renderer.Init(MusicPlayer, new System.Drawing.Point((int)OverlaySize.Width, (int)OverlaySize.Height));
 
             Overlay.Create();
             Overlay.Show();

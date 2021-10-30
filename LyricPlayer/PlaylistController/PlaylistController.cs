@@ -22,7 +22,7 @@ namespace LyricPlayer.PlaylistController
             if (File.Exists(track.FileAddress) || track.FileContent != null)
                 Tracks.Add(track);
 
-            if (string.IsNullOrEmpty(track.TrackName))
+            if (string.IsNullOrEmpty(track.TrackName) && !string.IsNullOrEmpty(track.FileAddress))
                 track.TrackName = Path.GetFileNameWithoutExtension(track.FileAddress);
 
             if (Tracks.Count == 1)

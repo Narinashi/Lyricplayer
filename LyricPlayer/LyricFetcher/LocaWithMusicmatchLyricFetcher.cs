@@ -8,21 +8,22 @@ using LyricPlayer.LyricFetcher.MusicmatchLyricFetcher;
 
 namespace LyricPlayer.LyricFetcher
 {
-    class LocalWithMusicmatchLyricFetcher : ILyricFetcher
+    class LocalWithMusicmatchLyricFetcher : LyricFetcher
     {
-        protected ProxiedMusicmatchLyricFetcher MusicMatchFetcher { set; get; }
+        protected MusicxMatchLyricFetcher MusicMatchFetcher { set; get; }
         protected LocalLyricFetcher LocalLyricFetcher { set; get; }
 
-        public LocalWithMusicmatchLyricFetcher(string token)
+        public LocalWithMusicmatchLyricFetcher()
         {
-            MusicMatchFetcher = new ProxiedMusicmatchLyricFetcher(token, string.Empty);
+            MusicMatchFetcher = new MusicxMatchLyricFetcher();
             LocalLyricFetcher = new LocalLyricFetcher();
         }
-        public TrackLyric GetLyric(string trackName, string title, string album, string artist, double trackLength)
+
+        public override TrackLyric GetLyric(TrackInfo trackInfo)
         {
-            var result = LocalLyricFetcher.GetLyric(trackName, title, album, artist, trackLength);
+            var result = LocalLyricFetcher.GetLyric(trackInfo);
             if (result == null)
-                result = MusicMatchFetcher.GetLyric(trackName, title, album, artist, trackLength);
+                result = MusicMatchFetcher.GetLyric(trackInfo);
 
             return result;
         }

@@ -2,7 +2,7 @@
 using GameOverlay.Windows;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
-using LyricPlayer.SoundEngine;
+using LyricPlayer.MusicPlayer;
 using LyricPlayer.UI.Overlay.EffectPlayers;
 using System;
 using System.Linq;
@@ -11,7 +11,8 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 {
     internal abstract class ElementRenderer : IDisposable
     {
-        public void Render<T>(T element, ISoundEngine soundEngine, DrawGraphicsEventArgs renderArgs) where T : RenderElement
+        public long Offset { set; get; }
+        public void Render<T>(T element, AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs) where T : RenderElement
         {
             PrepareToRender(element, renderArgs);
             ApplyEffects(element, renderArgs);
@@ -25,9 +26,9 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                     element.Rotation.RotationCenter.Value.ToOverlayPoint() :
                     new Point(element.AbsoluteLocation.X + (element.Size.X / 2f), element.AbsoluteLocation.Y + (element.Size.Y / 2f))));
 
-            InternalRender(element, renderArgs);
+            InternalRender(element, audioPlayer, renderArgs);
 
-            var time = soundEngine.CurrentTime.TotalMilliseconds;
+            var time = audioPlayer.CurrentTime.TotalMilliseconds + Offset;
             foreach (var child in element.ChildElements)
             {
                 if (child.EndAt < time) continue;
@@ -35,7 +36,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 
                 var type = child.GetType();
                 if (RendererResolver.Renderers.ContainsKey(type))
-                    RendererResolver.Renderers[type].Render(child, soundEngine, renderArgs);
+                    RendererResolver.Renderers[type].Render(child, audioPlayer, renderArgs);
             }
 
             if (element.Rotation != null)
@@ -89,7 +90,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
         }
 
         protected abstract void InternalRenderPreparation(RenderElement element, DrawGraphicsEventArgs renderArgs);
-        protected abstract void InternalRender(RenderElement element, DrawGraphicsEventArgs renderArgs);
+        protected abstract void InternalRender(RenderElement element, AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs);
 
         public abstract void Destroy(Graphics gfx);
         public abstract void Setup(Graphics gfx);
@@ -99,16 +100,16 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
 
     internal abstract class ElementRenderer<T> : ElementRenderer where T : RenderElement
     {
-        protected override sealed void InternalRender(RenderElement element, DrawGraphicsEventArgs renderArgs)
+        protected override sealed void InternalRender(RenderElement element, AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs)
         {
-            InternalRender((T)element, renderArgs);
+            InternalRender((T)element, audioPlayer, renderArgs);
         }
 
         protected override sealed void InternalRenderPreparation(RenderElement element, DrawGraphicsEventArgs renderArgs)
         {
             InternalRenderPreparation((T)element, renderArgs);
         }
-        protected abstract void InternalRender(T element, DrawGraphicsEventArgs renderArgs);
+        protected abstract void InternalRender(T element, AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs);
         protected virtual void InternalRenderPreparation(T element, DrawGraphicsEventArgs renderArgs) { }
     }
 }

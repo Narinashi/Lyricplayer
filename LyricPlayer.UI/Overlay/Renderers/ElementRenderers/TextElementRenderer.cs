@@ -2,6 +2,7 @@
 using GameOverlay.Windows;
 using LyricPlayer.Model;
 using LyricPlayer.Model.Elements;
+using LyricPlayer.MusicPlayer;
 using System;
 using System.Collections.Generic;
 
@@ -68,7 +69,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
                                                 (int)(element.Size.Y < dummyTextSize.Y ? dummyTextSize.Y : element.Size.Y));
         }
 
-        protected override void InternalRender(TextElement element, DrawGraphicsEventArgs renderArgs)
+        protected override void InternalRender(TextElement element, AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs)
         {
             var gfx = renderArgs.Graphics;
 

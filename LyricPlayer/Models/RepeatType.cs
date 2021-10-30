@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LyricPlayer.MusicPlayer
+namespace LyricPlayer
 {
     public enum RepeatType
     {

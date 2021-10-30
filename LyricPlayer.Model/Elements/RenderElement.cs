@@ -69,7 +69,7 @@ namespace LyricPlayer.Model.Elements
 
         public ElementCollection ChildElements { get; protected set; }
 
-        public List<Effect> Effects { set; get; }
+        public List<ElementEffect> Effects { set; get; }
 
         public virtual void Dispose()
         {

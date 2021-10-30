@@ -51,7 +51,7 @@ namespace LyricPlayer.UI.Overlay.Renderers.ElementRenderers
             }
         }
 
-        protected override void InternalRender(ImageElement element, DrawGraphicsEventArgs renderArgs)
+        protected override void InternalRender(ImageElement element, MusicPlayer.AudioPlayer audioPlayer, DrawGraphicsEventArgs renderArgs)
         {
             if (element.Initializing)
                 return;
